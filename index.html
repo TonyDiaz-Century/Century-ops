@@ -213,6 +213,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   <div class="nav-tab" onclick="switchTab('board',this)">📋 Job Board</div>
   <div class="nav-tab" onclick="switchTab('jobs',this)">🏗️ Jobs</div>
   <div class="nav-tab" onclick="switchTab('crew',this)">👷 Crew</div>
+  <div class="nav-tab" onclick="switchTab('reminders',this)">📌 Reminders</div>
 </div>
 
 <div class="main">
@@ -234,7 +235,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <div class="cal-title" id="cal-title">May 2026</div>
         <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
       </div>
-      <button class="btn btn-primary btn-sm" onclick="openModal('job')">+ New Job</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="openNewReminder()">📌 Reminder</button>
+        <button class="btn btn-primary btn-sm" onclick="openNewJob()">+ New Job</button>
+      </div>
     </div>
     <div class="cal-grid">
       <div class="cal-dow-row">
@@ -298,6 +302,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       </div>
     </div>
   </div>
+
+  <!-- REMINDERS -->
+  <div id="view-reminders" class="view">
+    <div class="jobs-toolbar">
+      <div class="jobs-filters">
+        <button class="filter-btn active" onclick="filterReminders('all',this)">All</button>
+        <button class="filter-btn" onclick="filterReminders('open',this)">Open</button>
+        <button class="filter-btn" onclick="filterReminders('done',this)">Done</button>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openNewReminder()">📌 Add Reminder</button>
+    </div>
+    <div id="reminders-list"></div>
+  </div>
+
 </div>
 </div>
 
@@ -418,17 +436,45 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <button class="btn btn-primary" onclick="saveAssignment()">Save</button>
     </div></div>
   </div>
+<!-- REMINDER MODAL -->
+<div class="modal-overlay" id="modal-reminder">
+  <div class="modal">
+    <div class="modal-title" id="reminder-modal-title">Add Reminder</div>
+    <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="r-title" placeholder="e.g. Order shingles for Smith job"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="r-date" type="date"></div>
+      <div class="form-group"><label class="form-label">Category</label>
+        <select class="form-input" id="r-category">
+          <option>Material Order</option><option>Permit</option><option>Customer Follow-up</option>
+          <option>Vendor Call</option><option>Crew / HR</option><option>Inspection</option><option>General</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Linked Job (optional)</label><input class="form-input" id="r-job" placeholder="Customer name or job"></div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="r-notes" rows="2"></textarea></div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px" id="r-done-wrap">
+      <input type="checkbox" id="r-done" style="width:16px;height:16px">
+      <label for="r-done" style="font-size:13px">Mark as done</label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-sm" id="r-delete-btn" onclick="deleteReminder()" style="display:none">Delete</button>
+      <div class="modal-actions-right">
+        <button class="btn btn-outline" onclick="closeModal('reminder')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveReminder()">Save</button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script>
+</div>
 // CONFIG
 const PIN = '6882';
 const BASE_ID = 'appn1m7nkB7AqfMsN';
 const TOKEN = 'patZMOjIXsZ40w3UT.a825a837b9797146ff9c7fb84814f821a954166791421b07e627196feced85e0';
-const TABLES = { crews:'tblgYZkixq7s8OBzG', employees:'tblTcmlnB1W6jihNM', jobs:'tblyIpCuDl7SoH8hy', assignments:'tblrRTRTlrXo1KHx5', reports:'tbl9DU9ABImxcXMOr' };
+const TABLES = { crews:'tblgYZkixq7s8OBzG', employees:'tblTcmlnB1W6jihNM', jobs:'tblyIpCuDl7SoH8hy', assignments:'tblrRTRTlrXo1KHx5', reports:'tbl9DU9ABImxcXMOr', reminders:'tbl9VRZ1BCswGtk5z', tasks:'tblaB0sGkfDujQr43' };
 const TYPE_COLORS = { 'Tear-off':'#c0392b','Solar':'#27ae60','Repair':'#f0b429','Electrical':'#e67e22','Installation':'#2980b9','Gutters':'#8e44ad','Stucco':'#7f8c8d' };
 
-let state = { jobs:[], employees:[], crews:[], assignments:[], currentMonth:new Date().getMonth(), currentYear:new Date().getFullYear(), weekOffset:0, jobFilter:'all', editingJobId:null, editingEmpId:null };
+let state = { jobs:[], employees:[], crews:[], assignments:[], reminders:[], tasks:[], currentMonth:new Date().getMonth(), currentYear:new Date().getFullYear(), weekOffset:0, jobFilter:'all', editingJobId:null, editingEmpId:null, editingReminderId:null };
 
 // ── PIN ──
 let pinEntry = '';
@@ -471,13 +517,13 @@ const api = {
 };
 
 async function refreshData() {
-  const [jobs,employees,crews,assignments] = await Promise.all([api.get(TABLES.jobs),api.get(TABLES.employees),api.get(TABLES.crews),api.get(TABLES.assignments)]);
-  state.jobs=jobs; state.employees=employees; state.crews=crews; state.assignments=assignments;
+  const [jobs,employees,crews,assignments,reminders,tasks] = await Promise.all([api.get(TABLES.jobs),api.get(TABLES.employees),api.get(TABLES.crews),api.get(TABLES.assignments),api.get(TABLES.reminders),api.get(TABLES.tasks)]);
+  state.jobs=jobs; state.employees=employees; state.crews=crews; state.assignments=assignments; state.reminders=reminders; state.tasks=tasks;
   renderAll();
 }
 
 function renderAll() {
-  renderCalendar(); renderBoard(); renderJobs(); renderCrew(); populateSelects();
+  renderCalendar(); renderBoard(); renderJobs(); renderCrew(); renderReminders(); populateSelects();
   document.getElementById('stat-jobs').textContent = state.jobs.filter(j=>['Scheduled','In Progress'].includes(j.fields['Status'])).length;
   document.getElementById('stat-crew').textContent = state.employees.filter(e=>e.fields['Active']).length;
   document.getElementById('stat-done').textContent = state.jobs.filter(j=>j.fields['Status']==='Complete').length;
@@ -501,12 +547,17 @@ function renderCalendar() {
     const isToday=!other&&day===today.getDate()&&state.currentMonth===today.getMonth()&&state.currentYear===today.getFullYear();
     const ds=`${state.currentYear}-${String(state.currentMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
     const dayJobs=other?[]:state.jobs.filter(j=>j.fields['Start Date']===ds);
+    const dayReminders=other?[]:state.reminders.filter(r=>r.fields['Date']===ds&&!r.fields['Done']);
     html+=`<div class="cal-cell${other?' other':''}${isToday?' today':''}"><div class="cal-num">${day}</div>`;
-    dayJobs.slice(0,3).forEach(j=>{
+    dayJobs.slice(0,2).forEach(j=>{
       const color=TYPE_COLORS[j.fields['Job Type']]||'#888';
       html+=`<div class="cal-event" style="background:${color}" onclick="editJob('${j.id}')">${j.fields['Customer Name']||j.fields['Job Name']}</div>`;
     });
-    if(dayJobs.length>3) html+=`<div class="cal-more">+${dayJobs.length-3} more</div>`;
+    dayReminders.slice(0,2).forEach(r=>{
+      html+=`<div class="cal-event" style="background:#f5a623;opacity:0.9" onclick="editReminder('${r.id}')">📌 ${r.fields['Title']}</div>`;
+    });
+    const extra=(dayJobs.length+dayReminders.length)-4;
+    if(extra>0) html+=`<div class="cal-more">+${extra} more</div>`;
     html+='</div>';
   }
   document.getElementById('cal-days').innerHTML=html;
@@ -759,6 +810,92 @@ async function saveAssignment(){
 // Override openModal for job to handle new vs edit
 const _openModal = openModal;
 document.querySelector('[onclick="openModal(\'job\')"]') && document.querySelectorAll('[onclick="openModal(\'job\')"]').forEach(el=>el.setAttribute('onclick',"openNewJob()"));
+
+// ── REMINDERS ──
+// ── REMINDERS ──
+const CAT_COLORS = {'Material Order':'#e67e22','Permit':'#2980b9','Customer Follow-up':'#27ae60','Vendor Call':'#8e44ad','Crew / HR':'#f0b429','Inspection':'#16a085','General':'#7f8c8d'};
+let reminderFilter = 'all';
+
+function renderReminders(){
+  let filtered = state.reminders;
+  if(reminderFilter==='open') filtered=filtered.filter(r=>!r.fields['Done']);
+  if(reminderFilter==='done') filtered=filtered.filter(r=>r.fields['Done']);
+  filtered.sort((a,b)=>(a.fields['Date']||'').localeCompare(b.fields['Date']||''));
+  if(!filtered.length){document.getElementById('reminders-list').innerHTML='<div class="empty">No reminders. Click "+ Add Reminder" to create one.</div>';return;}
+  document.getElementById('reminders-list').innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">${filtered.map(r=>{
+    const color=CAT_COLORS[r.fields['Category']]||'#888';
+    const done=r.fields['Done'];
+    return `<div class="job-card" onclick="editReminder('${r.id}')" style="${done?'opacity:0.5':''}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
+        <div style="font-size:15px;font-weight:600;color:var(--text);text-decoration:${done?'line-through':'none'}">${r.fields['Title']||'Untitled'}</div>
+        <span style="font-size:10px;padding:3px 8px;border-radius:20px;color:#fff;background:${color};white-space:nowrap;margin-left:8px">${r.fields['Category']||'General'}</span>
+      </div>
+      ${r.fields['Date']?`<div class="job-detail">📅 ${r.fields['Date']}</div>`:''}
+      ${r.fields['Job']?`<div class="job-detail">🏗️ ${r.fields['Job']}</div>`:''}
+      ${r.fields['Notes']?`<div class="job-detail">📝 ${r.fields['Notes']}</div>`:''}
+      <span class="job-status" style="background:${done?'var(--green-light)':'#fef9ec'};color:${done?'var(--green-dark)':'#b07d10'}">${done?'✓ Done':'Pending'}</span>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function filterReminders(f,btn){
+  reminderFilter=f;
+  document.querySelectorAll('#view-reminders .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderReminders();
+}
+
+function openNewReminder(){
+  state.editingReminderId=null;
+  document.getElementById('reminder-modal-title').textContent='Add Reminder';
+  document.getElementById('r-delete-btn').style.display='none';
+  document.getElementById('r-title').value='';
+  document.getElementById('r-date').value='';
+  document.getElementById('r-category').value='General';
+  document.getElementById('r-job').value='';
+  document.getElementById('r-notes').value='';
+  document.getElementById('r-done').checked=false;
+  openModal('reminder');
+}
+
+function editReminder(id){
+  const r=state.reminders.find(x=>x.id===id);
+  if(!r) return;
+  state.editingReminderId=id;
+  document.getElementById('reminder-modal-title').textContent='Edit Reminder';
+  document.getElementById('r-delete-btn').style.display='block';
+  document.getElementById('r-title').value=r.fields['Title']||'';
+  document.getElementById('r-date').value=r.fields['Date']||'';
+  document.getElementById('r-category').value=r.fields['Category']||'General';
+  document.getElementById('r-job').value=r.fields['Job']||'';
+  document.getElementById('r-notes').value=r.fields['Notes']||'';
+  document.getElementById('r-done').checked=!!r.fields['Done'];
+  openModal('reminder');
+}
+
+async function saveReminder(){
+  const title=document.getElementById('r-title').value.trim();
+  if(!title){alert('Please enter a title.');return;}
+  const fields={
+    'Title':title,
+    'Date':document.getElementById('r-date').value||null,
+    'Category':document.getElementById('r-category').value,
+    'Job':document.getElementById('r-job').value,
+    'Notes':document.getElementById('r-notes').value,
+    'Done':document.getElementById('r-done').checked
+  };
+  if(state.editingReminderId) await api.patch(TABLES.reminders,state.editingReminderId,fields);
+  else await api.post(TABLES.reminders,fields);
+  closeModal('reminder');
+  await refreshData();
+}
+
+async function deleteReminder(){
+  if(!confirm('Delete this reminder?')) return;
+  await api.delete(TABLES.reminders,state.editingReminderId);
+  closeModal('reminder');
+  await refreshData();
+}
 
 function switchTab(tab,el){
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
