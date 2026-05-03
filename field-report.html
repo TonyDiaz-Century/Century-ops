@@ -1,1 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Field Report — Century Roof & Solar</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2d7a3a;
+    --green-dark: #1f5628;
+    --green-light: #e8f5eb;
+    --gold: #f0b429;
+    --gold-dark: #c8951f;
+    --white: #ffffff;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-400: #9ca3af;
+    --gray-600: #4b5563;
+    --gray-800: #1f2937;
+    --red: #dc2626;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  }
 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gray-100);
+    color: var(--gray-800);
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  /* Header */
+  .header {
+    background: var(--green-dark);
+    padding: 16px 20px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .header-logo {
+    width: 38px;
+    height: 38px;
+    background: var(--gold);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .header-logo svg { width: 22px; height: 22px; }
+  .header-text {}
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--white);
+    letter-spacing: 0.5px;
+    line-height: 1;
+  }
+  .header-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.6);
+    margin-top: 2px;
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    background: var(--green-dark);
+    padding: 0 20px 14px;
+  }
+  .progress-steps {
+    display: flex;
+    gap: 4px;
+  }
+  .progress-step {
+    flex: 1;
+    height: 3px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    transition: background 0.3s;
+  }
+  .progress-step.active { background: var(--gold); }
+  .progress-step.done { background: rgba(255,255,255,0.5); }
+
+  /* Content */
+  .content { padding: 16px 16px 0; }
+
+  /* Section label */
+  .section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--green);
+    margin-bottom: 10px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Card */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  /* Form fields */
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-600);
+    margin-bottom: 5px;
+  }
+  .field label .req { color: var(--red); margin-left: 2px; }
+
+  select, input[type="text"], textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--gray-800);
+    background: var(--white);
+    appearance: none;
+    -webkit-appearance: none;
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  select:focus, input[type="text"]:focus, textarea:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(45,122,58,0.1);
+  }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239ca3af' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  textarea { resize: none; line-height: 1.5; }
+  select option[value=""] { color: var(--gray-400); }
+
+  /* Work type chips */
+  .chip-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .chip {
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 10px 10px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-600);
+    background: var(--white);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chip:active { transform: scale(0.97); }
+  .chip.selected {
+    border-color: var(--green);
+    background: var(--green-light);
+    color: var(--green-dark);
+  }
+
+  /* Photo section */
+  .photo-area {
+    border: 2px dashed var(--gray-200);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+  }
+  .photo-area:active { background: var(--gray-50); }
+  .photo-area.has-photos { border-style: solid; border-color: var(--green); }
+  .photo-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--gray-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+  }
+  .photo-icon svg { width: 20px; height: 20px; color: var(--gray-400); }
+  .photo-tap-text { font-size: 14px; font-weight: 500; color: var(--gray-600); }
+  .photo-sub { font-size: 12px; color: var(--gray-400); margin-top: 3px; }
+  #photoInput { display: none; }
+
+  /* Photo previews */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .photo-thumb {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: var(--gray-100);
+  }
+  .photo-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .photo-thumb .remove-photo {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+  }
+  .remove-photo svg { width: 10px; height: 10px; color: white; }
+
+  /* Status badge */
+  .status-row {
+    display: flex;
+    gap: 8px;
+  }
+  .status-btn {
+    flex: 1;
+    padding: 10px 6px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--white);
+    color: var(--gray-600);
+  }
+  .status-btn.selected.green { border-color: #16a34a; background: #f0fdf4; color: #15803d; }
+  .status-btn.selected.yellow { border-color: #ca8a04; background: #fefce8; color: #a16207; }
+  .status-btn.selected.red { border-color: var(--red); background: #fef2f2; color: #b91c1c; }
+
+  /* Submit button */
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--green);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 4px;
+    transition: background 0.15s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .submit-btn:active { background: var(--green-dark); transform: scale(0.99); }
+  .submit-btn:disabled { background: var(--gray-400); cursor: not-allowed; transform: none; }
+  .submit-btn svg { width: 18px; height: 18px; }
+
+  /* Error */
+  .field-error {
+    font-size: 12px;
+    color: var(--red);
+    margin-top: 4px;
+    display: none;
+  }
+  .field-error.show { display: block; }
+  select.error, input.error, textarea.error { border-color: var(--red); }
+
+  /* Success screen */
+  .success-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 32px;
+    text-align: center;
+    min-height: 60vh;
+  }
+  .success-screen.show { display: flex; }
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--green-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .success-icon svg { width: 36px; height: 36px; color: var(--green); }
+  .success-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--green-dark);
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  .success-msg { font-size: 15px; color: var(--gray-600); line-height: 1.5; margin-bottom: 28px; }
+  .new-report-btn {
+    padding: 12px 28px;
+    background: var(--green);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  /* Loading overlay */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(255,255,255,0.85);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .loading-overlay.show { display: flex; }
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 14px; color: var(--gray-600); font-weight: 500; }
+
+  /* Date/time display */
+  .datetime-badge {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--gray-600);
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#1f5628" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  </div>
+  <div class="header-text">
+    <div class="header-title">Century Roof & Solar</div>
+    <div class="header-sub">Field Report</div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="progress-wrap">
+  <div class="progress-steps">
+    <div class="progress-step active" id="ps1"></div>
+    <div class="progress-step" id="ps2"></div>
+    <div class="progress-step" id="ps3"></div>
+    <div class="progress-step" id="ps4"></div>
+  </div>
+</div>
+
+<!-- Loading overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text">Submitting report…</div>
+</div>
+
+<!-- Main form -->
+<div id="formView">
+  <div class="content">
+
+    <!-- Section 1: Job & Crew -->
+    <div class="section-label">Job & Crew</div>
+    <div class="card">
+      <div class="field">
+        <label>Job <span class="req">*</span></label>
+        <select id="jobSelect">
+          <option value="">Loading jobs…</option>
+        </select>
+        <div class="field-error" id="jobErr">Please select a job</div>
+      </div>
+      <div class="field">
+        <label>Your name <span class="req">*</span></label>
+        <select id="employeeSelect">
+          <option value="">Loading employees…</option>
+        </select>
+        <div class="field-error" id="empErr">Please select your name</div>
+      </div>
+      <div class="field">
+        <label>Date & time</label>
+        <div class="datetime-badge" id="datetimeDisplay"></div>
+      </div>
+    </div>
+
+    <!-- Section 2: Work & Status -->
+    <div class="section-label">Work Done Today</div>
+    <div class="card">
+      <div class="field">
+        <label>Work type <span class="req">*</span></label>
+        <div class="chip-grid" id="workTypeGrid">
+          <div class="chip" data-value="Roofing">Roofing</div>
+          <div class="chip" data-value="Solar">Solar</div>
+          <div class="chip" data-value="Gutters">Gutters</div>
+          <div class="chip" data-value="Inspection">Inspection</div>
+          <div class="chip" data-value="Repair">Repair</div>
+          <div class="chip" data-value="Other">Other</div>
+        </div>
+        <div class="field-error" id="workErr">Please select work type</div>
+      </div>
+
+      <div class="field" style="margin-top:14px;">
+        <label>Progress notes <span class="req">*</span></label>
+        <textarea id="notesField" rows="4" placeholder="Describe what was completed today, any issues encountered, materials used…"></textarea>
+        <div class="field-error" id="notesErr">Please enter progress notes</div>
+      </div>
+
+      <div class="field">
+        <label>ETA to finish</label>
+        <select id="etaSelect">
+          <option value="">Select estimate…</option>
+          <option value="Today">Today</option>
+          <option value="1 more day">1 more day</option>
+          <option value="2–3 more days">2–3 more days</option>
+          <option value="4–5 more days">4–5 more days</option>
+          <option value="1–2 weeks">1–2 weeks</option>
+          <option value="2+ weeks">2+ weeks</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Job status</label>
+        <div class="status-row">
+          <div class="status-btn" data-status="In Progress">In Progress</div>
+          <div class="status-btn" data-status="Completed">Completed</div>
+          <div class="status-btn" data-status="On Hold">On Hold</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Photos -->
+    <div class="section-label">Photos</div>
+    <div class="card">
+      <div class="photo-area" id="photoArea" onclick="document.getElementById('photoInput').click()">
+        <div class="photo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
+        <div class="photo-tap-text">Tap to add photos</div>
+        <div class="photo-sub">Up to 5 photos • Auto-compressed</div>
+      </div>
+      <input type="file" id="photoInput" accept="image/*" multiple capture="environment">
+      <div class="photo-grid" id="photoGrid"></div>
+    </div>
+
+    <!-- Submit -->
+    <button class="submit-btn" id="submitBtn" onclick="submitReport()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+      Submit Report
+    </button>
+
+  </div>
+</div>
+
+<!-- Success screen -->
+<div class="success-screen" id="successScreen">
+  <div class="success-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <div class="success-title">Report Submitted</div>
+  <div class="success-msg" id="successMsg">Your field report has been saved and sent to the office.</div>
+  <button class="new-report-btn" onclick="resetForm()">Submit Another Report</button>
+</div>
+
+<script>
+// Config
+const AIRTABLE_TOKEN = 'patdw99npBzStV62o.9de4eaaa1b0a38c79d37a0e6eca7e1e58e0b1e8d4a32c725f6731ffe65aedd0e';
+const AIRTABLE_BASE  = 'appn1m7nkB7AqfMsN';
+const JOBS_TABLE     = 'tblyIpCuDl7SoH8hy';
+const EMP_TABLE      = 'tblTcmlnB1W6jihNM';
+const REPORTS_TABLE  = 'tbl9DU9ABImxcXMOr';
+const FORMSPREE_URL  = 'https://formspree.io/f/mnjwpnja';
+
+// State
+let photos = [];
+let selectedWorkType = '';
+let selectedStatus = 'In Progress';
+let jobsData = [];
+let empsData = [];
+
+// Set default status
+document.querySelector('.status-btn[data-status="In Progress"]').classList.add('selected', 'yellow');
+
+// Datetime
+function updateDatetime() {
+  const now = new Date();
+  document.getElementById('datetimeDisplay').textContent =
+    now.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' }) +
+    '  ' + now.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+}
+updateDatetime();
+setInterval(updateDatetime, 30000);
+
+// Progress bar
+function updateProgress(step) {
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('ps' + i);
+    el.className = 'progress-step' + (i < step ? ' done' : i === step ? ' active' : '');
+  }
+}
+
+// Load Airtable data
+async function loadAirtable(tableId, filterFormula) {
+  let url = `https://api.airtable.com/v0/${AIRTABLE_BASE}/${tableId}?pageSize=100`;
+  if (filterFormula) url += `&filterByFormula=${encodeURIComponent(filterFormula)}`;
+  const r = await fetch(url, { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } });
+  const d = await r.json();
+  return d.records || [];
+}
+
+async function loadDropdowns() {
+  try {
+    // Jobs — all active jobs
+    jobsData = await loadAirtable(JOBS_TABLE);
+    const jobSel = document.getElementById('jobSelect');
+    jobSel.innerHTML = '<option value="">Select job…</option>';
+    jobsData.forEach(j => {
+      const f = j.fields;
+      const label = [f['Job Name'] || '', f['Customer Name'] || ''].filter(Boolean).join(' — ');
+      jobSel.innerHTML += `<option value="${j.id}">${label || j.id}</option>`;
+    });
+
+    // Employees — active only
+    empsData = await loadAirtable(EMP_TABLE, "NOT({Status}='Inactive')");
+    const empSel = document.getElementById('employeeSelect');
+    empSel.innerHTML = '<option value="">Select your name…</option>';
+    empsData.sort((a, b) => (a.fields['Name'] || '').localeCompare(b.fields['Name'] || ''));
+    empsData.forEach(e => {
+      empSel.innerHTML += `<option value="${e.id}">${e.fields['Name'] || 'Unknown'}</option>`;
+    });
+  } catch(err) {
+    console.error('Airtable load error:', err);
+    document.getElementById('jobSelect').innerHTML = '<option value="">Error loading — try refreshing</option>';
+    document.getElementById('employeeSelect').innerHTML = '<option value="">Error loading — try refreshing</option>';
+  }
+}
+loadDropdowns();
+
+// Work type chips
+document.getElementById('workTypeGrid').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  chip.classList.add('selected');
+  selectedWorkType = chip.dataset.value;
+  document.getElementById('workErr').classList.remove('show');
+  updateProgress(2);
+});
+
+// Status buttons
+document.querySelectorAll('.status-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.status-btn').forEach(b => b.className = 'status-btn');
+    selectedStatus = btn.dataset.status;
+    const colorMap = { 'In Progress': 'yellow', 'Completed': 'green', 'On Hold': 'red' };
+    btn.classList.add('selected', colorMap[selectedStatus]);
+  });
+});
+
+// Photos
+document.getElementById('photoInput').addEventListener('change', async e => {
+  const files = Array.from(e.target.files);
+  const remaining = 5 - photos.length;
+  const toProcess = files.slice(0, remaining);
+
+  for (const file of toProcess) {
+    const compressed = await compressImage(file, 1200, 0.75);
+    photos.push({ dataUrl: compressed, name: file.name });
+  }
+  renderPhotos();
+  if (photos.length > 0) {
+    document.getElementById('photoArea').classList.add('has-photos');
+    updateProgress(Math.max(3, parseInt(document.querySelector('.progress-step.active')?.id?.replace('ps','') || 1)));
+  }
+  e.target.value = '';
+});
+
+function compressImage(file, maxDim, quality) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxDim || h > maxDim) {
+          if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+          else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderPhotos() {
+  const grid = document.getElementById('photoGrid');
+  grid.innerHTML = '';
+  photos.forEach((p, i) => {
+    grid.innerHTML += `
+      <div class="photo-thumb">
+        <img src="${p.dataUrl}" alt="Photo ${i+1}">
+        <button class="remove-photo" onclick="removePhoto(${i})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>`;
+  });
+
+  // Show/hide add button based on count
+  const area = document.getElementById('photoArea');
+  if (photos.length >= 5) {
+    area.style.display = 'none';
+  } else {
+    area.style.display = '';
+    const sub = area.querySelector('.photo-sub');
+    if (sub) sub.textContent = `${5 - photos.length} more allowed • Auto-compressed`;
+  }
+}
+
+function removePhoto(i) {
+  photos.splice(i, 1);
+  renderPhotos();
+  if (photos.length === 0) {
+    document.getElementById('photoArea').classList.remove('has-photos');
+  }
+}
+
+// Validation
+function validate() {
+  let ok = true;
+  const job = document.getElementById('jobSelect').value;
+  const emp = document.getElementById('employeeSelect').value;
+  const notes = document.getElementById('notesField').value.trim();
+
+  if (!job) { document.getElementById('jobErr').classList.add('show'); document.getElementById('jobSelect').classList.add('error'); ok = false; }
+  else { document.getElementById('jobErr').classList.remove('show'); document.getElementById('jobSelect').classList.remove('error'); }
+
+  if (!emp) { document.getElementById('empErr').classList.add('show'); document.getElementById('employeeSelect').classList.add('error'); ok = false; }
+  else { document.getElementById('empErr').classList.remove('show'); document.getElementById('employeeSelect').classList.remove('error'); }
+
+  if (!selectedWorkType) { document.getElementById('workErr').classList.add('show'); ok = false; }
+  else { document.getElementById('workErr').classList.remove('show'); }
+
+  if (!notes) { document.getElementById('notesErr').classList.add('show'); document.getElementById('notesField').classList.add('error'); ok = false; }
+  else { document.getElementById('notesErr').classList.remove('show'); document.getElementById('notesField').classList.remove('error'); }
+
+  return ok;
+}
+
+// Submit
+async function submitReport() {
+  if (!validate()) { window.scrollTo({top: 0, behavior: 'smooth'}); return; }
+
+  updateProgress(4);
+  document.getElementById('loadingOverlay').classList.add('show');
+  document.getElementById('submitBtn').disabled = true;
+
+  const jobId = document.getElementById('jobSelect').value;
+  const empId = document.getElementById('employeeSelect').value;
+  const notes = document.getElementById('notesField').value.trim();
+  const now = new Date().toISOString();
+
+  const jobRecord = jobsData.find(j => j.id === jobId);
+  const empRecord = empsData.find(e => e.id === empId);
+  const jobLabel = jobRecord ? ([jobRecord.fields['Job Name'] || '', jobRecord.fields['Customer Name'] || ''].filter(Boolean).join(' — ')) : jobId;
+  const empName = empRecord ? empRecord.fields['Name'] : empId;
+
+  // 1. Save to Airtable
+  try {
+    const eta = document.getElementById('etaSelect').value;
+    const airtableFields = {
+      'Notes': notes,
+      'Progress': selectedWorkType + ' — ' + selectedStatus,
+      'Report Date': now,
+    };
+    if (eta) airtableFields['ETA to Finish'] = eta;
+    if (photos.length > 0) airtableFields['Photo URLs'] = photos.map((p, i) => `Photo ${i+1} (attached via email)`).join(', ');
+    // Linked record fields
+    try { airtableFields['Job'] = [jobId]; } catch(e) {}
+    try { airtableFields['Employee'] = [empId]; } catch(e) {}
+
+    await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE}/${REPORTS_TABLE}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ fields: airtableFields })
+    });
+  } catch(err) {
+    console.error('Airtable save error:', err);
+  }
+
+  // 2. Send email via Formspree
+  try {
+    const photoSummary = photos.length > 0
+      ? `${photos.length} photo(s) captured on device (attach separately if needed)`
+      : 'No photos submitted';
+
+    const formData = new FormData();
+    formData.append('_subject', `Field Report — ${jobLabel} — ${empName}`);
+    formData.append('Job', jobLabel);
+    formData.append('Employee', empName);
+    formData.append('Work Type', selectedWorkType);
+    formData.append('Job Status', selectedStatus);
+    if (eta) formData.append('ETA to Finish', eta);
+    formData.append('Submitted At', new Date().toLocaleString('en-US'));
+    formData.append('Notes', notes);
+    formData.append('Photos', photoSummary);
+
+    // Attach compressed photos as blobs
+    for (let i = 0; i < photos.length; i++) {
+      const blob = dataURLtoBlob(photos[i].dataUrl);
+      formData.append(`photo_${i+1}`, blob, `photo_${i+1}.jpg`);
+    }
+
+    await fetch(FORMSPREE_URL, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } });
+  } catch(err) {
+    console.error('Formspree error:', err);
+  }
+
+  document.getElementById('loadingOverlay').classList.remove('show');
+  document.getElementById('formView').style.display = 'none';
+  document.getElementById('successMsg').textContent =
+    `Report for ${jobLabel} submitted by ${empName}. The office has been notified.`;
+  document.getElementById('successScreen').classList.add('show');
+}
+
+function dataURLtoBlob(dataURL) {
+  const arr = dataURL.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) u8arr[n] = bstr.charCodeAt(n);
+  return new Blob([u8arr], { type: mime });
+}
+
+function resetForm() {
+  document.getElementById('etaSelect').value = '';
+  document.getElementById('jobSelect').value = '';
+  document.getElementById('employeeSelect').value = '';
+  document.getElementById('notesField').value = '';
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.status-btn').forEach(b => b.className = 'status-btn');
+  document.querySelector('.status-btn[data-status="In Progress"]').classList.add('selected', 'yellow');
+  selectedWorkType = '';
+  selectedStatus = 'In Progress';
+  photos = [];
+  renderPhotos();
+  document.getElementById('photoArea').classList.remove('has-photos');
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('formView').style.display = '';
+  document.getElementById('successScreen').classList.remove('show');
+  updateProgress(1);
+  updateDatetime();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// Track field completion for progress
+document.getElementById('jobSelect').addEventListener('change', () => updateProgress(2));
+document.getElementById('notesField').addEventListener('input', () => updateProgress(3));
+</script>
+</body>
+</html>
