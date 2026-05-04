@@ -820,7 +820,7 @@ function getWeekDates(){
 function renderBoard(){
   const dates=getWeekDates();
   const fmt=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-  const iso=d=>d.toISOString().split('T')[0];
+ const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   document.getElementById('week-label').textContent=`Week of ${fmt(dates[0])}`;
   const days=['Mon','Tue','Wed','Thu','Fri','Sat'];
   document.getElementById('board-head').innerHTML=`<tr><th class="name-th">Employee</th>${days.map((d,i)=>`<th>${d} ${fmt(dates[i])}</th>`).join('')}</tr>`;
