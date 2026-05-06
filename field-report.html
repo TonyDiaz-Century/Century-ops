@@ -360,7 +360,6 @@ async function submitReport() {
       'Notes': (selectedProgress ? '[' + selectedProgress + '] ' : '') + notes,
       'ETA to Finish': eta || '',
       'Report Date': new Date().toISOString().split('T')[0],
-      'Status': 'Submitted'
     };
 
     // Add photo attachments if any
@@ -402,7 +401,6 @@ async function retryWithoutPhotos(emp, job, eta, notes) {
       'Notes': (selectedProgress ? '[' + selectedProgress + '] ' : '') + notes + (photos.length > 0 ? ` [${photos.length} photos taken on site]` : ''),
       'ETA to Finish': eta || '',
       'Report Date': new Date().toLocaleDateString('en-CA'),
-      'Status': 'Submitted'
     };
     const result = await airtablePost(TABLES.reports, fields);
     if (result.error) throw new Error(result.error.message);
