@@ -387,7 +387,7 @@ async function submitReport() {
     if (photos.length > 0 && e.message && e.message.includes('photo')) {
       retryWithoutPhotos(emp, job, eta, notes);
     } else {
-      showError('Submission failed. Please check your connection and try again.');
+     showError('Submission failed: ' + e.message);
     }
   }
 }
@@ -401,7 +401,7 @@ async function retryWithoutPhotos(emp, job, eta, notes) {
       'Progress': selectedProgress,
       'Notes': (selectedProgress ? '[' + selectedProgress + '] ' : '') + notes + (photos.length > 0 ? ` [${photos.length} photos taken on site]` : ''),
       'ETA to Finish': eta || '',
-      'Report Date': new Date().toISOString().split('T')[0],
+      'Report Date': new Date().toLocaleDateString('en-CA'),
       'Status': 'Submitted'
     };
     const result = await airtablePost(TABLES.reports, fields);
