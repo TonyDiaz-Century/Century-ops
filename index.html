@@ -1114,6 +1114,7 @@ function runRevAnalytics(from, to){
 
 // Auto-run this week on tab switch to jobs
 const _switchTab = switchTab;
+  let reportFilter='all';
 function renderReports(){
   const today=localISO(new Date());
   const weekAgo=localISO(new Date(Date.now()-7*24*60*60*1000));
