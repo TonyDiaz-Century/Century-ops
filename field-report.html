@@ -410,7 +410,7 @@ async function retryWithoutPhotos(emp, job, eta, notes) {
     showSuccess(emp, job, true);
   } catch (e) {
     showLoading(false);
-    showError('Submission failed. Please check your connection and try again.');
+   showError('Submission failed: ' + e.message);
   }
 }
 
