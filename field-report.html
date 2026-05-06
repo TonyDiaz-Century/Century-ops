@@ -1,1 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Field Report — Century Roof & Solar</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#2d7a3a;--green-dark:#1e5527;--green-light:#e8f5eb;
+  --gold:#f0b429;--red:#c0392b;
+  --bg:#f4f5f0;--surface:#ffffff;--border:#e0e2d9;
+  --text:#1a1c18;--text-muted:#6b7066;--radius:10px;
+  --shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
 
+/* HEADER */
+.header{background:var(--green-dark);padding:16px 20px 14px;position:sticky;top:0;z-index:10}
+.header-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:1px}
+.header-sub{font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.5px;text-transform:uppercase;margin-top:1px}
+
+/* FORM */
+.form-wrap{padding:20px 16px;max-width:560px;margin:0 auto}
+
+.section{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--green-dark);letter-spacing:0.5px;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.section-title .icon{font-size:16px}
+
+.form-group{margin-bottom:12px}
+.form-group:last-child{margin-bottom:0}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+.form-input{width:100%;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:#fafafa;transition:border-color 0.15s;-webkit-appearance:none}
+.form-input:focus{outline:none;border-color:var(--green);background:#fff}
+select.form-input{cursor:pointer}
+textarea.form-input{resize:vertical;min-height:80px}
+
+/* PROGRESS BUTTONS */
+.progress-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.progress-btn{padding:12px 8px;border-radius:8px;border:2px solid var(--border);background:#fafafa;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all 0.15s;text-align:center;line-height:1.3}
+.progress-btn:active{transform:scale(0.97)}
+.progress-btn.selected{border-color:var(--green);background:var(--green-light);color:var(--green-dark);font-weight:600}
+.progress-btn .pb-icon{font-size:20px;display:block;margin-bottom:4px}
+
+/* PHOTO SECTION */
+.photo-zone{border:2px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;transition:all 0.15s;background:#fafafa;position:relative}
+.photo-zone:active{background:var(--green-light);border-color:var(--green)}
+.photo-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-zone-icon{font-size:32px;margin-bottom:8px}
+.photo-zone-text{font-size:14px;font-weight:500;color:var(--text-muted)}
+.photo-zone-sub{font-size:12px;color:var(--text-muted);margin-top:3px;opacity:0.7}
+
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.photo-thumb{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;background:var(--border)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-remove{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.6);border:none;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.photo-count{font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center}
+
+/* SUBMIT */
+.submit-btn{width:100%;padding:16px;border-radius:var(--radius);border:none;background:var(--green);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;cursor:pointer;transition:all 0.15s;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.submit-btn:active{transform:scale(0.98);background:var(--green-dark)}
+.submit-btn:disabled{background:#aaa;cursor:not-allowed;transform:none}
+
+/* SUCCESS */
+.success-screen{display:none;position:fixed;inset:0;background:var(--green-dark);flex-direction:column;align-items:center;justify-content:center;z-index:999;padding:32px;text-align:center}
+.success-screen.show{display:flex}
+.success-icon{font-size:72px;margin-bottom:24px;animation:pop 0.4s ease}
+@keyframes pop{0%{transform:scale(0.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.success-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);letter-spacing:1px;margin-bottom:8px}
+.success-sub{font-size:15px;color:rgba(255,255,255,0.7);margin-bottom:32px;line-height:1.5}
+.success-btn{padding:14px 32px;border-radius:var(--radius);border:2px solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;cursor:pointer;transition:all 0.15s}
+.success-btn:active{background:rgba(255,255,255,0.1)}
+
+/* ERROR */
+.error-msg{background:#fdecea;border:1px solid #fca5a5;border-radius:8px;padding:12px 14px;font-size:13px;color:var(--red);margin-bottom:14px;display:none}
+.error-msg.show{display:block}
+
+/* REQUIRED STAR */
+.req{color:var(--red);margin-left:2px}
+
+/* LOADING OVERLAY */
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.loading-overlay.show{display:flex}
+.spinner{width:44px;height:44px;border:4px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:#fff;font-size:15px;font-weight:500}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">Century Ops</div>
+  <div class="header-sub">Field Report — Century Roof &amp; Solar</div>
+</div>
+
+<div class="form-wrap">
+
+  <div class="error-msg" id="error-msg"></div>
+
+  <!-- WHO ARE YOU -->
+  <div class="section">
+    <div class="section-title"><span class="icon">👷</span> Your Info</div>
+    <div class="form-group">
+      <label class="form-label">Your Name <span class="req">*</span></label>
+      <select class="form-input" id="f-employee">
+        <option value="">Select your name...</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Job Site <span class="req">*</span></label>
+      <select class="form-input" id="f-job">
+        <option value="">Select job...</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📊</span> Progress Update <span class="req">*</span></div>
+    <div class="progress-grid" id="progress-grid">
+      <button class="progress-btn" onclick="selectProgress('Just Started', this)">
+        <span class="pb-icon">🚀</span>Just Started
+      </button>
+      <button class="progress-btn" onclick="selectProgress('25% Done', this)">
+        <span class="pb-icon">🔨</span>25% Done
+      </button>
+      <button class="progress-btn" onclick="selectProgress('Halfway', this)">
+        <span class="pb-icon">⚡</span>Halfway
+      </button>
+      <button class="progress-btn" onclick="selectProgress('75% Done', this)">
+        <span class="pb-icon">💪</span>75% Done
+      </button>
+      <button class="progress-btn" onclick="selectProgress('Almost Done', this)">
+        <span class="pb-icon">🏁</span>Almost Done
+      </button>
+      <button class="progress-btn" onclick="selectProgress('Complete', this)">
+        <span class="pb-icon">✅</span>Complete
+      </button>
+    </div>
+  </div>
+
+  <!-- ETA -->
+  <div class="section">
+    <div class="section-title"><span class="icon">🕐</span> Finish Time</div>
+    <div class="form-group">
+      <label class="form-label">ETA to Finish Today</label>
+      <select class="form-input" id="f-eta">
+        <option value="">Select estimated finish time...</option>
+        <option>By noon</option>
+        <option>By 1pm</option>
+        <option>By 2pm</option>
+        <option>By 3pm</option>
+        <option>By 4pm</option>
+        <option>By 5pm</option>
+        <option>End of day</option>
+        <option>Will need another day</option>
+        <option>Will need 2+ more days</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> Notes</div>
+    <div class="form-group">
+      <label class="form-label">Notes / Issues / Materials Needed</label>
+      <textarea class="form-input" id="f-notes" placeholder="Any issues, material needs, or updates for the office..."></textarea>
+    </div>
+  </div>
+
+  <!-- PHOTOS -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📷</span> Photos</div>
+    <div class="photo-zone" id="photo-zone">
+      <input type="file" accept="image/*" multiple capture="environment" id="photo-input" onchange="handlePhotos(this)">
+      <div class="photo-zone-icon">📸</div>
+      <div class="photo-zone-text">Tap to take photos or upload</div>
+      <div class="photo-zone-sub">Up to 10 photos</div>
+    </div>
+    <div class="photo-grid" id="photo-grid"></div>
+    <div class="photo-count" id="photo-count"></div>
+  </div>
+
+  <button class="submit-btn" id="submit-btn" onclick="submitReport()">
+    &#128228; Submit Report
+  </button>
+
+</div>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-text">Submitting report...</div>
+</div>
+
+<!-- SUCCESS -->
+<div class="success-screen" id="success-screen">
+  <div class="success-icon">✅</div>
+  <div class="success-title">Report Submitted!</div>
+  <div class="success-sub" id="success-sub">Your report has been sent to the office.</div>
+  <button class="success-btn" onclick="resetForm()">Submit Another Report</button>
+</div>
+
+<script>
+const BASE_ID = 'appn1m7nkB7AqfMsN';
+const TOKEN = 'patZMOjIXsZ40w3UT.5a5a55a1c0fd7577b59cf3e557ae0375b304fa69c89516ec2906c79956472eb0';
+const TABLES = {
+  employees: 'tblTcmlnB1W6jihNM',
+  jobs: 'tblyIpCuDl7SoH8hy',
+  reports: 'tbl9DU9ABImxcXMOr'
+};
+
+let selectedProgress = '';
+let photos = []; // {dataUrl, file}
+
+// API helpers
+async function airtableGet(table) {
+  let records = [], offset = null;
+  do {
+    const url = `https://api.airtable.com/v0/${BASE_ID}/${table}?pageSize=100${offset ? '&offset=' + offset : ''}`;
+    const r = await fetch(url, { headers: { Authorization: 'Bearer ' + TOKEN } });
+    const d = await r.json();
+    records = records.concat(d.records || []);
+    offset = d.offset;
+  } while (offset);
+  return records;
+}
+
+async function airtablePost(table, fields) {
+  const r = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${table}`, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ records: [{ fields }] })
+  });
+  return r.json();
+}
+
+// Load employees and jobs
+async function loadData() {
+  try {
+    const [employees, jobs] = await Promise.all([
+      airtableGet(TABLES.employees),
+      airtableGet(TABLES.jobs)
+    ]);
+
+    const empSel = document.getElementById('f-employee');
+    employees
+      .filter(e => e.fields['Active'])
+      .sort((a, b) => (a.fields['Name'] || '').localeCompare(b.fields['Name'] || ''))
+      .forEach(e => {
+        const opt = document.createElement('option');
+        opt.value = e.fields['Name'];
+        opt.textContent = e.fields['Name'] + (e.fields['Role'] ? ' — ' + e.fields['Role'] : '');
+        empSel.appendChild(opt);
+      });
+
+    const jobSel = document.getElementById('f-job');
+    jobs
+      .filter(j => ['Scheduled', 'In Progress'].includes(j.fields['Status']))
+      .sort((a, b) => (a.fields['Customer Name'] || '').localeCompare(b.fields['Customer Name'] || ''))
+      .forEach(j => {
+        const opt = document.createElement('option');
+        const name = j.fields['Customer Name'] || j.fields['Job Name'] || 'Unnamed';
+        opt.value = name;
+        opt.textContent = name + (j.fields['Address'] ? ' — ' + j.fields['Address'] : '');
+        jobSel.appendChild(opt);
+      });
+
+  } catch (e) {
+    console.error('Load error:', e);
+    showError('Could not load employee/job list. Check your connection and try again.');
+  }
+}
+
+// Progress selection
+function selectProgress(value, btn) {
+  selectedProgress = value;
+  document.querySelectorAll('.progress-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+// Photo handling
+function handlePhotos(input) {
+  const files = Array.from(input.files);
+  if (photos.length + files.length > 10) {
+    showError('Maximum 10 photos allowed.');
+    return;
+  }
+  files.forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      // Compress image
+      compressImage(e.target.result, (compressed) => {
+        photos.push({ dataUrl: compressed, file });
+        renderPhotoGrid();
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value = '';
+}
+
+function compressImage(dataUrl, callback) {
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement('canvas');
+    const MAX = 1200;
+    let w = img.width, h = img.height;
+    if (w > MAX || h > MAX) {
+      if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+      else { w = Math.round(w * MAX / h); h = MAX; }
+    }
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    callback(canvas.toDataURL('image/jpeg', 0.75));
+  };
+  img.src = dataUrl;
+}
+
+function renderPhotoGrid() {
+  const grid = document.getElementById('photo-grid');
+  grid.innerHTML = photos.map((p, i) =>
+    `<div class="photo-thumb">
+      <img src="${p.dataUrl}" alt="Photo ${i+1}">
+      <button class="photo-remove" onclick="removePhoto(${i})">×</button>
+    </div>`
+  ).join('');
+  document.getElementById('photo-count').textContent = photos.length > 0 ? `${photos.length} photo${photos.length > 1 ? 's' : ''} selected` : '';
+}
+
+function removePhoto(index) {
+  photos.splice(index, 1);
+  renderPhotoGrid();
+}
+
+// Submit
+async function submitReport() {
+  hideError();
+
+  const emp = document.getElementById('f-employee').value;
+  const job = document.getElementById('f-job').value;
+  const eta = document.getElementById('f-eta').value;
+  const notes = document.getElementById('f-notes').value.trim();
+
+  // Validate
+  if (!emp) { showError('Please select your name.'); return; }
+  if (!job) { showError('Please select a job site.'); return; }
+  if (!selectedProgress) { showError('Please select a progress update.'); return; }
+
+  showLoading(true);
+
+  try {
+    // Build attachments array for Airtable if we have photos
+    const fields = {
+      'Employee': emp,
+      'Job': job,
+      'Progress': selectedProgress,
+      'Notes': (selectedProgress ? '[' + selectedProgress + '] ' : '') + notes,
+      'ETA to Finish': eta || '',
+      'Report Date': new Date().toISOString().split('T')[0],
+      'Status': 'Submitted'
+    };
+
+    // Add photo attachments if any
+    if (photos.length > 0) {
+      fields['Photos'] = photos.map((p, i) => ({
+        url: p.dataUrl,
+        filename: `photo_${i + 1}.jpg`
+      }));
+    }
+
+    const result = await airtablePost(TABLES.reports, fields);
+
+    if (result.error) {
+      throw new Error(result.error.message);
+    }
+
+    showLoading(false);
+    showSuccess(emp, job);
+
+  } catch (e) {
+    showLoading(false);
+    console.error('Submit error:', e);
+    // Photos via base64 often fail in Airtable - retry without photos
+    if (photos.length > 0 && e.message && e.message.includes('photo')) {
+      retryWithoutPhotos(emp, job, eta, notes);
+    } else {
+      showError('Submission failed. Please check your connection and try again.');
+    }
+  }
+}
+
+async function retryWithoutPhotos(emp, job, eta, notes) {
+  try {
+    showLoading(true);
+    const fields = {
+      'Employee': emp,
+      'Job': job,
+      'Progress': selectedProgress,
+      'Notes': (selectedProgress ? '[' + selectedProgress + '] ' : '') + notes + (photos.length > 0 ? ` [${photos.length} photos taken on site]` : ''),
+      'ETA to Finish': eta || '',
+      'Report Date': new Date().toISOString().split('T')[0],
+      'Status': 'Submitted'
+    };
+    const result = await airtablePost(TABLES.reports, fields);
+    if (result.error) throw new Error(result.error.message);
+    showLoading(false);
+    showSuccess(emp, job, true);
+  } catch (e) {
+    showLoading(false);
+    showError('Submission failed. Please check your connection and try again.');
+  }
+}
+
+function showSuccess(emp, job, noPhotos) {
+  const screen = document.getElementById('success-screen');
+  const sub = document.getElementById('success-sub');
+  let msg = `${emp}'s report for ${job} has been sent to the office.`;
+  if (noPhotos && photos.length > 0) msg += ' Note: photos could not be attached but were noted in the report.';
+  sub.textContent = msg;
+  screen.classList.add('show');
+}
+
+function resetForm() {
+  document.getElementById('success-screen').classList.remove('show');
+  document.getElementById('f-employee').value = '';
+  document.getElementById('f-job').value = '';
+  document.getElementById('f-eta').value = '';
+  document.getElementById('f-notes').value = '';
+  selectedProgress = '';
+  photos = [];
+  renderPhotoGrid();
+  document.querySelectorAll('.progress-btn').forEach(b => b.classList.remove('selected'));
+  window.scrollTo(0, 0);
+}
+
+function showLoading(show) {
+  document.getElementById('loading-overlay').classList.toggle('show', show);
+  document.getElementById('submit-btn').disabled = show;
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function hideError() {
+  document.getElementById('error-msg').classList.remove('show');
+}
+
+// Init
+loadData();
+</script>
+</body>
+</html>
