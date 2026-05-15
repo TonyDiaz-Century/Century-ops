@@ -1,0 +1,24 @@
+{
+  "name": "Century Ops",
+  "short_name": "Century Ops",
+  "description": "Century Roof & Solar — Operations",
+  "start_url": "/Century-ops/",
+  "display": "standalone",
+  "background_color": "#1e5527",
+  "theme_color": "#1e5527",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
