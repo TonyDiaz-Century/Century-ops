@@ -1,1 +1,2051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Century Ops">
+<meta name="theme-color" content="#1e5527">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192 (1).png">
+<title>Century Ops — Century Roof & Solar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#2d7a3a;--green-dark:#1e5527;--green-light:#e8f5eb;
+  --gold:#f0b429;--gold-light:#fef9ec;--red:#c0392b;
+  --bg:#f4f5f0;--surface:#ffffff;--border:#e0e2d9;
+  --text:#1a1c18;--text-muted:#6b7066;--radius:8px;--shadow:0 1px 3px rgba(0,0,0,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+#pin-screen{position:fixed;inset:0;background:var(--green-dark);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:1.5rem}
+#pin-screen.hidden{display:none}
+.pin-logo{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);letter-spacing:2px}
+.pin-sub{font-size:13px;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-top:-1rem}
+.pin-dots{display:flex;gap:12px;margin:0.5rem 0}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);transition:all 0.2s}
+.pin-dot.filled{background:var(--gold);border-color:var(--gold)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,64px);gap:10px}
+.pin-btn{width:64px;height:64px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:#fff;font-size:20px;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.pin-btn:hover{background:rgba(255,255,255,0.18)}
+.pin-btn:active{transform:scale(0.93)}
+.pin-error{color:#ff6b6b;font-size:13px;min-height:18px;text-align:center}
+.header{background:var(--green-dark);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:56px}
+.header-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:1px}
+.header-sub{font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.5px;text-transform:uppercase}
+.header-right{display:flex;align-items:center;gap:8px}
+.btn{padding:7px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.btn-primary{background:var(--gold);color:#1a1c18}
+.btn-primary:hover{background:#e0a820}
+.btn-ghost{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2)}
+.btn-ghost:hover{background:rgba(255,255,255,0.2)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text-muted)}
+.btn-outline:hover{border-color:var(--green);color:var(--green)}
+.btn-danger{background:#fee2e2;color:var(--red);border:1px solid #fca5a5}
+.btn-danger:hover{background:#fecaca}
+.nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;display:flex;gap:0;overflow-x:auto}
+.nav-tab{padding:12px 18px;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--green);border-bottom-color:var(--green)}
+.main{padding:1.25rem 1.5rem;max-width:1400px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem}
+.leg{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-muted);background:var(--surface);padding:4px 10px;border-radius:20px;border:1px solid var(--border)}
+.leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.view{display:none}
+.view.active{display:block}
+.cal-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.cal-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green-dark);letter-spacing:1px}
+.cal-nav-group{display:flex;gap:6px;align-items:center}
+.cal-nav-btn{width:32px;height:32px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all 0.15s}
+.cal-nav-btn:hover{border-color:var(--green);color:var(--green)}
+.cal-grid{background:var(--surface);border-radius:10px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow)}
+.cal-dow-row{display:grid;grid-template-columns:repeat(7,1fr);background:var(--green-dark)}
+.cal-dow{padding:8px 4px;text-align:center;font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);letter-spacing:0.5px;text-transform:uppercase}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-cell{min-height:90px;padding:6px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface)}
+.cal-cell:nth-child(7n){border-right:none}
+.cal-cell.other{background:#f9faf7}
+.cal-cell.today{background:var(--green-light)}
+.cal-num{font-size:12px;font-weight:500;color:var(--text-muted);margin-bottom:3px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.cal-cell.today .cal-num{background:var(--green);color:#fff}
+.cal-event{font-size:10px;padding:2px 5px;border-radius:3px;margin-bottom:2px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;font-weight:500}
+.cal-event:hover{opacity:0.85}
+.cal-more{font-size:10px;color:var(--text-muted);padding:1px 4px;cursor:pointer}
+.cal-drop-target{background:var(--green-light) !important;outline:2px dashed var(--green);outline-offset:-2px}
+.cal-event[draggable]{cursor:grab}
+.cal-event[draggable]:active{cursor:grabbing}
+.cal-add-hint{font-size:10px;color:transparent;padding:2px 4px;border-radius:3px;transition:all 0.15s;cursor:pointer}
+.cal-cell:hover .cal-add-hint{color:var(--text-muted);background:var(--bg)}
+.board-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1rem}
+.stat-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:12px 16px}
+.stat-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green-dark);line-height:1}
+.board-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:8px}
+.week-label{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green-dark);letter-spacing:1px}
+.board-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.board-table{width:100%;border-collapse:collapse;min-width:700px}
+.board-table th{padding:8px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);background:var(--green-dark);text-align:center;letter-spacing:0.3px;text-transform:uppercase;white-space:nowrap}
+.board-table th.name-th{text-align:left;min-width:130px}
+.board-table td{padding:5px 8px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);background:var(--surface);text-align:center;vertical-align:middle}
+.board-table td:last-child{border-right:none}
+.crew-row td{background:var(--green-light);padding:4px 10px;border-bottom:1px solid var(--border)}
+.crew-row-label{font-size:11px;font-weight:600;color:var(--green-dark);text-transform:uppercase;letter-spacing:0.5px}
+.emp-name{font-size:13px;font-weight:500;color:var(--text);text-align:left}
+.emp-role{font-size:10px;color:var(--text-muted)}
+.chip{display:inline-block;font-size:10px;padding:3px 7px;border-radius:4px;color:#fff;font-weight:500;white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.chip:hover{opacity:0.85}
+.chip-off{background:#f0f0ed;color:#aaa;font-size:10px;padding:3px 7px;border-radius:4px}
+.board-cell{text-align:center;vertical-align:middle;padding:4px 6px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);background:var(--surface);transition:background 0.15s}
+.board-empty .chip-off{cursor:pointer;transition:all 0.15s}
+.board-empty:hover .chip-off{background:var(--green-light);color:var(--green);font-weight:600}
+.board-drop-target{background:var(--green-light) !important;outline:2px dashed var(--green);outline-offset:-2px}
+/* CALENDAR VIEW TOGGLE */
+.cal-view-toggle{display:flex;gap:2px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:2px}
+.cal-view-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:500;border:none;background:transparent;color:var(--text-muted);cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.cal-view-btn.active{background:var(--surface);color:var(--green);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
 
+/* WEEK VIEW */
+.week-view{background:var(--surface);border-radius:10px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow)}
+.week-view-header{display:grid;grid-template-columns:80px repeat(7,1fr);background:var(--green-dark)}
+.week-view-header-cell{padding:8px 6px;text-align:center;font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);letter-spacing:0.3px;text-transform:uppercase}
+.week-view-header-cell.today-col{color:var(--gold)}
+.week-view-body{display:grid;grid-template-columns:80px repeat(7,1fr)}
+.week-time-col{border-right:1px solid var(--border)}
+.week-time-slot{height:60px;border-bottom:1px solid var(--border);padding:4px 6px;font-size:10px;color:var(--text-muted);font-family:'DM Mono',monospace;display:flex;align-items:flex-start}
+.week-day-col{border-right:1px solid var(--border);position:relative;min-height:480px;padding:6px}
+.week-day-col:last-child{border-right:none}
+.week-day-col.today-col{background:var(--green-light)}
+.week-event{font-size:11px;padding:4px 7px;border-radius:5px;margin-bottom:4px;color:#fff;cursor:pointer;font-weight:500;line-height:1.3}
+.week-event:hover{opacity:0.85}
+.week-rem{font-size:11px;padding:4px 7px;border-radius:5px;margin-bottom:4px;background:#f5a623;color:#fff;cursor:pointer;font-weight:500}
+
+/* DAY VIEW */
+.day-view{background:var(--surface);border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.day-view-header{background:var(--green-dark);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.day-view-title{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);letter-spacing:1px}
+.day-view-sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px}
+.day-view-body{padding:16px 20px}
+.day-section{margin-bottom:20px}
+.day-section:last-child{margin-bottom:0}
+.day-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:10px;font-family:'DM Mono',monospace;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.day-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;margin-bottom:6px;cursor:pointer;transition:opacity 0.15s}
+.day-item:hover{opacity:0.85}
+.day-item-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.day-item-content{flex:1;min-width:0}
+.day-item-name{font-size:14px;font-weight:600;color:#fff}
+.day-item-sub{font-size:12px;color:rgba(255,255,255,0.75);margin-top:2px}
+.day-item-value{font-size:13px;font-weight:600;color:rgba(255,255,255,0.9);white-space:nowrap}
+.day-empty{text-align:center;padding:20px;color:var(--text-muted);font-size:14px}
+
+/* WEATHER TOGGLE */
+.weather-city-btn{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500;border:1px solid var(--border);background:var(--bg);color:var(--text-muted);cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.weather-city-btn:hover{border-color:var(--green);color:var(--green)}
+.weather-city-btn.active{background:var(--green);border-color:var(--green);color:#fff}
+.weather-days-toggle{display:flex;gap:4px}
+.weather-day-btn{padding:3px 10px;border-radius:6px;font-size:11px;font-weight:500;border:1px solid var(--border);background:var(--bg);color:var(--text-muted);cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.weather-day-btn:hover{border-color:var(--green);color:var(--green)}
+.weather-day-btn.active{background:var(--green);border-color:var(--green);color:#fff}
+.holiday-cell{background:#fff8f8 !important}
+.holiday-cell.today{background:var(--green-light) !important}
+.chip-off-day{background:#e74c3c;color:#fff;font-size:10px;padding:3px 7px;border-radius:4px;cursor:pointer;font-weight:500}
+.color-swatch{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0}
+.color-swatch:hover{transform:scale(1.15);border-color:rgba(0,0,0,0.2)}
+.color-swatch.selected{border-color:#fff;box-shadow:0 0 0 2px #1a1c18;transform:scale(1.1)}
+
+/* DAY POPUP */
+.day-popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:flex-start;justify-content:center;padding:60px 1rem 1rem}
+.day-popup-overlay.open{display:flex}
+.day-popup{background:var(--surface);border-radius:14px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,0.2);animation:popIn 0.18s ease}
+@keyframes popIn{from{opacity:0;transform:translateY(-8px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.day-popup-header{background:var(--green-dark);padding:14px 18px;border-radius:14px 14px 0 0;display:flex;align-items:center;justify-content:space-between}
+.day-popup-date{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:1px}
+.day-popup-close{background:rgba(255,255,255,0.15);border:none;color:#fff;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background 0.15s}
+.day-popup-close:hover{background:rgba(255,255,255,0.25)}
+.day-popup-body{padding:14px 18px}
+.day-popup-section{margin-bottom:14px}
+.day-popup-section:last-child{margin-bottom:0}
+.day-popup-section-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:8px;font-family:'DM Mono',monospace}
+.day-popup-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;margin-bottom:5px;cursor:pointer;transition:opacity 0.15s}
+.day-popup-item:hover{opacity:0.85}
+.day-popup-item:last-child{margin-bottom:0}
+.day-popup-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.day-popup-item-text{flex:1;min-width:0}
+.day-popup-item-name{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day-popup-item-sub{font-size:11px;color:rgba(255,255,255,0.7);margin-top:1px}
+.day-popup-empty{font-size:13px;color:var(--text-muted);text-align:center;padding:16px 0}
+.day-popup-add{width:100%;margin-top:10px;padding:9px;border-radius:8px;border:1.5px dashed var(--border);background:transparent;color:var(--text-muted);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.day-popup-add:hover{border-color:var(--green);color:var(--green);background:var(--green-light)}
+
+/* ENHANCED BOARD CHIPS */
+.chip-inner{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;pointer-events:none}
+.chip-job{font-size:10px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+.chip-emp{font-size:9px;color:rgba(255,255,255,0.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:90px}
+.chip{padding:4px 8px;min-width:80px;text-align:left}
+
+/* BOARD JOB LEGEND */
+.board-legend{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;padding:10px 12px;background:var(--surface);border-radius:8px;border:1px solid var(--border)}
+.board-legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-muted)}
+.board-legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.rev-panel{background:var(--green-dark);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;color:#fff;overflow:hidden;position:relative}
+.rev-panel::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(240,180,41,0.08);pointer-events:none}
+.rev-panel::after{content:'';position:absolute;bottom:-60px;right:60px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none}
+.rev-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.rev-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--gold)}
+.rev-toggle{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.rev-toggle:hover{background:rgba(255,255,255,0.18);color:#fff}
+.rev-quick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+.rev-quick-btn{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);cursor:pointer;transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.rev-quick-btn:hover{background:rgba(255,255,255,0.18);color:#fff}
+.rev-quick-btn.active{background:var(--gold);border-color:var(--gold);color:#1a1c18}
+.rev-custom{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.rev-custom label{font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap}
+.rev-date-input{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;padding:6px 10px;font-size:13px;color:#fff;font-family:'DM Sans',sans-serif;cursor:pointer;min-width:130px}
+.rev-date-input:focus{outline:none;border-color:var(--gold)}
+.rev-date-input::-webkit-calendar-picker-indicator{filter:invert(1);opacity:0.6;cursor:pointer}
+.rev-run-btn{background:var(--gold);color:#1a1c18;border:none;border-radius:6px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;white-space:nowrap}
+.rev-run-btn:hover{background:#e0a820;transform:scale(1.02)}
+.rev-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.rev-card{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;transition:background 0.15s}
+.rev-card:hover{background:rgba(255,255,255,0.12)}
+.rev-card-label{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px;font-family:'DM Mono',monospace}
+.rev-card-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;line-height:1;margin-bottom:2px}
+.rev-card-val.gold{color:var(--gold)}
+.rev-card-sub{font-size:11px;color:rgba(255,255,255,0.4)}
+.rev-range-label{font-size:11px;color:rgba(255,255,255,0.4);margin-top:10px;font-family:'DM Mono',monospace;text-align:right}
+.rev-body{transition:all 0.2s}
+.rev-body.collapsed{display:none}
+.jobs-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+.jobs-filters{display:flex;gap:6px;flex-wrap:wrap}
+.filter-btn{padding:5px 12px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:var(--surface);cursor:pointer;color:var(--text-muted);transition:all 0.15s;font-family:'DM Sans',sans-serif}
+.filter-btn.active{background:var(--green);color:#fff;border-color:var(--green)}
+.jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.job-card{background:var(--surface);border-radius:10px;border:1px solid var(--border);padding:14px 16px;box-shadow:var(--shadow);transition:box-shadow 0.15s;cursor:pointer}
+.job-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.job-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.job-name{font-size:15px;font-weight:600;color:var(--text)}
+.job-type-badge{font-size:10px;padding:3px 8px;border-radius:20px;color:#fff;font-weight:500;white-space:nowrap}
+.job-detail{font-size:12px;color:var(--text-muted);margin-bottom:3px}
+.job-status{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;margin-top:8px}
+.status-Sold{background:#fef9ec;color:#b07d10}
+.status-Scheduled{background:#eaf3fe;color:#1a5fa8}
+.status-InProgress{background:#fef0e6;color:#b85c10}
+.status-Complete{background:var(--green-light);color:var(--green-dark)}
+.status-OnHold{background:#f2f2f0;color:#666}
+.status-WeatherDelay{background:#fdecea;color:var(--red)}
+.crew-manager{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.panel{background:var(--surface);border-radius:10px;border:1px solid var(--border);padding:1.25rem;box-shadow:var(--shadow)}
+.panel-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--green-dark);letter-spacing:0.5px;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+.emp-list-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.emp-list-item:last-child{border-bottom:none}
+.emp-info{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.emp-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0}
+.emp-details .name{font-size:13px;font-weight:500}
+.emp-details .meta{font-size:11px;color:var(--text-muted)}
+.crew-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;white-space:nowrap}
+.edit-btn{padding:3px 8px;font-size:11px;border-radius:var(--radius);border:1px solid var(--border);background:transparent;cursor:pointer;color:var(--text-muted);transition:all 0.15s}
+.edit-btn:hover{border-color:var(--green);color:var(--green)}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:100;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:12px;padding:1.5rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;overflow-x:visible;box-shadow:0 8px 32px rgba(0,0,0,0.15)}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green-dark);letter-spacing:0.5px;margin-bottom:1.25rem}
+.form-group{margin-bottom:1rem}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+.form-input{width:100%;padding:9px 12px;border-radius:var(--radius);border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--bg);transition:border-color 0.15s}
+.form-input:focus{outline:none;border-color:var(--green);background:#fff}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-actions{display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
+.modal-actions-right{display:flex;gap:8px}
+.notify-toggle{display:flex;align-items:center;gap:8px}
+.toggle{width:36px;height:20px;background:#ccc;border-radius:10px;position:relative;cursor:pointer;transition:background 0.2s;border:none;flex-shrink:0}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left 0.2s}
+.toggle.on::after{left:18px}
+.loading{display:flex;align-items:center;justify-content:center;padding:3rem;color:var(--text-muted);font-size:14px;gap:10px}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:2rem;color:var(--text-muted);font-size:14px}
+@media(max-width:768px){
+  .crew-manager{grid-template-columns:1fr}
+  .main{padding:1rem}
+  .header-sub{display:none}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div id="pin-screen">
+  <div class="pin-logo">Century Ops</div>
+  <div class="pin-sub">Century Roof &amp; Solar</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
+    <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
+  </div>
+  <div class="pin-error" id="pin-error"></div>
+  <div class="pin-pad">
+    <button class="pin-btn" onclick="pinPress('1')">1</button>
+    <button class="pin-btn" onclick="pinPress('2')">2</button>
+    <button class="pin-btn" onclick="pinPress('3')">3</button>
+    <button class="pin-btn" onclick="pinPress('4')">4</button>
+    <button class="pin-btn" onclick="pinPress('5')">5</button>
+    <button class="pin-btn" onclick="pinPress('6')">6</button>
+    <button class="pin-btn" onclick="pinPress('7')">7</button>
+    <button class="pin-btn" onclick="pinPress('8')">8</button>
+    <button class="pin-btn" onclick="pinPress('9')">9</button>
+    <button class="pin-btn" onclick="pinPress('C')" style="font-size:14px">CLR</button>
+    <button class="pin-btn" onclick="pinPress('0')">0</button>
+    <button class="pin-btn" onclick="pinPress('DEL')" style="font-size:14px">&#x232B;</button>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+<div class="header">
+  <div>
+    <div class="header-logo">Century Ops</div>
+    <div class="header-sub">Century Roof &amp; Solar &mdash; Operations</div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-ghost btn-sm" onclick="openNewJob()">+ Add Job</button>
+    <button class="btn btn-primary btn-sm" onclick="syncData()">&#8635; Sync</button>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-tab active" onclick="switchTab('calendar',this)">&#128197; Calendar</div>
+  <div class="nav-tab" onclick="switchTab('board',this)">&#128203; Job Board</div>
+  <div class="nav-tab" onclick="switchTab('jobs',this)">&#127959; Jobs</div>
+  <div class="nav-tab" onclick="switchTab('crew',this)">&#128119; Crew</div>
+  <div class="nav-tab" onclick="switchTab('reminders',this)">&#128204; Reminders</div>
+  <div class="nav-tab" onclick="switchTab('reports',this)">&#128202; Reports</div>
+  <div class="nav-tab" onclick="switchTab('hr',this)">&#128203; HR</div>
+</div>
+
+<div class="main">
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#c0392b"></div>Tear-off</div>
+    <div class="leg"><div class="leg-dot" style="background:#27ae60"></div>Solar</div>
+    <div class="leg"><div class="leg-dot" style="background:#f0b429"></div>Repair</div>
+    <div class="leg"><div class="leg-dot" style="background:#2980b9"></div>Installation</div>
+    <div class="leg"><div class="leg-dot" style="background:#e67e22"></div>Electrical</div>
+    <div class="leg"><div class="leg-dot" style="background:#8e44ad"></div>Gutters</div>
+    <div class="leg"><div class="leg-dot" style="background:#7f8c8d"></div>Stucco</div>
+  </div>
+
+  <!-- CALENDAR -->
+  <div id="view-calendar" class="view active">
+    <div class="cal-toolbar">
+      <div class="cal-nav-group">
+        <button class="cal-nav-btn" onclick="calNavPrev()">&#8249;</button>
+        <div class="cal-title" id="cal-title">May 2026</div>
+        <button class="cal-nav-btn" onclick="calNavNext()">&#8250;</button>
+        <button class="cal-nav-btn btn-sm" onclick="calGoToday()" style="width:auto;padding:0 8px;font-size:11px;font-weight:600">Today</button>
+      </div>
+      <div class="cal-view-toggle">
+        <button class="cal-view-btn" onclick="setCalView('day',this)">Day</button>
+        <button class="cal-view-btn" onclick="setCalView('week',this)">Week</button>
+        <button class="cal-view-btn active" onclick="setCalView('month',this)">Month</button>
+      </div>
+      <div id="weather-widget" style="display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--text-muted);cursor:pointer" onclick="toggleWeatherPanel()">
+        <span id="weather-icon">&#127780;&#65039;</span>
+        <span id="weather-temp"></span>
+        <span id="weather-desc">Hayward, CA</span>
+        <button onclick="event.stopPropagation();loadWeather()" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--green);padding:0;margin-left:4px">&#8635;</button>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline btn-sm" onclick="openNewReminder()">&#128204; Reminder</button>
+        <button class="btn btn-primary btn-sm" onclick="openNewJob()">+ New Job</button>
+      </div>
+    </div>
+    <div id="weather-panel" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:1rem;box-shadow:var(--shadow)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--green-dark)">&#128205; <span id="weather-city-label">Hayward, CA</span> &mdash; <span id="weather-days-label">7 Day</span> Forecast</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="weather-days-toggle">
+            <button class="weather-day-btn active" onclick="setWeatherDays(7,this)">7 Day</button>
+            <button class="weather-day-btn" onclick="setWeatherDays(10,this)">10 Day</button>
+            <button class="weather-day-btn" onclick="setWeatherDays(16,this)">16 Day</button>
+          </div>
+          <button onclick="toggleWeatherPanel()" style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-muted)">&times;</button>
+        </div>
+      </div>
+      <!-- City quick buttons -->
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px" id="weather-city-btns">
+        <button class="weather-city-btn active" onclick="setWeatherCity('Hayward',37.6688,-122.0808,this)">Hayward</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('Oakland',37.8044,-122.2712,this)">Oakland</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('Richmond',37.9358,-122.3477,this)">Richmond</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('Orinda',37.8771,-122.1797,this)">Orinda</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('Moraga',37.8349,-122.1302,this)">Moraga</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('Walnut Creek',37.9101,-122.0652,this)">Walnut Creek</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('Livermore',37.6819,-121.7681,this)">Livermore</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('Fremont',37.5485,-121.9886,this)">Fremont</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('San Jose',37.3382,-121.8863,this)">San Jose</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('Pleasanton',37.6624,-121.8747,this)">Pleasanton</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('San Ramon',37.7799,-121.9780,this)">San Ramon</button>
+        <button class="weather-city-btn" onclick="setWeatherCity('Castro Valley',37.6938,-122.0858,this)">Castro Valley</button>
+      </div>
+      <!-- Custom city search -->
+      <div style="display:flex;gap:6px;margin-bottom:12px">
+        <input type="text" id="weather-city-search" placeholder="Search any city..." style="flex:1;padding:7px 10px;border-radius:7px;border:1px solid var(--border);font-family:'DM Sans',sans-serif;font-size:13px;background:var(--bg)" onkeydown="if(event.key==='Enter')searchWeatherCity()">
+        <button onclick="searchWeatherCity()" style="padding:7px 14px;background:var(--green);color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif">Search</button>
+      </div>
+      <div id="weather-forecast" style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;overflow-x:auto"></div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <span style="font-size:12px;color:var(--text-muted)">&#9888;&#65039; Rain or storms may affect your schedule</span>
+        <button onclick="markWeatherDelay()" class="btn btn-sm" style="background:#fdecea;color:var(--red);border:1px solid #fca5a5;font-size:12px">&#127783;&#65039; Mark Weather Delay</button>
+      </div>
+    </div>
+    <div id="cal-month-view">
+      <div class="cal-grid">
+        <div class="cal-dow-row">
+          <div class="cal-dow">Sun</div><div class="cal-dow">Mon</div><div class="cal-dow">Tue</div>
+          <div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div>
+        </div>
+        <div class="cal-days" id="cal-days"></div>
+      </div>
+    </div>
+    <div id="cal-week-view" style="display:none"></div>
+    <div id="cal-day-view" style="display:none"></div>
+  </div>
+
+  <!-- BOARD -->
+  <div id="view-board" class="view">
+    <div class="board-stats">
+      <div class="stat-card"><div class="stat-label">Active Jobs</div><div class="stat-val" id="stat-jobs">&mdash;</div></div>
+      <div class="stat-card"><div class="stat-label">Crew Members</div><div class="stat-val" id="stat-crew">&mdash;</div></div>
+      <div class="stat-card"><div class="stat-label">Assigned This Week</div><div class="stat-val" id="stat-assigned">&mdash;</div></div>
+      <div class="stat-card"><div class="stat-label">Complete</div><div class="stat-val" id="stat-done">&mdash;</div></div>
+    </div>
+    <div class="board-toolbar">
+      <div class="cal-nav-group">
+        <button class="cal-nav-btn" onclick="changeWeek(-1)">&#8249;</button>
+        <div class="week-label" id="week-label">Week</div>
+        <button class="cal-nav-btn" onclick="changeWeek(1)">&#8250;</button>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openModal('assign')">+ Assign Crew</button>
+    </div>
+    <div id="board-job-legend"></div>
+    <div class="board-wrap">
+      <table class="board-table">
+        <thead id="board-head"></thead>
+        <tbody id="board-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- JOBS -->
+  <div id="view-jobs" class="view">
+
+    <!-- REVENUE ANALYTICS PANEL -->
+    <div class="rev-panel">
+      <div class="rev-header">
+        <div class="rev-title">&#128176; Revenue Analytics</div>
+        <button class="rev-toggle" onclick="toggleRevPanel()">&#9660; Hide</button>
+      </div>
+      <div class="rev-body" id="rev-body">
+        <div class="rev-quick">
+          <button class="rev-quick-btn active" onclick="revQuick('week',this)">This Week</button>
+          <button class="rev-quick-btn" onclick="revQuick('month',this)">This Month</button>
+          <button class="rev-quick-btn" onclick="revQuick('quarter',this)">This Quarter</button>
+          <button class="rev-quick-btn" onclick="revQuick('ytd',this)">YTD</button>
+          <button class="rev-quick-btn" onclick="revQuick('year',this)">This Year</button>
+          <button class="rev-quick-btn" onclick="revQuick('all',this)">All Time</button>
+        </div>
+        <div class="rev-custom">
+          <label>From</label>
+          <input type="date" class="rev-date-input" id="rev-from">
+          <label>To</label>
+          <input type="date" class="rev-date-input" id="rev-to">
+          <button class="rev-run-btn" onclick="revCustomRun()">Run &#8594;</button>
+        </div>
+        <div class="rev-results" id="rev-results">
+          <div class="rev-card"><div class="rev-card-label">Total Pipeline</div><div class="rev-card-val gold" id="rev-total">$0</div><div class="rev-card-sub" id="rev-total-count">0 jobs</div></div>
+          <div class="rev-card"><div class="rev-card-label">Sold</div><div class="rev-card-val" id="rev-sold">$0</div><div class="rev-card-sub" id="rev-sold-count">0 jobs</div></div>
+          <div class="rev-card"><div class="rev-card-label">Scheduled</div><div class="rev-card-val" id="rev-scheduled">$0</div><div class="rev-card-sub" id="rev-scheduled-count">0 jobs</div></div>
+          <div class="rev-card"><div class="rev-card-label">In Progress</div><div class="rev-card-val" id="rev-inprogress">$0</div><div class="rev-card-sub" id="rev-inprogress-count">0 jobs</div></div>
+          <div class="rev-card"><div class="rev-card-label">Completed</div><div class="rev-card-val" id="rev-complete">$0</div><div class="rev-card-sub" id="rev-complete-count">0 jobs</div></div>
+        </div>
+        <div class="rev-range-label" id="rev-range-label">Select a range above</div>
+      </div>
+    </div>
+
+    <div class="jobs-toolbar">
+      <div class="jobs-filters">
+        <button class="filter-btn active" onclick="filterJobs('all',this)">All</button>
+        <button class="filter-btn" onclick="filterJobs('Sold',this)">Sold</button>
+        <button class="filter-btn" onclick="filterJobs('Scheduled',this)">Scheduled</button>
+        <button class="filter-btn" onclick="filterJobs('In Progress',this)">In Progress</button>
+        <button class="filter-btn" onclick="filterJobs('Complete',this)">Complete</button>
+        <button class="filter-btn" onclick="filterJobs('Weather Delay',this)">Weather Delay</button>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openNewJob()">+ New Job</button>
+    </div>
+    <div class="jobs-grid" id="jobs-grid"><div class="loading"><div class="spinner"></div> Loading...</div></div>
+  </div>
+
+  <!-- CREW -->
+  <div id="view-crew" class="view">
+    <div class="crew-manager">
+      <div class="panel">
+        <div class="panel-title">Employees <button class="btn btn-primary btn-sm" onclick="openNewEmployee()">+ Add</button></div>
+        <div id="emp-list"><div class="loading"><div class="spinner"></div></div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Crews <button class="btn btn-primary btn-sm" onclick="openModal('crew')">+ Add Crew</button></div>
+        <div id="crew-list"><div class="loading"><div class="spinner"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REMINDERS -->
+  <div id="view-reminders" class="view">
+    <div class="jobs-toolbar">
+      <div class="jobs-filters">
+        <button class="filter-btn active" onclick="filterReminders('all',this)">All</button>
+        <button class="filter-btn" onclick="filterReminders('open',this)">Open</button>
+        <button class="filter-btn" onclick="filterReminders('done',this)">Done</button>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="openNewReminder()">&#128204; Add Reminder</button>
+    </div>
+    <div id="reminders-list"></div>
+  </div>
+
+  <!-- REPORTS -->
+  <div id="view-reports" class="view">
+    <div class="jobs-toolbar">
+      <div class="jobs-filters">
+        <button class="filter-btn active" onclick="filterReports('all',this)">All</button>
+        <button class="filter-btn" onclick="filterReports('today',this)">Today</button>
+        <button class="filter-btn" onclick="filterReports('week',this)">This Week</button>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <a href="field-report.html" target="_blank" class="btn btn-outline btn-sm" style="text-decoration:none">&#128241; Open Field Form</a>
+      </div>
+    </div>
+    <div id="reports-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px">
+      <div class="loading"><div class="spinner"></div> Loading reports...</div>
+    </div>
+  </div>
+
+  <!-- HR / TIME OFF -->
+  <div id="view-hr" class="view">
+    <div class="jobs-toolbar">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--green-dark);letter-spacing:0.5px">&#128203; HR &mdash; Time Off Tracker</div>
+      <button class="btn btn-primary btn-sm" onclick="openNewTimeOff()">+ Log Time Off</button>
+    </div>
+    <div style="background:var(--green-dark);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.25rem;color:#fff">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);letter-spacing:1px;margin-bottom:1rem">&#128202; Company Time Off Summary</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px">
+        <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px">
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;font-family:'DM Mono',monospace">This Week</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;line-height:1" id="to-week">0</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px" id="to-week-paid">0 paid</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px">
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;font-family:'DM Mono',monospace">This Month</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;line-height:1" id="to-month">0</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px" id="to-month-paid">0 paid</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px">
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;font-family:'DM Mono',monospace">This Year</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);line-height:1" id="to-year">0</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px" id="to-year-paid">0 paid</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px">
+          <div style="font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:4px;font-family:'DM Mono',monospace">All Time</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;line-height:1" id="to-all">0</div>
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px" id="to-all-paid">0 paid</div>
+        </div>
+      </div>
+    </div>
+    <div id="hr-emp-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px;margin-bottom:1.25rem"></div>
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--green-dark)">All Records</div>
+        <div style="display:flex;gap:6px">
+          <button class="filter-btn active" onclick="filterTimeOff('all',this)">All</button>
+          <button class="filter-btn" onclick="filterTimeOff('week',this)">This Week</button>
+          <button class="filter-btn" onclick="filterTimeOff('month',this)">This Month</button>
+          <button class="filter-btn" onclick="filterTimeOff('year',this)">This Year</button>
+        </div>
+      </div>
+      <div id="hr-records-list"></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- DAY DETAIL POPUP -->
+<div class="day-popup-overlay" id="day-popup-overlay" onclick="if(event.target===this)closeDayPopup()">
+  <div class="day-popup">
+    <div class="day-popup-header">
+      <div class="day-popup-date" id="day-popup-date">Monday, May 5</div>
+      <button class="day-popup-close" onclick="closeDayPopup()">&times;</button>
+    </div>
+    <div class="day-popup-body" id="day-popup-body"></div>
+  </div>
+</div>
+
+<!-- TIME OFF MODAL -->
+<div class="modal-overlay" id="modal-timeoff">
+  <div class="modal">
+    <div class="modal-title" id="timeoff-modal-title">Log Time Off</div>
+    <div class="form-group"><label class="form-label">Employee</label>
+      <select class="form-input" id="to-emp"></select>
+    </div>
+    <div class="form-group"><label class="form-label">Date</label>
+      <input class="form-input" id="to-date" type="date">
+    </div>
+    <div class="form-group"><label class="form-label">Reason</label>
+      <select class="form-input" id="to-reason">
+        <option>Vacation</option>
+        <option>Sick</option>
+        <option>Personal</option>
+        <option>No Show</option>
+        <option>Holiday</option>
+        <option>Jury Duty</option>
+        <option>Bereavement</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="to-paid" checked style="width:16px;height:16px">
+      <label for="to-paid" style="font-size:13px;font-weight:500">Paid time off</label>
+    </div>
+    <div class="form-group"><label class="form-label">Notes</label>
+      <input class="form-input" id="to-notes" placeholder="Optional notes">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-sm" id="to-delete-btn" onclick="deleteTimeOff()" style="display:none">Delete</button>
+      <div class="modal-actions-right">
+        <button class="btn btn-outline" onclick="closeModal('timeoff')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveTimeOff()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JOB MODAL -->
+<div class="modal-overlay" id="modal-job">
+  <div class="modal">
+    <div class="modal-title" id="job-modal-title">New Job</div>
+    <div class="form-group" style="position:relative">
+      <label class="form-label">Customer Name</label>
+      <input class="form-input" id="j-customer" placeholder="e.g. John Smith" autocomplete="off" oninput="customerAutoFill(this.value)">
+      <div id="customer-suggestions" style="position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:200;width:100%;max-height:160px;overflow-y:auto;display:none;top:100%;left:0"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Job Type</label>
+      <select class="form-input" id="j-type">
+        <option>Tear-off</option><option>Solar</option><option>Electrical</option>
+        <option>Installation</option><option>Gutters</option><option>Repair</option><option>Stucco</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Address</label><input class="form-input" id="j-address" placeholder="Job site address"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Customer Phone</label><input class="form-input" id="j-phone" type="tel"></div>
+      <div class="form-group"><label class="form-label">Customer Email</label><input class="form-input" id="j-email" type="email"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Start Date</label><input class="form-input" id="j-start" type="date"></div>
+      <div class="form-group"><label class="form-label">End Date</label><input class="form-input" id="j-end" type="date"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-input" id="j-status">
+          <option>Sold</option><option>Scheduled</option><option>In Progress</option>
+          <option>Complete</option><option>On Hold</option><option>Weather Delay</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Contract Value</label><input class="form-input" id="j-value" type="number" placeholder="0.00"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Assigned Crew</label>
+      <select class="form-input" id="j-crew"><option value="">Select crew...</option></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Board Color <span style="font-size:10px;color:var(--text-muted);font-weight:400;text-transform:none">(Job Board only — Calendar uses Job Type color)</span></label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px" id="j-board-color-swatches">
+        <div class="color-swatch" data-color="#c0392b" style="background:#c0392b" title="Red" onclick="selectBoardColor('#c0392b')"></div>
+        <div class="color-swatch" data-color="#e67e22" style="background:#e67e22" title="Orange" onclick="selectBoardColor('#e67e22')"></div>
+        <div class="color-swatch" data-color="#f0b429" style="background:#f0b429" title="Gold" onclick="selectBoardColor('#f0b429')"></div>
+        <div class="color-swatch" data-color="#27ae60" style="background:#27ae60" title="Green" onclick="selectBoardColor('#27ae60')"></div>
+        <div class="color-swatch" data-color="#1abc9c" style="background:#1abc9c" title="Teal" onclick="selectBoardColor('#1abc9c')"></div>
+        <div class="color-swatch" data-color="#2980b9" style="background:#2980b9" title="Blue" onclick="selectBoardColor('#2980b9')"></div>
+        <div class="color-swatch" data-color="#8e44ad" style="background:#8e44ad" title="Purple" onclick="selectBoardColor('#8e44ad')"></div>
+        <div class="color-swatch" data-color="#e91e8c" style="background:#e91e8c" title="Pink" onclick="selectBoardColor('#e91e8c')"></div>
+        <div class="color-swatch" data-color="#1e5527" style="background:#1e5527" title="Dark Green" onclick="selectBoardColor('#1e5527')"></div>
+        <div class="color-swatch" data-color="#2c3e50" style="background:#2c3e50" title="Navy" onclick="selectBoardColor('#2c3e50')"></div>
+        <div class="color-swatch" data-color="#7f8c8d" style="background:#7f8c8d" title="Gray" onclick="selectBoardColor('#7f8c8d')"></div>
+        <div class="color-swatch" data-color="#000000" style="background:#000000" title="Black" onclick="selectBoardColor('#000000')"></div>
+      </div>
+      <input type="hidden" id="j-board-color" value="#2980b9">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div id="j-board-color-preview" style="width:28px;height:28px;border-radius:6px;background:#2980b9;border:2px solid var(--border);flex-shrink:0"></div>
+        <span id="j-board-color-label" style="font-size:12px;color:var(--text-muted)">Blue selected — tap any swatch to change</span>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="j-notes" rows="2"></textarea></div>
+    <div class="notify-toggle">
+      <button class="toggle on" id="j-notify-toggle" onclick="this.classList.toggle('on')"></button>
+      <span style="font-size:13px;color:var(--text-muted)">Notify customer of schedule changes</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-sm" id="j-delete-btn" onclick="deleteJob()" style="display:none">Delete Job</button>
+      <div class="modal-actions-right">
+        <button class="btn btn-outline" onclick="closeModal('job')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveJob()">Save Job</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EMPLOYEE MODAL -->
+<div class="modal-overlay" id="modal-employee">
+  <div class="modal">
+    <div class="modal-title" id="emp-modal-title">Add Employee</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" id="e-name" placeholder="First Last"></div>
+      <div class="form-group"><label class="form-label">Role</label><input class="form-input" id="e-role" placeholder="e.g. Roofer, Foreman"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="e-phone" type="tel"></div>
+      <div class="form-group"><label class="form-label">Crew</label>
+        <select class="form-input" id="e-crew"><option value="">Select crew...</option></select>
+      </div>
+    </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="e-foreman" style="width:16px;height:16px">
+      <label for="e-foreman" style="font-size:13px">This person is a foreman / lead</label>
+    </div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="e-active" checked style="width:16px;height:16px">
+      <label for="e-active" style="font-size:13px">Active (uncheck to deactivate)</label>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Preferred Language</label>
+      <select class="form-input" id="e-lang">
+        <option value="en">English</option>
+        <option value="es">Espanol (Spanish)</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <div id="e-delete-btn" style="display:none;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-danger btn-sm" onclick="deactivateEmployee()">Deactivate</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteEmployeePermanent()">Delete Permanently</button>
+      </div>
+      <div class="modal-actions-right">
+        <button class="btn btn-outline" onclick="closeModal('employee')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveEmployee()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREW MODAL -->
+<div class="modal-overlay" id="modal-crew">
+  <div class="modal">
+    <div class="modal-title">Add Crew</div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Crew Name</label><input class="form-input" id="c-name" placeholder="e.g. Tile Crew 2"></div>
+      <div class="form-group"><label class="form-label">Crew Type</label>
+        <select class="form-input" id="c-type">
+          <option>Tear-off</option><option>Solar</option><option>Electrical</option>
+          <option>Installation</option><option>Gutters</option><option>Repairs</option><option>Stucco</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Color</label><input class="form-input" id="c-color" type="color" value="#2d7a3a" style="height:42px;padding:4px"></div>
+    <div class="modal-actions"><div></div><div class="modal-actions-right">
+      <button class="btn btn-outline" onclick="closeModal('crew')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCrew()">Save Crew</button>
+    </div></div>
+  </div>
+</div>
+
+<!-- ASSIGN MODAL -->
+<div class="modal-overlay" id="modal-assign">
+  <div class="modal">
+    <div class="modal-title">Assign to Job</div>
+    <div class="form-group"><label class="form-label">Employee</label><select class="form-input" id="a-emp"></select></div>
+    <div class="form-group"><label class="form-label">Job</label><select class="form-input" id="a-job"></select></div>
+    <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="a-date" type="date"></div>
+    <div class="modal-actions"><div></div><div class="modal-actions-right">
+      <button class="btn btn-outline" onclick="closeModal('assign')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAssignment()">Save</button>
+    </div></div>
+  </div>
+</div>
+
+<!-- REMINDER MODAL -->
+<div class="modal-overlay" id="modal-reminder">
+  <div class="modal">
+    <div class="modal-title" id="reminder-modal-title">Add Reminder</div>
+    <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="r-title" placeholder="e.g. Order shingles for Smith job"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="r-date" type="date"></div>
+      <div class="form-group"><label class="form-label">Category</label>
+        <select class="form-input" id="r-category">
+          <option>Material Order</option><option>Permit</option><option>Customer Follow-up</option>
+          <option>Vendor Call</option><option>Crew / HR</option><option>Inspection</option><option>General</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Linked Job (optional)</label><input class="form-input" id="r-job" placeholder="Customer name or job"></div>
+    <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="r-notes" rows="2"></textarea></div>
+    <div class="form-group" style="display:flex;align-items:center;gap:10px">
+      <input type="checkbox" id="r-done" style="width:16px;height:16px">
+      <label for="r-done" style="font-size:13px">Mark as done</label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-sm" id="r-delete-btn" onclick="deleteReminder()" style="display:none">Delete</button>
+      <div class="modal-actions-right">
+        <button class="btn btn-outline" onclick="closeModal('reminder')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveReminder()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PIN='6882';
+const BASE_ID='appn1m7nkB7AqfMsN';
+const TOKEN='patdw99npBzStV62o.9de4eaaa1b0a38c79d37a0e6eca7e1e58e0b1e8d4a32c725f6731ffe65aedd0e';
+const TABLES={crews:'tblgYZkixq7s8OBzG',employees:'tblTcmlnB1W6jihNM',jobs:'tblyIpCuDl7SoH8hy',assignments:'tblrRTRTlrXo1KHx5',reports:'tbl9DU9ABImxcXMOr',reminders:'tbl9VRZ1BCswGtk5z',tasks:'tblaB0sGkfDujQr43',timeoff:'tblyIStionsei3yng'};
+const TYPE_COLORS={'Tear-off':'#c0392b','Solar':'#27ae60','Repair':'#f0b429','Electrical':'#e67e22','Installation':'#2980b9','Gutters':'#8e44ad','Stucco':'#7f8c8d'};
+
+// US Federal + California Holidays
+function getHolidays(year){
+  const h={};
+  function add(m,d,name,type){const key=year+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');h[key]={name,type};}
+  function nth(month,weekday,n){let d=new Date(year,month,1),count=0;while(d.getMonth()===month){if(d.getDay()===weekday){count++;if(count===n)return d.getDate();}d.setDate(d.getDate()+1);}return 1;}
+  function last(month,weekday){let d=new Date(year,month+1,0);while(d.getDay()!==weekday)d.setDate(d.getDate()-1);return d.getDate();}
+  add(1,1,"New Year's Day",'federal');
+  add(1,nth(0,1,3),'MLK Day','federal');
+  add(2,nth(1,1,3),"Presidents' Day",'federal');
+  add(5,last(4,1),'Memorial Day','federal');
+  add(6,19,'Juneteenth','federal');
+  add(7,4,'Independence Day','federal');
+  add(9,nth(8,1,1),'Labor Day','federal');
+  add(10,nth(9,1,2),'Columbus Day','federal');
+  add(11,11,'Veterans Day','federal');
+  add(11,nth(10,4,4),'Thanksgiving','federal');
+  add(12,25,'Christmas Day','federal');
+  add(3,31,'Cesar Chavez Day','california');
+  add(11,nth(10,4,4)+1,'Day After Thanksgiving','california');
+  add(12,24,'Christmas Eve','california');
+  add(12,31,"New Year's Eve",'california');
+  return h;
+}
+
+// KEY FIX: always use local date, never toISOString() which shifts to UTC
+function localISO(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+let state={jobs:[],employees:[],crews:[],assignments:[],reminders:[],tasks:[],reports:[],timeoff:[],currentMonth:new Date().getMonth(),currentYear:new Date().getFullYear(),currentDay:new Date().getDate(),weekOffset:0,calView:'month',weatherDays:7,jobFilter:'all',editingJobId:null,editingEmpId:null,editingReminderId:null,editingTimeOffId:null};
+
+// PIN
+let pinEntry='';
+function pinPress(k){
+  if(k==='C'){pinEntry='';}
+  else if(k==='DEL'){pinEntry=pinEntry.slice(0,-1);}
+  else if(pinEntry.length<4){pinEntry+=k;}
+  for(let i=0;i<4;i++) document.getElementById('d'+i).classList.toggle('filled',i<pinEntry.length);
+  if(pinEntry.length===4){
+    if(pinEntry===PIN){
+      document.getElementById('pin-screen').classList.add('hidden');
+      document.getElementById('app').style.display='block';
+      refreshData();loadWeather();
+    } else {
+      document.getElementById('pin-error').textContent='Incorrect PIN. Try again.';
+      pinEntry='';
+      for(let i=0;i<4;i++) document.getElementById('d'+i).classList.remove('filled');
+      setTimeout(()=>document.getElementById('pin-error').textContent='',2000);
+    }
+  }
+}
+
+// API
+const api={
+  async get(table){
+    let records=[],offset=null;
+    do{
+      const url='https://api.airtable.com/v0/'+BASE_ID+'/'+table+'?pageSize=100'+(offset?'&offset='+offset:'');
+      const r=await fetch(url,{headers:{Authorization:'Bearer '+TOKEN}});
+      const d=await r.json();
+      records=records.concat(d.records||[]);
+      offset=d.offset;
+    }while(offset);
+    return records;
+  },
+  async post(table,fields){
+    const r=await fetch('https://api.airtable.com/v0/'+BASE_ID+'/'+table,{method:'POST',headers:{Authorization:'Bearer '+TOKEN,'Content-Type':'application/json'},body:JSON.stringify({records:[{fields}]})});
+    return r.json();
+  },
+  async patch(table,id,fields){
+    const r=await fetch('https://api.airtable.com/v0/'+BASE_ID+'/'+table+'/'+id,{method:'PATCH',headers:{Authorization:'Bearer '+TOKEN,'Content-Type':'application/json'},body:JSON.stringify({fields})});
+    return r.json();
+  },
+  async delete(table,id){
+    const r=await fetch('https://api.airtable.com/v0/'+BASE_ID+'/'+table+'/'+id,{method:'DELETE',headers:{Authorization:'Bearer '+TOKEN}});
+    return r.json();
+  }
+};
+
+async function syncData(){
+  const btn=document.querySelector('[onclick="syncData()"]');
+  if(btn){btn.textContent='Syncing...';btn.disabled=true;btn.style.opacity='0.7';}
+  try{
+    await Promise.race([refreshData(),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),10000))]);
+    if(btn){btn.textContent='Synced!';btn.style.background='#27ae60';btn.style.color='#fff';setTimeout(()=>{btn.innerHTML='&#8635; Sync';btn.style.background='';btn.style.color='';btn.style.opacity='';btn.disabled=false;},2000);}
+  }catch(e){
+    if(btn){btn.textContent='Failed - retry';btn.style.background='#c0392b';btn.style.color='#fff';setTimeout(()=>{btn.innerHTML='&#8635; Sync';btn.style.background='';btn.style.color='';btn.style.opacity='';btn.disabled=false;},3000);}
+  }
+}
+
+async function refreshData(){
+  try{
+    const [jobs,employees,crews,assignments,reminders,tasks,reports,timeoff]=await Promise.all([
+      api.get(TABLES.jobs),api.get(TABLES.employees),api.get(TABLES.crews),
+      api.get(TABLES.assignments),api.get(TABLES.reminders),api.get(TABLES.tasks),api.get(TABLES.reports),api.get(TABLES.timeoff)
+    ]);
+    state.jobs=jobs;state.employees=employees;state.crews=crews;
+    state.assignments=assignments;state.reminders=reminders;state.tasks=tasks;state.reports=reports;state.timeoff=timeoff;
+    renderAll();
+  }catch(e){console.error('Data load error:',e);}
+}
+
+function renderAll(){
+  renderCalendarView();renderBoard();renderJobs();renderCrew();renderReminders();renderReports();renderHR();populateSelects();
+  document.getElementById('stat-jobs').textContent=state.jobs.filter(j=>['Scheduled','In Progress'].includes(j.fields['Status'])).length;
+  document.getElementById('stat-crew').textContent=state.employees.filter(e=>e.fields['Active']).length;
+  document.getElementById('stat-done').textContent=state.jobs.filter(j=>j.fields['Status']==='Complete').length;
+}
+
+// WEATHER
+const WEATHER_LAT=37.6688,WEATHER_LON=-122.0808;
+let weatherLat=WEATHER_LAT, weatherLon=WEATHER_LON, weatherCity='Hayward, CA';
+
+function setWeatherCity(name, lat, lon, btn){
+  weatherLat=lat; weatherLon=lon; weatherCity=name+', CA';
+  document.querySelectorAll('.weather-city-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('weather-city-label').textContent=weatherCity;
+  document.getElementById('weather-desc').textContent=weatherCity;
+  loadWeather();
+}
+
+async function searchWeatherCity(){
+  const input=document.getElementById('weather-city-search');
+  const query=input.value.trim();
+  if(!query) return;
+  try{
+    const r=await fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(query)+'&count=1&language=en&format=json');
+    const d=await r.json();
+    if(!d.results||!d.results.length){alert('City not found. Try a more specific name.');return;}
+    const city=d.results[0];
+    weatherLat=city.latitude; weatherLon=city.longitude;
+    weatherCity=city.name+(city.admin1?', '+city.admin1:'');
+    document.querySelectorAll('.weather-city-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('weather-city-label').textContent=weatherCity;
+    document.getElementById('weather-desc').textContent=weatherCity;
+    input.value='';
+    loadWeather();
+  }catch(e){alert('Search failed. Please try again.');}
+}
+async function loadWeather(){
+  document.getElementById('weather-desc').textContent='Loading...';
+  try{
+    const days = state.weatherDays || 7;
+    const url='https://api.open-meteo.com/v1/forecast?latitude='+weatherLat+'&longitude='+weatherLon+'&current=temperature_2m,weathercode,windspeed_10m&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FLos_Angeles&forecast_days='+days;
+    const r=await fetch(url);if(!r.ok)throw new Error('err');
+    const d=await r.json();
+    const temp=Math.round(d.current.temperature_2m);
+    document.getElementById('weather-icon').textContent=weatherIcon(d.current.weathercode);
+    document.getElementById('weather-temp').textContent=temp+'°F';
+    document.getElementById('weather-desc').textContent=weatherDesc(d.current.weathercode);
+    const dnames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],fc=d.daily;
+    // Update grid columns based on day count
+    const cols = days <= 7 ? days : days <= 10 ? 5 : 8;
+    document.getElementById('weather-forecast').style.gridTemplateColumns = 'repeat('+cols+',1fr)';
+    let html='';
+    for(let i=0;i<days;i++){
+      const dt=new Date(fc.time[i]+'T12:00:00');
+      const dn=i===0?'Today':i===1?'Tmrw':dnames[dt.getDay()]+' '+(dt.getMonth()+1)+'/'+(dt.getDate());
+      const hi=Math.round(fc.temperature_2m_max[i]),lo=Math.round(fc.temperature_2m_min[i]),rain=fc.precipitation_probability_max[i],rainy=rain>50;
+      html+='<div style="text-align:center;padding:8px 4px;border-radius:8px;background:'+(rainy?'#fdecea':'var(--bg)')+';border:1px solid '+(rainy?'#fca5a5':'var(--border)')+'"><div style="font-size:10px;font-weight:600;color:var(--text-muted);margin-bottom:3px">'+dn+'</div><div style="font-size:20px;margin-bottom:3px">'+weatherIcon(fc.weathercode[i])+'</div><div style="font-size:11px;font-weight:600;color:var(--text)">'+hi+'°</div><div style="font-size:10px;color:var(--text-muted)">'+lo+'°</div>'+(rain>20?'<div style="font-size:10px;color:'+(rainy?'var(--red)':'var(--text-muted)')+';margin-top:2px">'+rain+'%</div>':'')+'</div>';
+    }
+    document.getElementById('weather-forecast').innerHTML=html;
+  }catch(e){
+    document.getElementById('weather-icon').textContent='';
+    document.getElementById('weather-temp').textContent='';
+    document.getElementById('weather-desc').textContent='Tap to reload';
+  }
+}
+
+function setWeatherDays(days, btn){
+  state.weatherDays = days;
+  document.querySelectorAll('.weather-day-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('weather-days-label').textContent = days+' Day';
+  loadWeather();
+}
+function weatherIcon(c){if(c===0)return'☀️';if(c<=2)return'⛅';if(c<=3)return'☁️';if(c<=49)return'🌫️';if(c<=59)return'🌦️';if(c<=69)return'🌧️';if(c<=79)return'🌨️';if(c<=82)return'🌧️';if(c<=99)return'⛈️';return'🌤️';}
+function weatherDesc(c){if(c===0)return'Clear';if(c<=2)return'Partly cloudy';if(c<=3)return'Overcast';if(c<=49)return'Foggy';if(c<=59)return'Drizzle';if(c<=69)return'Rain';if(c<=79)return'Snow';if(c<=82)return'Heavy rain';if(c<=99)return'Thunderstorm';return'Unknown';}
+function toggleWeatherPanel(){const p=document.getElementById('weather-panel');p.style.display=p.style.display==='none'?'block':'none';}
+async function markWeatherDelay(){
+  const today=localISO(new Date());
+  const todayJobs=state.jobs.filter(j=>j.fields['Start Date']===today&&j.fields['Status']==='Scheduled');
+  if(!todayJobs.length){alert('No jobs scheduled for today to mark as weather delay.');return;}
+  if(!confirm('Mark these jobs as Weather Delay?\n\n'+todayJobs.map(j=>j.fields['Customer Name']||j.fields['Job Name']).join(', '))) return;
+  await Promise.all(todayJobs.map(j=>api.patch(TABLES.jobs,j.id,{'Status':'Weather Delay'})));
+  toggleWeatherPanel();await refreshData();
+}
+
+// CALENDAR
+function renderCalendar(){
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-title').textContent=months[state.currentMonth]+' '+state.currentYear;
+  const first=new Date(state.currentYear,state.currentMonth,1).getDay();
+  const days=new Date(state.currentYear,state.currentMonth+1,0).getDate();
+  const prevDays=new Date(state.currentYear,state.currentMonth,0).getDate();
+  const today=new Date();
+  const total=(first+days)<=35?35:42;
+  const holidays=getHolidays(state.currentYear);
+  let html='';
+  for(let i=0;i<total;i++){
+    let day,other=false;
+    if(i<first){day=prevDays-first+i+1;other=true;}
+    else if(i>=first+days){day=i-first-days+1;other=true;}
+    else day=i-first+1;
+    const isToday=!other&&day===today.getDate()&&state.currentMonth===today.getMonth()&&state.currentYear===today.getFullYear();
+    const ds=state.currentYear+'-'+String(state.currentMonth+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    const holiday=holidays[ds];
+    const dayJobs=other?[]:state.jobs.filter(j=>j.fields['Start Date']===ds);
+    const dayRems=other?[]:state.reminders.filter(r=>r.fields['Date']===ds&&!r.fields['Done']);
+    const dayOff=other?[]:state.timeoff.filter(t=>t.fields['Date']===ds);
+    const isHoliday=!!holiday;
+    const ca=other?'':' ondragover="calDragOver(event)" ondrop="calDrop(event,\''+ds+'\')" ondragleave="calDragLeave(event)" onclick="calCellClick(event,\''+ds+'\')"';
+    html+='<div class="cal-cell'+(other?' other':'')+(isToday?' today':'')+(isHoliday?' holiday-cell':'')+'"'+ca+'>';
+    html+='<div class="cal-num">'+day+'</div>';
+    // Holiday label
+    if(isHoliday&&!other){
+      const hcolor=holiday.type==='federal'?'#c0392b':'#8e44ad';
+      html+='<div class="cal-event" style="background:'+hcolor+';font-size:9px;opacity:0.9">&#127881; '+holiday.name+'</div>';
+    }
+    dayJobs.slice(0,2).forEach(j=>{
+      const color=TYPE_COLORS[j.fields['Job Type']]||'#888';
+      html+='<div class="cal-event" style="background:'+color+'" draggable="true" ondragstart="calDragStart(event,\''+j.id+'\')" onclick="editJob(\''+j.id+'\');event.stopPropagation()">'+(j.fields['Customer Name']||j.fields['Job Name'])+'</div>';
+    });
+    dayRems.slice(0,1).forEach(r=>{
+      html+='<div class="cal-event" style="background:#f5a623;opacity:0.9" onclick="editReminder(\''+r.id+'\');event.stopPropagation()">&#128204; '+r.fields['Title']+'</div>';
+    });
+    if(dayOff.length){
+      html+='<div class="cal-event" style="background:#7f8c8d;font-size:9px" onclick="event.stopPropagation()">&#128710; '+dayOff.length+' off</div>';
+    }
+    const extra=(dayJobs.length+dayRems.length)-3;
+    if(extra>0) html+='<div class="cal-more">+'+extra+' more</div>';
+    if(!other) html+='<div class="cal-add-hint">+ Add</div>';
+    html+='</div>';
+  }
+  document.getElementById('cal-days').innerHTML=html;
+}
+
+let dragJobId=null;
+function calDragStart(e,jobId){dragJobId=jobId;e.dataTransfer.effectAllowed='move';e.target.style.opacity='0.5';setTimeout(()=>e.target.style.opacity='1',0);}
+function calDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';e.currentTarget.classList.add('cal-drop-target');}
+function calDragLeave(e){e.currentTarget.classList.remove('cal-drop-target');}
+async function calDrop(e,dateStr){
+  e.preventDefault();e.currentTarget.classList.remove('cal-drop-target');
+  if(!dragJobId)return;
+  const job=state.jobs.find(j=>j.id===dragJobId);
+  if(!job||job.fields['Start Date']===dateStr)return;
+  e.currentTarget.style.background='var(--green-light)';
+  setTimeout(()=>e.currentTarget.style.background='',600);
+  await api.patch(TABLES.jobs,dragJobId,{'Start Date':dateStr});
+  dragJobId=null;await refreshData();
+}
+function calCellClick(e,dateStr){
+  if(e.target.classList.contains('cal-event'))return;
+  if(e.target.classList.contains('cal-more'))return;
+  if(e.target.classList.contains('cal-add-hint')){openNewJobOnDate(dateStr);return;}
+  // Store day for day view navigation
+  const d=new Date(dateStr+'T12:00:00');
+  state.currentDay=d.getDate();
+  openDayPopup(dateStr);
+}
+function openNewJobOnDate(dateStr){
+  openNewJob();
+  setTimeout(()=>{const f=document.getElementById('j-start');if(f)f.value=dateStr;},50);
+}
+function changeMonth(dir){state.currentMonth+=dir;if(state.currentMonth>11){state.currentMonth=0;state.currentYear++;}if(state.currentMonth<0){state.currentMonth=11;state.currentYear--;}renderCalendar();}
+
+function setCalView(view, btn){
+  state.calView = view;
+  document.querySelectorAll('.cal-view-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('cal-month-view').style.display = view==='month' ? '' : 'none';
+  document.getElementById('cal-week-view').style.display = view==='week' ? '' : 'none';
+  document.getElementById('cal-day-view').style.display = view==='day' ? '' : 'none';
+  renderCalendarView();
+}
+
+function calNavPrev(){
+  if(state.calView==='month'){changeMonth(-1);}
+  else if(state.calView==='week'){state.calWeekOffset=(state.calWeekOffset||0)-1;renderWeekView();}
+  else if(state.calView==='day'){
+    const d=new Date(state.currentYear,state.currentMonth,state.currentDay);
+    d.setDate(d.getDate()-1);
+    state.currentYear=d.getFullYear();state.currentMonth=d.getMonth();state.currentDay=d.getDate();
+    renderDayView();
+  }
+}
+
+function calNavNext(){
+  if(state.calView==='month'){changeMonth(1);}
+  else if(state.calView==='week'){state.calWeekOffset=(state.calWeekOffset||0)+1;renderWeekView();}
+  else if(state.calView==='day'){
+    const d=new Date(state.currentYear,state.currentMonth,state.currentDay);
+    d.setDate(d.getDate()+1);
+    state.currentYear=d.getFullYear();state.currentMonth=d.getMonth();state.currentDay=d.getDate();
+    renderDayView();
+  }
+}
+
+function calGoToday(){
+  const now=new Date();
+  state.currentYear=now.getFullYear();state.currentMonth=now.getMonth();state.currentDay=now.getDate();
+  state.calWeekOffset=0;
+  renderCalendarView();
+}
+
+function renderCalendarView(){
+  if(state.calView==='month') renderCalendar();
+  else if(state.calView==='week') renderWeekView();
+  else if(state.calView==='day') renderDayView();
+}
+
+function getWeekViewDates(){
+  const now=new Date();
+  const sun=new Date(now);
+  sun.setDate(now.getDate()-now.getDay()+((state.calWeekOffset||0)*7));
+  return Array.from({length:7},(_,i)=>{const d=new Date(sun);d.setDate(sun.getDate()+i);return d;});
+}
+
+function renderWeekView(){
+  const dates=getWeekViewDates();
+  const today=localISO(new Date());
+  const fmt=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  // Update title
+  document.getElementById('cal-title').textContent=fmt(dates[0])+' — '+fmt(dates[6]);
+
+  let html='<div class="week-view">';
+  // Header
+  html+='<div class="week-view-header"><div class="week-view-header-cell"></div>';
+  dates.forEach((d,i)=>{
+    const ds=localISO(d);
+    const isTod=ds===today;
+    html+='<div class="week-view-header-cell'+(isTod?' today-col':'')+'">'+days[i]+'<br><span style="font-size:14px;font-weight:700">'+(isTod?'<span style="background:var(--gold);color:#1a1c18;border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center">'+d.getDate()+'</span>':d.getDate())+'</span></div>';
+  });
+  html+='</div>';
+
+  // Body
+  html+='<div style="display:grid;grid-template-columns:80px repeat(7,1fr)">';
+  html+='<div class="week-time-col"><div class="week-time-slot" style="height:30px;border-bottom:1px solid var(--border)"></div><div class="week-time-slot">All Day</div></div>';
+
+  dates.forEach(d=>{
+    const ds=localISO(d);
+    const isTod=ds===today;
+    const dayJobs=state.jobs.filter(j=>j.fields['Start Date']===ds);
+    const dayRems=state.reminders.filter(r=>r.fields['Date']===ds&&!r.fields['Done']);
+    const dayAsgns=state.assignments.filter(a=>a.fields['Date']===ds);
+
+    html+='<div class="week-day-col'+(isTod?' today-col':'')+'" onclick="setDayFromWeek(\''+ds+'\')" style="cursor:pointer">';
+    html+='<div style="height:30px;border-bottom:1px solid var(--border);margin:-6px -6px 6px;padding:4px 6px;font-size:10px;color:var(--text-muted);background:rgba(0,0,0,0.02)">'+dayAsgns.length+' assigned</div>';
+
+    dayJobs.forEach(j=>{
+      const color=TYPE_COLORS[j.fields['Job Type']]||'#888';
+      html+='<div class="week-event" style="background:'+color+'" onclick="event.stopPropagation();editJob(\''+j.id+'\')" title="'+j.fields['Customer Name']+'">'+(j.fields['Customer Name']||j.fields['Job Name'])+'<div style="font-size:10px;opacity:0.8">'+(j.fields['Job Type']||'')+'</div></div>';
+    });
+    dayAsgns.forEach(a=>{
+      const job=state.jobs.find(jj=>(jj.fields['Customer Name']===a.fields['Job'])||(jj.fields['Job Name']===a.fields['Job']));
+      const color=job?(job.fields['Board Color']||TYPE_COLORS[job.fields['Job Type']]||'#888'):'#888';
+      html+='<div class="week-event" style="background:'+color+';opacity:0.85">'+a.fields['Employee']+'<div style="font-size:10px;opacity:0.8">'+a.fields['Job']+'</div></div>';
+    });
+    dayRems.forEach(r=>{
+      html+='<div class="week-rem" onclick="event.stopPropagation();editReminder(\''+r.id+'\')" title="'+r.fields['Title']+'">&#128204; '+r.fields['Title']+'</div>';
+    });
+    if(!dayJobs.length&&!dayAsgns.length&&!dayRems.length){
+      html+='<div style="font-size:11px;color:var(--text-muted);text-align:center;padding:12px 0;opacity:0.5">+ Add</div>';
+    }
+    html+='</div>';
+  });
+  html+='</div></div>';
+  document.getElementById('cal-week-view').innerHTML=html;
+}
+
+function setDayFromWeek(dateStr){
+  const d=new Date(dateStr+'T12:00:00');
+  state.currentYear=d.getFullYear();state.currentMonth=d.getMonth();state.currentDay=d.getDate();
+  // Switch to day view
+  state.calView='day';
+  document.querySelectorAll('.cal-view-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.cal-view-btn[onclick*="day"]').classList.add('active');
+  document.getElementById('cal-month-view').style.display='none';
+  document.getElementById('cal-week-view').style.display='none';
+  document.getElementById('cal-day-view').style.display='';
+  renderDayView();
+}
+
+function renderDayView(){
+  const ds=state.currentYear+'-'+String(state.currentMonth+1).padStart(2,'0')+'-'+String(state.currentDay).padStart(2,'0');
+  const date=new Date(ds+'T12:00:00');
+  const dayLabel=date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  const today=localISO(new Date());
+  const isToday=ds===today;
+
+  document.getElementById('cal-title').textContent=date.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+  const dayJobs=state.jobs.filter(j=>j.fields['Start Date']===ds);
+  const dayRems=state.reminders.filter(r=>r.fields['Date']===ds&&!r.fields['Done']);
+  const dayAsgns=state.assignments.filter(a=>a.fields['Date']===ds);
+  const CAT_COLORS_D={'Material Order':'#e67e22','Permit':'#2980b9','Customer Follow-up':'#27ae60','Vendor Call':'#8e44ad','Crew / HR':'#f0b429','Inspection':'#16a085','General':'#7f8c8d'};
+
+  let html='<div class="day-view">';
+  html+='<div class="day-view-header"><div><div class="day-view-title">'+dayLabel+'</div><div class="day-view-sub">'+(isToday?'Today &mdash; ':'')+(dayJobs.length+dayAsgns.length+dayRems.length)+' items scheduled</div></div></div>';
+  html+='<div class="day-view-body">';
+
+  // Jobs
+  html+='<div class="day-section"><div class="day-section-title">&#127959; Jobs ('+dayJobs.length+')</div>';
+  if(dayJobs.length){
+    dayJobs.forEach(j=>{
+      const color=TYPE_COLORS[j.fields['Job Type']]||'#888';
+      html+='<div class="day-item" style="background:'+color+'" onclick="editJob(\''+j.id+'\')">'
+        +'<div class="day-item-content">'
+        +'<div class="day-item-name">'+(j.fields['Customer Name']||j.fields['Job Name'])+'</div>'
+        +'<div class="day-item-sub">'+(j.fields['Job Type']||'')+' &middot; '+(j.fields['Address']||'No address')+' &middot; '+(j.fields['Status']||'')+'</div>'
+        +'</div>'
+        +(j.fields['Contract Value']?'<div class="day-item-value">$'+Number(j.fields['Contract Value']).toLocaleString()+'</div>':'')
+        +'</div>';
+    });
+  } else { html+='<div class="day-empty">No jobs scheduled</div>'; }
+  html+='</div>';
+
+  // Crew Assignments
+  if(dayAsgns.length){
+    html+='<div class="day-section"><div class="day-section-title">&#128119; Crew Assignments ('+dayAsgns.length+')</div>';
+    dayAsgns.forEach(a=>{
+      const job=state.jobs.find(jj=>(jj.fields['Customer Name']===a.fields['Job'])||(jj.fields['Job Name']===a.fields['Job']));
+      const color=job?(job.fields['Board Color']||TYPE_COLORS[job.fields['Job Type']]||'#888'):'#888';
+      html+='<div class="day-item" style="background:'+color+'">'
+        +'<div class="day-item-content">'
+        +'<div class="day-item-name">'+a.fields['Employee']+'</div>'
+        +'<div class="day-item-sub">'+a.fields['Job']+'</div>'
+        +'</div></div>';
+    });
+    html+='</div>';
+  }
+
+  // Reminders
+  html+='<div class="day-section"><div class="day-section-title">&#128204; Reminders ('+dayRems.length+')</div>';
+  if(dayRems.length){
+    dayRems.forEach(r=>{
+      const color=CAT_COLORS_D[r.fields['Category']]||'#888';
+      html+='<div class="day-item" style="background:'+color+'" onclick="editReminder(\''+r.id+'\')">'
+        +'<div class="day-item-content">'
+        +'<div class="day-item-name">'+r.fields['Title']+'</div>'
+        +'<div class="day-item-sub">'+(r.fields['Category']||'General')+(r.fields['Notes']?' &middot; '+r.fields['Notes']:'')+'</div>'
+        +'</div></div>';
+    });
+  } else { html+='<div class="day-empty">No reminders</div>'; }
+  html+='</div>';
+
+  // Quick add buttons
+  html+='<button class="day-popup-add" onclick="openNewJobOnDate(\''+ds+'\')">+ Add Job on this day</button>';
+  html+='<button class="day-popup-add" style="margin-top:6px" onclick="openNewReminderOnDate(\''+ds+'\')">+ Add Reminder on this day</button>';
+  html+='</div></div>';
+
+  document.getElementById('cal-day-view').innerHTML=html;
+}
+
+// BOARD
+function getWeekDates(){
+  const now=new Date(),mon=new Date(now);
+  mon.setDate(now.getDate()-now.getDay()+1+(state.weekOffset*7));
+  return Array.from({length:6},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
+}
+
+function renderBoard(){
+  const dates=getWeekDates();
+  const fmt=d=>d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  document.getElementById('week-label').textContent='Week of '+fmt(dates[0]);
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat'];
+  document.getElementById('board-head').innerHTML='<tr><th class="name-th">Employee</th>'+days.map((d,i)=>'<th>'+d+' '+fmt(dates[i])+'</th>').join('')+'</tr>';
+  const activeEmps=state.employees.filter(e=>e.fields['Active']);
+
+  // Build job legend for jobs active this week
+  const weekJobNames = new Set();
+  state.assignments.forEach(a=>{
+    const d = a.fields['Date'];
+    if(d >= localISO(dates[0]) && d <= localISO(dates[dates.length-1])) weekJobNames.add(a.fields['Job']);
+  });
+  const weekJobs = state.jobs.filter(j=> weekJobNames.has(j.fields['Customer Name']) || weekJobNames.has(j.fields['Job Name']));
+  let legendHTML = '';
+  if(weekJobs.length){
+    legendHTML = '<div class="board-legend">';
+    weekJobs.forEach(j=>{
+      const color = j.fields['Board Color']||TYPE_COLORS[j.fields['Job Type']]||'#888';
+      const name = j.fields['Customer Name']||j.fields['Job Name'];
+      legendHTML += '<div class="board-legend-item"><div class="board-legend-dot" style="background:'+color+'"></div>'+name+' <span style="font-size:10px;opacity:0.7">('+( j.fields['Job Type']||'')+' &middot; '+(j.fields['Address']||'')+')</span></div>';
+    });
+    legendHTML += '</div>';
+  }
+
+  let assigned=0,bodyHTML='';
+  state.crews.filter(c=>c.fields['Active']).forEach(crew=>{
+    const members=activeEmps.filter(e=>e.fields['Crew']===crew.fields['Crew Name']);
+    if(!members.length)return;
+    const color=crew.fields['Color']||'#2d7a3a';
+    bodyHTML+='<tr class="crew-row"><td colspan="7"><span class="crew-row-label" style="color:'+color+'">'+crew.fields['Crew Name']+'</span></td></tr>';
+    members.forEach(emp=>{
+      bodyHTML+='<tr><td><div class="emp-name">'+emp.fields['Name']+'</div><div class="emp-role">'+(emp.fields['Role']||'')+'</div></td>';
+      dates.forEach(date=>{
+        const ds=localISO(date);
+        const asgn=state.assignments.find(a=>a.fields['Employee']===emp.fields['Name']&&a.fields['Date']===ds);
+        if(asgn){
+          const job=state.jobs.find(j=>(j.fields['Customer Name']===asgn.fields['Job'])||(j.fields['Job Name']===asgn.fields['Job']));
+          const c2=job?(job.fields['Board Color']||TYPE_COLORS[job.fields['Job Type']]||'#888'):'#888';
+          const addr = job?(job.fields['Address']||''):'';
+          assigned++;
+          bodyHTML+='<td class="board-cell" ondragover="boardDragOver(event)" ondrop="boardDrop(event,\''+emp.fields['Name']+'\',\''+ds+'\')" ondragleave="boardDragLeave(event)">'
+            +'<span class="chip" style="background:'+c2+'" draggable="true"'
+            +' ondragstart="boardDragStart(event,\''+asgn.id+'\',\''+emp.fields['Name']+'\')"'
+            +' onclick="chipClick(event,\''+asgn.id+'\',\''+emp.fields['Name']+'\',\''+asgn.fields['Job']+'\',\''+ds+'\')"'
+            +' title="'+emp.fields['Name']+' \u2192 '+asgn.fields['Job']+' | Click to remove | Drag to move">'
+            +'<div class="chip-inner">'
+            +'<div class="chip-job">'+asgn.fields['Job']+'</div>'
+            +'<div class="chip-emp">'+emp.fields['Name']+'</div>'
+            +'</div>'
+            +'</span></td>';
+        } else {
+          // Check for time off
+          const toff=state.timeoff.find(t=>t.fields['Employee']===emp.fields['Name']&&t.fields['Date']===ds);
+          const holidays=getHolidays(new Date(ds+'T12:00:00').getFullYear());
+          const holiday=holidays[ds];
+          if(toff){
+            bodyHTML+='<td class="board-cell" style="background:#fef2f2">'
+              +'<span class="chip-off-day" onclick="editTimeOffRecord(\''+toff.id+'\')" title="'+toff.fields['Reason']+(toff.fields['Paid']?' (Paid)':' (Unpaid)')+'">&#128710; '+(toff.fields['Reason']||'Off')+'</span></td>';
+          } else if(holiday){
+            bodyHTML+='<td class="board-cell" style="background:#fff8f8" onclick="quickAssign(\''+emp.fields['Name']+'\',\''+ds+'\')">'
+              +'<span style="font-size:9px;color:#c0392b;display:block;text-align:center">&#127881;'+holiday.name+'</span>'
+              +'<span class="chip-off" style="font-size:9px">+</span></td>';
+          } else {
+            bodyHTML+='<td class="board-cell board-empty" ondragover="boardDragOver(event)" ondrop="boardDrop(event,\''+emp.fields['Name']+'\',\''+ds+'\')" ondragleave="boardDragLeave(event)" onclick="quickAssign(\''+emp.fields['Name']+'\',\''+ds+'\')"><span class="chip-off">+</span></td>';
+          }
+        }
+      });
+      bodyHTML+='</tr>';
+    });
+  });
+
+  // Inject legend above table
+  const boardWrap = document.querySelector('#view-board .board-wrap');
+  const legendEl = document.getElementById('board-job-legend');
+  if(legendEl) legendEl.innerHTML = legendHTML;
+
+  document.getElementById('board-body').innerHTML=bodyHTML;
+  document.getElementById('stat-assigned').textContent=assigned;
+}
+function changeWeek(dir){state.weekOffset+=dir;renderBoard();}
+
+// BOARD DRAG — KEY FIX: track dragging state to prevent click firing after drag
+let boardDragId=null,boardDragEmp=null,boardIsDragging=false;
+
+function boardDragStart(e,asgnId,empName){
+  boardDragId=asgnId;boardDragEmp=empName;boardIsDragging=true;
+  e.dataTransfer.effectAllowed='move';
+  e.target.style.opacity='0.4';
+  setTimeout(()=>e.target.style.opacity='1',0);
+}
+function boardDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';e.currentTarget.classList.add('board-drop-target');}
+function boardDragLeave(e){e.currentTarget.classList.remove('board-drop-target');}
+async function boardDrop(e,empName,dateStr){
+  e.preventDefault();e.currentTarget.classList.remove('board-drop-target');
+  if(!boardDragId)return;
+  const existing=state.assignments.find(a=>a.fields['Employee']===empName&&a.fields['Date']===dateStr);
+  if(existing&&existing.id!==boardDragId){
+    if(!confirm(empName+' already has a job on this day. Replace it?'))return;
+    await api.delete(TABLES.assignments,existing.id);
+  }
+  await api.patch(TABLES.assignments,boardDragId,{'Employee':empName,'Date':dateStr});
+  boardDragId=null;boardDragEmp=null;
+  // Reset drag flag after a short delay so the click handler doesn't fire
+  setTimeout(()=>{boardIsDragging=false;},200);
+  await refreshData();
+}
+
+// KEY FIX: chipClick checks boardIsDragging before confirming delete
+function chipClick(e,asgnId,empName,jobName,dateStr){
+  e.stopPropagation();
+  if(boardIsDragging)return;
+  if(confirm('Remove '+empName+' from "'+jobName+'" on '+dateStr+'?\n\nOK to remove.')){
+    deleteAssignment(asgnId);
+  }
+}
+async function deleteAssignment(asgnId){
+  await api.delete(TABLES.assignments,asgnId);
+  await refreshData();
+}
+
+function quickAssign(empName,dateStr){
+  const holidays=getHolidays(new Date(dateStr+'T12:00:00').getFullYear());
+  const holiday=holidays[dateStr];
+  let msg='';
+  if(holiday){
+    msg='⚠️ '+holiday.name+' is a '+(holiday.type==='federal'?'Federal':'California')+' holiday on this date.\n\n';
+  }
+  const choice=confirm(msg+'Assign '+empName+' to a job on '+dateStr+'?\n\nOK = Assign to Job\nCancel = Mark as Time Off');
+  if(choice){
+    document.getElementById('a-emp').value=empName;
+    document.getElementById('a-date').value=dateStr;
+    openModal('assign');
+  } else {
+    openNewTimeOff(empName,dateStr);
+  }
+}
+
+// JOBS
+function renderJobs(){
+  const filtered=state.jobFilter==='all'?state.jobs:state.jobs.filter(j=>j.fields['Status']===state.jobFilter);
+  if(!filtered.length){document.getElementById('jobs-grid').innerHTML='<div class="empty">No jobs found. Add your first job above.</div>';return;}
+  document.getElementById('jobs-grid').innerHTML=filtered.map(j=>{
+    const color=TYPE_COLORS[j.fields['Job Type']]||'#888';
+    const status=j.fields['Status']||'Sold';
+    const sc='status-'+status.replace(/ /g,'');
+    return '<div class="job-card" onclick="editJob(\''+j.id+'\')">'
+      +'<div class="job-card-top"><div class="job-name">'+(j.fields['Customer Name']||j.fields['Job Name']||'&mdash;')+'</div>'
+      +'<span class="job-type-badge" style="background:'+color+'">'+(j.fields['Job Type']||'')+'</span></div>'
+      +'<div class="job-detail">&#128205; '+(j.fields['Address']||'No address')+'</div>'
+      +'<div class="job-detail">&#128197; '+(j.fields['Start Date']||'No date set')+'</div>'
+      +'<div class="job-detail">&#128119; '+(j.fields['Assigned Crew']||'Unassigned')+'</div>'
+      +(j.fields['Contract Value']?'<div class="job-detail">&#128176; $'+Number(j.fields['Contract Value']).toLocaleString()+'</div>':'')
+      +'<span class="job-status '+sc+'">'+status+'</span></div>';
+  }).join('');
+}
+function filterJobs(f,btn){state.jobFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderJobs();}
+
+// CREW
+function renderCrew(){
+  const active=state.employees.filter(e=>e.fields['Active']);
+  document.getElementById('emp-list').innerHTML=active.length?active.map(e=>{
+    const initials=e.fields['Name'].split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    const crew=state.crews.find(c=>c.fields['Crew Name']===e.fields['Crew']);
+    const color=crew&&crew.fields['Color']?crew.fields['Color']:'#888';
+    return '<div class="emp-list-item"><div class="emp-info"><div class="emp-avatar" style="background:'+color+'">'+initials+'</div><div class="emp-details"><div class="name">'+e.fields['Name']+(e.fields['Is Foreman']?' &#11088;':'')+'</div><div class="meta">'+(e.fields['Role']||'')+'</div></div></div><div style="display:flex;align-items:center;gap:6px"><span class="crew-badge" style="background:'+color+'22;color:'+color+'">'+(e.fields['Crew']||'No crew')+'</span><button class="edit-btn" onclick="editEmployee(\''+e.id+'\')">Edit</button></div></div>';
+  }).join(''):'<div class="empty">No active employees.</div>';
+  document.getElementById('crew-list').innerHTML=state.crews.filter(c=>c.fields['Active']).map(c=>{
+    const count=state.employees.filter(e=>e.fields['Crew']===c.fields['Crew Name']&&e.fields['Active']).length;
+    const color=c.fields['Color']||'#888';
+    return '<div class="emp-list-item"><div class="emp-info"><div class="emp-avatar" style="background:'+color+'">'+(c.fields['Crew Type']||'?')[0]+'</div><div class="emp-details"><div class="name">'+c.fields['Crew Name']+'</div><div class="meta">'+(c.fields['Crew Type']||'')+'</div></div></div><div style="display:flex;align-items:center;gap:6px"><span class="crew-badge" style="background:'+color+'22;color:'+color+'">'+count+' members</span><button class="edit-btn" onclick="deleteCrew(\''+c.id+'\',\''+c.fields['Crew Name']+'\','+count+')">Delete</button></div></div>';
+  }).join('')||'<div class="empty">No crews yet.</div>';
+}
+
+// SELECTS
+function populateSelects(){
+  const crewOpts=state.crews.filter(c=>c.fields['Active']).map(c=>'<option>'+c.fields['Crew Name']+'</option>').join('');
+  document.getElementById('j-crew').innerHTML='<option value="">Select crew...</option>'+crewOpts;
+  document.getElementById('e-crew').innerHTML='<option value="">Select crew...</option>'+crewOpts;
+  document.getElementById('a-emp').innerHTML=state.employees.filter(e=>e.fields['Active']).map(e=>'<option>'+e.fields['Name']+'</option>').join('');
+  document.getElementById('a-job').innerHTML=state.jobs.map(j=>'<option>'+(j.fields['Customer Name']||j.fields['Job Name'])+'</option>').join('');
+  document.getElementById('to-emp').innerHTML=state.employees.filter(e=>e.fields['Active']).map(e=>'<option>'+e.fields['Name']+'</option>').join('');
+}
+
+// MODALS
+function openModal(type){document.getElementById('modal-'+type).classList.add('open');}
+function closeModal(type){document.getElementById('modal-'+type).classList.remove('open');}
+
+function customerAutoFill(val){
+  const box=document.getElementById('customer-suggestions');
+  if(!val||val.length<2){box.style.display='none';return;}
+  const seen=new Set();
+  const matches=state.jobs.filter(j=>{
+    const name=j.fields['Customer Name']||'';
+    if(name.toLowerCase().includes(val.toLowerCase())&&!seen.has(name)){seen.add(name);return true;}
+    return false;
+  });
+  if(!matches.length){box.style.display='none';return;}
+  box.style.display='block';
+  box.innerHTML=matches.map(j=>'<div onclick="selectCustomer(\''+j.id+'\')" style="padding:8px 12px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--border)" onmouseover="this.style.background=\'var(--green-light)\'" onmouseout="this.style.background=\'\'"><div style="font-weight:500">'+j.fields['Customer Name']+'</div><div style="font-size:11px;color:var(--text-muted)">'+(j.fields['Address']||'No address')+' &middot; '+(j.fields['Phone']||'No phone')+'</div></div>').join('');
+}
+function selectCustomer(jobId){
+  const j=state.jobs.find(x=>x.id===jobId);if(!j)return;
+  document.getElementById('j-customer').value=j.fields['Customer Name']||'';
+  document.getElementById('j-address').value=j.fields['Address']||'';
+  document.getElementById('j-phone').value=j.fields['Phone']||'';
+  document.getElementById('j-email').value=j.fields['Email']||'';
+  document.getElementById('customer-suggestions').style.display='none';
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#j-customer')&&!e.target.closest('#customer-suggestions')){
+    const box=document.getElementById('customer-suggestions');
+    if(box)box.style.display='none';
+  }
+});
+
+const COLOR_NAMES={'#c0392b':'Red','#e67e22':'Orange','#f0b429':'Gold','#27ae60':'Green','#1abc9c':'Teal','#2980b9':'Blue','#8e44ad':'Purple','#e91e8c':'Pink','#1e5527':'Dark Green','#2c3e50':'Navy','#7f8c8d':'Gray','#000000':'Black'};
+
+function selectBoardColor(color){
+  document.getElementById('j-board-color').value=color;
+  document.getElementById('j-board-color-preview').style.background=color;
+  document.getElementById('j-board-color-label').textContent=(COLOR_NAMES[color]||color)+' selected';
+  document.querySelectorAll('.color-swatch').forEach(s=>{
+    s.classList.toggle('selected', s.dataset.color===color);
+  });
+}
+
+function openNewJob(){
+  state.editingJobId=null;
+  document.getElementById('job-modal-title').textContent='New Job';
+  document.getElementById('j-delete-btn').style.display='none';
+  ['j-customer','j-address','j-phone','j-email','j-start','j-end','j-value','j-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('j-type').value='Tear-off';
+  document.getElementById('j-status').value='Sold';
+  document.getElementById('j-notify-toggle').classList.add('on');
+  populateCrewDropdown('j-crew','');
+  selectBoardColor('#2980b9');
+  openModal('job');
+}
+function populateCrewDropdown(selectId,selectedValue){
+  const sel=document.getElementById(selectId);
+  sel.innerHTML='<option value="">Select crew...</option>'+state.crews.filter(c=>c.fields['Active']).map(c=>'<option value="'+c.fields['Crew Name']+'"'+(c.fields['Crew Name']===selectedValue?' selected':'')+'>'+c.fields['Crew Name']+'</option>').join('');
+}
+function editJob(id){
+  const j=state.jobs.find(x=>x.id===id);if(!j)return;
+  state.editingJobId=id;
+  document.getElementById('job-modal-title').textContent='Edit Job';
+  document.getElementById('j-delete-btn').style.display='block';
+  document.getElementById('j-customer').value=j.fields['Customer Name']||'';
+  document.getElementById('j-address').value=j.fields['Address']||'';
+  document.getElementById('j-phone').value=j.fields['Phone']||'';
+  document.getElementById('j-email').value=j.fields['Email']||'';
+  document.getElementById('j-type').value=j.fields['Job Type']||'Tear-off';
+  document.getElementById('j-status').value=j.fields['Status']||'Sold';
+  document.getElementById('j-start').value=j.fields['Start Date']||'';
+  document.getElementById('j-end').value=j.fields['End Date']||'';
+  document.getElementById('j-value').value=j.fields['Contract Value']||'';
+  populateCrewDropdown('j-crew',j.fields['Assigned Crew']||'');
+  document.getElementById('j-notes').value=j.fields['Notes']||'';
+  selectBoardColor(j.fields['Board Color']||'#2980b9');
+  j.fields['Notify Customer']?document.getElementById('j-notify-toggle').classList.add('on'):document.getElementById('j-notify-toggle').classList.remove('on');
+  openModal('job');
+}
+async function saveJob(){
+  const name=document.getElementById('j-customer').value.trim();
+  if(!name){alert('Please enter a customer name.');return;}
+  const crewVal=document.getElementById('j-crew').value;
+  const fields={'Job Name':name,'Customer Name':name,'Address':document.getElementById('j-address').value||'','Phone':document.getElementById('j-phone').value||'','Email':document.getElementById('j-email').value||'','Job Type':document.getElementById('j-type').value,'Status':document.getElementById('j-status').value,'Notes':document.getElementById('j-notes').value||'','Notify Customer':document.getElementById('j-notify-toggle').classList.contains('on'),'Board Color':document.getElementById('j-board-color').value||'#2980b9'};
+  if(crewVal)fields['Assigned Crew']=crewVal;
+  const sv=document.getElementById('j-start').value,ev=document.getElementById('j-end').value;
+  if(sv)fields['Start Date']=sv;if(ev)fields['End Date']=ev;
+  const cv=parseFloat(document.getElementById('j-value').value);
+  if(!isNaN(cv)&&cv>0)fields['Contract Value']=cv;
+  try{
+    let result;
+    if(state.editingJobId)result=await api.patch(TABLES.jobs,state.editingJobId,fields);
+    else result=await api.post(TABLES.jobs,fields);
+    if(result.error){alert('Error saving job: '+result.error.message);return;}
+    closeModal('job');await refreshData();
+  }catch(e){alert('Error saving job.');console.error(e);}
+}
+async function deleteJob(){
+  if(!confirm('Delete this job? This cannot be undone.'))return;
+  await api.delete(TABLES.jobs,state.editingJobId);
+  closeModal('job');await refreshData();
+}
+
+function openNewEmployee(){
+  state.editingEmpId=null;
+  document.getElementById('emp-modal-title').textContent='Add Employee';
+  document.getElementById('e-delete-btn').style.display='none';
+  ['e-name','e-role','e-phone'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('e-foreman').checked=false;
+  document.getElementById('e-active').checked=true;
+  document.getElementById('e-lang').value='en';
+  populateCrewDropdown('e-crew','');
+  openModal('employee');
+}
+function editEmployee(id){
+  const e=state.employees.find(x=>x.id===id);if(!e)return;
+  state.editingEmpId=id;
+  document.getElementById('emp-modal-title').textContent='Edit Employee';
+  document.getElementById('e-delete-btn').style.display='flex';
+  document.getElementById('e-name').value=e.fields['Name']||'';
+  document.getElementById('e-role').value=e.fields['Role']||'';
+  document.getElementById('e-phone').value=e.fields['Phone']||'';
+  populateCrewDropdown('e-crew',e.fields['Crew']||'');
+  document.getElementById('e-foreman').checked=!!e.fields['Is Foreman'];
+  document.getElementById('e-active').checked=!!e.fields['Active'];
+  document.getElementById('e-lang').value=e.fields['Language']||'en';
+  openModal('employee');
+}
+async function saveEmployee(){
+  const name=document.getElementById('e-name').value.trim();
+  if(!name){alert('Please enter a name.');return;}
+  const fields={'Name':name,'Role':document.getElementById('e-role').value,'Phone':document.getElementById('e-phone').value,'Crew':document.getElementById('e-crew').value,'Is Foreman':document.getElementById('e-foreman').checked,'Active':document.getElementById('e-active').checked,'Language':document.getElementById('e-lang').value};
+  if(state.editingEmpId)await api.patch(TABLES.employees,state.editingEmpId,fields);
+  else await api.post(TABLES.employees,fields);
+  closeModal('employee');await refreshData();
+}
+async function deactivateEmployee(){
+  if(!confirm('Deactivate this employee?'))return;
+  await api.patch(TABLES.employees,state.editingEmpId,{'Active':false});
+  closeModal('employee');await refreshData();
+}
+async function deleteEmployeePermanent(){
+  if(!confirm('PERMANENTLY delete this employee? All history will be lost.\n\nTip: Use Deactivate to keep history.'))return;
+  await api.delete(TABLES.employees,state.editingEmpId);
+  closeModal('employee');await refreshData();
+}
+async function deleteCrew(id,name,memberCount){
+  if(memberCount>0){alert('Cannot delete "'+name+'" - it still has '+memberCount+' active member(s).\n\nMove or deactivate those employees first.');return;}
+  if(!confirm('Delete crew "'+name+'"? This cannot be undone.'))return;
+  await api.delete(TABLES.crews,id);await refreshData();
+}
+async function saveCrew(){
+  const name=document.getElementById('c-name').value.trim();
+  if(!name){alert('Please enter a crew name.');return;}
+  await api.post(TABLES.crews,{'Crew Name':name,'Crew Type':document.getElementById('c-type').value,'Color':document.getElementById('c-color').value,'Active':true});
+  closeModal('crew');await refreshData();
+}
+async function saveAssignment(){
+  const emp=document.getElementById('a-emp').value,job=document.getElementById('a-job').value,date=document.getElementById('a-date').value;
+  if(!emp||!job||!date){alert('Please fill all fields.');return;}
+  await api.post(TABLES.assignments,{'Employee':emp,'Job':job,'Date':date,'Status':'Scheduled'});
+  closeModal('assign');await refreshData();
+}
+
+// DAY POPUP
+function openDayPopup(dateStr){
+  const date = new Date(dateStr+'T12:00:00');
+  const dayLabel = date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('day-popup-date').textContent = dayLabel;
+
+  const dayJobs = state.jobs.filter(j=>j.fields['Start Date']===dateStr);
+  const dayRems = state.reminders.filter(r=>r.fields['Date']===dateStr&&!r.fields['Done']);
+  const dayAsgns = state.assignments.filter(a=>a.fields['Date']===dateStr);
+
+  let html = '';
+
+  // Jobs section
+  html += '<div class="day-popup-section"><div class="day-popup-section-title">&#127959; Jobs ('+dayJobs.length+')</div>';
+  if(dayJobs.length){
+    dayJobs.forEach(j=>{
+      const color = TYPE_COLORS[j.fields['Job Type']]||'#888';
+      const status = j.fields['Status']||'';
+      html += '<div class="day-popup-item" style="background:'+color+'" onclick="closeDayPopup();editJob(\''+j.id+'\')">'
+        +'<div class="chip-inner" style="pointer-events:none;flex:1;min-width:0">'
+        +'<div class="chip-job" style="font-size:13px;max-width:100%">'+(j.fields['Customer Name']||j.fields['Job Name'])+'</div>'
+        +'<div class="chip-emp" style="font-size:11px">'+j.fields['Job Type']+' &middot; '+(j.fields['Address']||'No address')+' &middot; '+status+'</div>'
+        +'</div>'
+        +(j.fields['Contract Value']?'<div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.9);white-space:nowrap">$'+Number(j.fields['Contract Value']).toLocaleString()+'</div>':'')
+        +'</div>';
+    });
+  } else {
+    html += '<div class="day-popup-empty">No jobs scheduled</div>';
+  }
+  html += '</div>';
+
+  // Crew assignments section
+  if(dayAsgns.length){
+    html += '<div class="day-popup-section"><div class="day-popup-section-title">&#128119; Crew Assignments ('+dayAsgns.length+')</div>';
+    dayAsgns.forEach(a=>{
+      const job = state.jobs.find(j=>(j.fields['Customer Name']===a.fields['Job'])||(j.fields['Job Name']===a.fields['Job']));
+      const color = job?(TYPE_COLORS[job.fields['Job Type']]||'#888'):'#888';
+      html += '<div class="day-popup-item" style="background:'+color+'">'
+        +'<div class="chip-inner" style="pointer-events:none;flex:1;min-width:0">'
+        +'<div class="chip-emp" style="font-size:13px;font-weight:600;color:#fff;max-width:100%">'+a.fields['Employee']+'</div>'
+        +'<div class="chip-emp" style="font-size:11px">'+a.fields['Job']+'</div>'
+        +'</div>'
+        +'</div>';
+    });
+    html += '</div>';
+  }
+
+  // Reminders section
+  const CAT_COLORS_LOCAL = {'Material Order':'#e67e22','Permit':'#2980b9','Customer Follow-up':'#27ae60','Vendor Call':'#8e44ad','Crew / HR':'#f0b429','Inspection':'#16a085','General':'#7f8c8d'};
+  html += '<div class="day-popup-section"><div class="day-popup-section-title">&#128204; Reminders ('+dayRems.length+')</div>';
+  if(dayRems.length){
+    dayRems.forEach(r=>{
+      const color = CAT_COLORS_LOCAL[r.fields['Category']]||'#888';
+      html += '<div class="day-popup-item" style="background:'+color+'" onclick="closeDayPopup();editReminder(\''+r.id+'\')">'
+        +'<div class="chip-inner" style="pointer-events:none;flex:1;min-width:0">'
+        +'<div class="chip-job" style="font-size:13px;max-width:100%">'+r.fields['Title']+'</div>'
+        +'<div class="chip-emp" style="font-size:11px">'+(r.fields['Category']||'General')+(r.fields['Job']?' &middot; '+r.fields['Job']:'')+'</div>'
+        +'</div>'
+        +'</div>';
+    });
+  } else {
+    html += '<div class="day-popup-empty">No reminders</div>';
+  }
+  html += '</div>';
+
+  // Quick action buttons
+  html += '<button class="day-popup-add" onclick="closeDayPopup();openNewJobOnDate(\''+dateStr+'\')">+ Add Job on this day</button>';
+  html += '<button class="day-popup-add" style="margin-top:6px" onclick="closeDayPopup();openNewReminderOnDate(\''+dateStr+'\')">+ Add Reminder on this day</button>';
+
+  document.getElementById('day-popup-body').innerHTML = html;
+  document.getElementById('day-popup-overlay').classList.add('open');
+}
+
+function closeDayPopup(){
+  document.getElementById('day-popup-overlay').classList.remove('open');
+}
+
+function openNewReminderOnDate(dateStr){
+  openNewReminder();
+  setTimeout(()=>{const f=document.getElementById('r-date');if(f)f.value=dateStr;},50);
+}
+
+// REVENUE ANALYTICS
+let revPanelOpen = true;
+let revActiveQuick = 'week';
+
+function toggleRevPanel(){
+  revPanelOpen = !revPanelOpen;
+  document.getElementById('rev-body').classList.toggle('collapsed', !revPanelOpen);
+  document.querySelector('.rev-toggle').innerHTML = revPanelOpen ? '&#9660; Hide' : '&#9650; Show';
+}
+
+function revQuick(period, btn){
+  document.querySelectorAll('.rev-quick-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  revActiveQuick = period;
+  const now = new Date();
+  let from, to;
+  if(period==='week'){
+    const mon = new Date(now); mon.setDate(now.getDate()-now.getDay()+1);
+    const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+    from=localISO(mon); to=localISO(sun);
+  } else if(period==='month'){
+    from=localISO(new Date(now.getFullYear(),now.getMonth(),1));
+    to=localISO(new Date(now.getFullYear(),now.getMonth()+1,0));
+  } else if(period==='quarter'){
+    const q=Math.floor(now.getMonth()/3);
+    from=localISO(new Date(now.getFullYear(),q*3,1));
+    to=localISO(new Date(now.getFullYear(),q*3+3,0));
+  } else if(period==='ytd'){
+    from=localISO(new Date(now.getFullYear(),0,1));
+    to=localISO(now);
+  } else if(period==='year'){
+    from=localISO(new Date(now.getFullYear(),0,1));
+    to=localISO(new Date(now.getFullYear(),11,31));
+  } else if(period==='all'){
+    from='2000-01-01'; to='2099-12-31';
+  }
+  document.getElementById('rev-from').value=from;
+  document.getElementById('rev-to').value=to;
+  runRevAnalytics(from, to);
+}
+
+function revCustomRun(){
+  const from=document.getElementById('rev-from').value;
+  const to=document.getElementById('rev-to').value;
+  if(!from||!to){alert('Please select both a start and end date.');return;}
+  if(from>to){alert('Start date must be before end date.');return;}
+  document.querySelectorAll('.rev-quick-btn').forEach(b=>b.classList.remove('active'));
+  runRevAnalytics(from, to);
+}
+
+function runRevAnalytics(from, to){
+  const filtered = state.jobs.filter(j=>{
+    const d = j.fields['Start Date'];
+    if(!d) return false;
+    return d >= from && d <= to;
+  });
+
+  const fmt = n => '$'+Math.round(n).toLocaleString();
+
+  const statuses = ['Sold','Scheduled','In Progress','Complete'];
+  const ids = ['sold','scheduled','inprogress','complete'];
+  let total=0, totalCount=0;
+
+  statuses.forEach((s,i)=>{
+    const group = filtered.filter(j=>j.fields['Status']===s);
+    const sum = group.reduce((acc,j)=>acc+(parseFloat(j.fields['Contract Value'])||0),0);
+    total+=sum; totalCount+=group.length;
+    document.getElementById('rev-'+ids[i]).textContent=fmt(sum);
+    document.getElementById('rev-'+ids[i]+'-count').textContent=group.length+' job'+(group.length!==1?'s':'');
+  });
+
+  document.getElementById('rev-total').textContent=fmt(total);
+  document.getElementById('rev-total-count').textContent=totalCount+' job'+(totalCount!==1?'s':'');
+
+  const fromFmt = new Date(from+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  const toFmt = new Date(to+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  document.getElementById('rev-range-label').textContent = fromFmt+' — '+toFmt;
+}
+
+// Auto-run this week on tab switch to jobs
+let reportFilter='all';
+function renderReports(){
+  const today=localISO(new Date());
+  const weekAgo=localISO(new Date(Date.now()-7*24*60*60*1000));
+  let filtered=state.reports||[];
+  if(reportFilter==='today')filtered=filtered.filter(r=>r.fields['Report Date']===today);
+  if(reportFilter==='week')filtered=filtered.filter(r=>r.fields['Report Date']>=weekAgo);
+  filtered.sort((a,b)=>(b.fields['Created time']||'').localeCompare(a.fields['Created time']||''));
+  const grid=document.getElementById('reports-grid');if(!grid)return;
+  if(!filtered.length){grid.innerHTML='<div class="empty">No reports yet. Share the field form link with your crew.</div>';return;}
+  grid.innerHTML=filtered.map(r=>{
+    const notes=r.fields['Notes']||'';
+    const notesDisplay=notes.replace(/^\[.*?\]\s*/,'');
+    const progressMatch=notes.match(/^\[(.*?)\]/);
+    const progressLabel=progressMatch?progressMatch[1]:'&mdash;';
+    const progColor='#e67e22';
+    return '<div class="job-card"><div class="job-card-top"><div class="job-name">'+(r.fields['Employee']||'Unknown')+'</div><span class="job-type-badge" style="background:'+progColor+'">'+progressLabel+'</span></div>'
+      +'<div class="job-detail">&#127959; '+(r.fields['Job']||'No job')+'</div>'
+      +'<div class="job-detail">&#128197; '+(r.fields['Created time']?new Date(r.fields['Created time']).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'No date')+'</div>'
+      +(r.fields['ETA to Finish']?'<div class="job-detail">&#9201; ETA: '+r.fields['ETA to Finish']+'</div>':'')
+      +(notesDisplay?'<div class="job-detail" style="margin-top:6px;padding:8px;background:var(--bg);border-radius:6px;font-style:italic">"<span id="note-'+r.id+'">'+notesDisplay+'</span>"<button onclick="translateNote(\'note-'+r.id+'\',\''+encodeURIComponent(notesDisplay)+'\')" style="display:block;margin-top:4px;font-size:11px;color:var(--green);background:none;border:none;cursor:pointer;padding:0">&#127760; Translate</button></div>':'')
+      +'</div>';
+  }).join('');
+}
+async function translateNote(spanId,encoded){
+  const text=decodeURIComponent(encoded);
+  const target=text.match(/[áéíóúñü¿¡]/i)?'en':'es';
+  const span=document.getElementById(spanId);if(!span)return;
+  span.textContent='Translating...';
+  try{
+    const r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(text)+'&langpair='+(target==='en'?'es|en':'en|es'));
+    const d=await r.json();
+    span.textContent=(d.responseData&&d.responseData.translatedText)||text;
+  }catch(e){span.textContent=text;}
+}
+function filterReports(f,btn){
+  reportFilter=f;
+  document.querySelectorAll('#view-reports .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderReports();
+}
+
+// REMINDERS
+const CAT_COLORS={'Material Order':'#e67e22','Permit':'#2980b9','Customer Follow-up':'#27ae60','Vendor Call':'#8e44ad','Crew / HR':'#f0b429','Inspection':'#16a085','General':'#7f8c8d'};
+let reminderFilter='all';
+function renderReminders(){
+  let filtered=state.reminders;
+  if(reminderFilter==='open')filtered=filtered.filter(r=>!r.fields['Done']);
+  if(reminderFilter==='done')filtered=filtered.filter(r=>r.fields['Done']);
+  filtered.sort((a,b)=>(a.fields['Date']||'').localeCompare(b.fields['Date']||''));
+  if(!filtered.length){document.getElementById('reminders-list').innerHTML='<div class="empty">No reminders. Click "+ Add Reminder" to create one.</div>';return;}
+  document.getElementById('reminders-list').innerHTML='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">'+filtered.map(r=>{
+    const color=CAT_COLORS[r.fields['Category']]||'#888';
+    const done=r.fields['Done'];
+    return '<div class="job-card" onclick="editReminder(\''+r.id+'\')" style="'+(done?'opacity:0.5':'')+'"><div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px"><div style="font-size:15px;font-weight:600;color:var(--text);text-decoration:'+(done?'line-through':'none')+'">'+(r.fields['Title']||'Untitled')+'</div><span style="font-size:10px;padding:3px 8px;border-radius:20px;color:#fff;background:'+color+';white-space:nowrap;margin-left:8px">'+(r.fields['Category']||'General')+'</span></div>'+(r.fields['Date']?'<div class="job-detail">&#128197; '+r.fields['Date']+'</div>':'')+(r.fields['Job']?'<div class="job-detail">&#127959; '+r.fields['Job']+'</div>':'')+(r.fields['Notes']?'<div class="job-detail">&#128221; '+r.fields['Notes']+'</div>':'')+'<span class="job-status" style="background:'+(done?'var(--green-light)':'#fef9ec')+';color:'+(done?'var(--green-dark)':'#b07d10')+'">'+(done?'Done':'Pending')+'</span></div>';
+  }).join('')+'</div>';
+}
+function filterReminders(f,btn){
+  reminderFilter=f;
+  document.querySelectorAll('#view-reminders .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');renderReminders();
+}
+function openNewReminder(){
+  state.editingReminderId=null;
+  document.getElementById('reminder-modal-title').textContent='Add Reminder';
+  document.getElementById('r-delete-btn').style.display='none';
+  ['r-title','r-date','r-job','r-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('r-category').value='General';
+  document.getElementById('r-done').checked=false;
+  openModal('reminder');
+}
+function editReminder(id){
+  const r=state.reminders.find(x=>x.id===id);if(!r)return;
+  state.editingReminderId=id;
+  document.getElementById('reminder-modal-title').textContent='Edit Reminder';
+  document.getElementById('r-delete-btn').style.display='block';
+  document.getElementById('r-title').value=r.fields['Title']||'';
+  document.getElementById('r-date').value=r.fields['Date']||'';
+  document.getElementById('r-category').value=r.fields['Category']||'General';
+  document.getElementById('r-job').value=r.fields['Job']||'';
+  document.getElementById('r-notes').value=r.fields['Notes']||'';
+  document.getElementById('r-done').checked=!!r.fields['Done'];
+  openModal('reminder');
+}
+async function saveReminder(){
+  const title=document.getElementById('r-title').value.trim();
+  if(!title){alert('Please enter a title.');return;}
+  const fields={'Title':title,'Date':document.getElementById('r-date').value||null,'Category':document.getElementById('r-category').value,'Job':document.getElementById('r-job').value,'Notes':document.getElementById('r-notes').value,'Done':document.getElementById('r-done').checked};
+  if(state.editingReminderId)await api.patch(TABLES.reminders,state.editingReminderId,fields);
+  else await api.post(TABLES.reminders,fields);
+  closeModal('reminder');await refreshData();
+}
+async function deleteReminder(){
+  if(!confirm('Delete this reminder?'))return;
+  await api.delete(TABLES.reminders,state.editingReminderId);
+  closeModal('reminder');await refreshData();
+}
+
+// TIME OFF
+let timeOffFilter='all';
+
+function openNewTimeOff(empName,dateStr){
+  state.editingTimeOffId=null;
+  document.getElementById('timeoff-modal-title').textContent='Log Time Off';
+  document.getElementById('to-delete-btn').style.display='none';
+  document.getElementById('to-emp').innerHTML=state.employees.filter(e=>e.fields['Active']).map(e=>'<option'+(e.fields['Name']===empName?' selected':'')+'>'+e.fields['Name']+'</option>').join('');
+  document.getElementById('to-date').value=dateStr||localISO(new Date());
+  document.getElementById('to-reason').value='Vacation';
+  document.getElementById('to-paid').checked=true;
+  document.getElementById('to-notes').value='';
+  openModal('timeoff');
+}
+
+function editTimeOffRecord(id){
+  const r=state.timeoff.find(x=>x.id===id);if(!r)return;
+  state.editingTimeOffId=id;
+  document.getElementById('timeoff-modal-title').textContent='Edit Time Off';
+  document.getElementById('to-delete-btn').style.display='block';
+  document.getElementById('to-emp').innerHTML=state.employees.filter(e=>e.fields['Active']).map(e=>'<option'+(e.fields['Name']===r.fields['Employee']?' selected':'')+'>'+e.fields['Name']+'</option>').join('');
+  document.getElementById('to-date').value=r.fields['Date']||'';
+  document.getElementById('to-reason').value=r.fields['Reason']||'Vacation';
+  document.getElementById('to-paid').checked=!!r.fields['Paid'];
+  document.getElementById('to-notes').value=r.fields['Notes']||'';
+  openModal('timeoff');
+}
+
+async function saveTimeOff(){
+  const emp=document.getElementById('to-emp').value;
+  const date=document.getElementById('to-date').value;
+  const reason=document.getElementById('to-reason').value;
+  if(!emp||!date){alert('Please fill Employee and Date.');return;}
+  // Holiday warning
+  const holidays=getHolidays(new Date(date+'T12:00:00').getFullYear());
+  const holiday=holidays[date];
+  if(holiday&&!confirm('⚠️ '+holiday.name+' is a '+holiday.type+' holiday. Still log time off?')) return;
+  const fields={'Employee':emp,'Date':date,'Reason':reason,'Paid':document.getElementById('to-paid').checked,'Notes':document.getElementById('to-notes').value};
+  if(state.editingTimeOffId) await api.patch(TABLES.timeoff,state.editingTimeOffId,fields);
+  else await api.post(TABLES.timeoff,fields);
+  closeModal('timeoff');await refreshData();
+}
+
+async function deleteTimeOff(){
+  if(!confirm('Delete this time off record?'))return;
+  await api.delete(TABLES.timeoff,state.editingTimeOffId);
+  closeModal('timeoff');await refreshData();
+}
+
+function filterTimeOff(f,btn){
+  timeOffFilter=f;
+  document.querySelectorAll('#view-hr .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderHR();
+}
+
+function renderHR(){
+  const now=new Date();
+  const todayStr=localISO(now);
+  const weekStart=localISO(new Date(now.getFullYear(),now.getMonth(),now.getDate()-now.getDay()+1));
+  const weekEnd=localISO(new Date(now.getFullYear(),now.getMonth(),now.getDate()-now.getDay()+7));
+  const monthStart=localISO(new Date(now.getFullYear(),now.getMonth(),1));
+  const monthEnd=localISO(new Date(now.getFullYear(),now.getMonth()+1,0));
+  const yearStart=now.getFullYear()+'-01-01';
+  const yearEnd=now.getFullYear()+'-12-31';
+
+  const all=state.timeoff;
+  const inRange=(r,from,to)=>r.fields['Date']>=from&&r.fields['Date']<=to;
+
+  const week=all.filter(r=>inRange(r,weekStart,weekEnd));
+  const month=all.filter(r=>inRange(r,monthStart,monthEnd));
+  const year=all.filter(r=>inRange(r,yearStart,yearEnd));
+
+  document.getElementById('to-week').textContent=week.length;
+  document.getElementById('to-week-paid').textContent=week.filter(r=>r.fields['Paid']).length+' paid';
+  document.getElementById('to-month').textContent=month.length;
+  document.getElementById('to-month-paid').textContent=month.filter(r=>r.fields['Paid']).length+' paid';
+  document.getElementById('to-year').textContent=year.length;
+  document.getElementById('to-year-paid').textContent=year.filter(r=>r.fields['Paid']).length+' paid';
+  document.getElementById('to-all').textContent=all.length;
+  document.getElementById('to-all-paid').textContent=all.filter(r=>r.fields['Paid']).length+' paid';
+
+  // Per employee breakdown
+  const activeEmps=state.employees.filter(e=>e.fields['Active']);
+  const empHTML=activeEmps.map(e=>{
+    const name=e.fields['Name'];
+    const empAll=all.filter(r=>r.fields['Employee']===name);
+    const empWeek=week.filter(r=>r.fields['Employee']===name);
+    const empMonth=month.filter(r=>r.fields['Employee']===name);
+    const empYear=year.filter(r=>r.fields['Employee']===name);
+    const crew=state.crews.find(c=>c.fields['Crew Name']===e.fields['Crew']);
+    const color=crew?.fields['Color']||'#888';
+    const initials=name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    return '<div class="job-card">'
+      +'<div class="job-card-top">'
+      +'<div style="display:flex;align-items:center;gap:8px"><div style="width:32px;height:32px;border-radius:50%;background:'+color+';display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0">'+initials+'</div>'
+      +'<div><div class="job-name">'+name+'</div><div class="job-detail">'+( e.fields['Role']||'')+'</div></div></div>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px">'
+      +'<div style="text-align:center;padding:6px;background:var(--bg);border-radius:6px"><div style="font-size:10px;color:var(--text-muted)">Week</div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;color:var(--green-dark)">'+empWeek.length+'</div></div>'
+      +'<div style="text-align:center;padding:6px;background:var(--bg);border-radius:6px"><div style="font-size:10px;color:var(--text-muted)">Month</div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;color:var(--green-dark)">'+empMonth.length+'</div></div>'
+      +'<div style="text-align:center;padding:6px;background:var(--bg);border-radius:6px"><div style="font-size:10px;color:var(--text-muted)">Year</div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;color:var(--gold)">'+empYear.length+'</div></div>'
+      +'<div style="text-align:center;padding:6px;background:var(--bg);border-radius:6px"><div style="font-size:10px;color:var(--text-muted)">Total</div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:20px;color:var(--text)">'+empAll.length+'</div></div>'
+      +'</div>'
+      +(empAll.length?'<div style="margin-top:8px;font-size:11px;color:var(--text-muted)">'+empAll.filter(r=>r.fields['Paid']).length+' paid / '+empAll.filter(r=>!r.fields['Paid']).length+' unpaid</div>':'')
+      +'</div>';
+  }).join('');
+  document.getElementById('hr-emp-list').innerHTML=empHTML||'<div class="empty">No active employees.</div>';
+
+  // Records list
+  let filtered=all;
+  if(timeOffFilter==='week') filtered=week;
+  else if(timeOffFilter==='month') filtered=month;
+  else if(timeOffFilter==='year') filtered=year;
+  filtered.sort((a,b)=>(b.fields['Date']||'').localeCompare(a.fields['Date']||''));
+
+  const REASON_COLORS={'Vacation':'#2980b9','Sick':'#c0392b','Personal':'#8e44ad','No Show':'#e74c3c','Holiday':'#27ae60','Jury Duty':'#e67e22','Bereavement':'#7f8c8d','Other':'#7f8c8d'};
+  document.getElementById('hr-records-list').innerHTML=filtered.length?
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">'+
+    filtered.map(r=>{
+      const color=REASON_COLORS[r.fields['Reason']]||'#888';
+      return '<div class="job-card" onclick="editTimeOffRecord(\''+r.id+'\')">'
+        +'<div class="job-card-top">'
+        +'<div class="job-name">'+( r.fields['Employee']||'Unknown')+'</div>'
+        +'<span class="job-type-badge" style="background:'+color+'">'+( r.fields['Reason']||'Off')+'</span>'
+        +'</div>'
+        +'<div class="job-detail">&#128197; '+(r.fields['Date']||'No date')+'</div>'
+        +'<div class="job-detail">'+(r.fields['Paid']?'&#9989; Paid':'&#10060; Unpaid')+'</div>'
+        +(r.fields['Notes']?'<div class="job-detail">&#128221; '+r.fields['Notes']+'</div>':'')
+        +'</div>';
+    }).join('')+'</div>'
+    :'<div class="empty">No time off records for this period.</div>';
+}
+
+function switchTab(tab,el){
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('view-'+tab).classList.add('active');
+  if(tab==='jobs'){
+    // Auto-run the active quick period
+    const activeBtn = document.querySelector('.rev-quick-btn.active');
+    if(activeBtn) activeBtn.click();
+  }
+}
+
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});
+});
+
+// Register PWA service worker
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('/Century-ops/sw.js')
+      .then(()=>console.log('SW registered'))
+      .catch(e=>console.log('SW failed:', e));
+  });
+}
+</script>
+</body>
+</html>
