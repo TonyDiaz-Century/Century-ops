@@ -764,7 +764,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
       <div id="j-tasks-list" style="display:flex;flex-direction:column;gap:6px"></div>
     </div>
     <div class="notify-toggle">
-      <button class="toggle on" id="j-notify-toggle" onclick="this.classList.toggle('on')"></button>
+      <button class="toggle on" id="j-notify-toggle" onclick="toggleNotifyCustomer()"></button>
       <span style="font-size:13px;color:var(--text-muted)">Notify customer of schedule changes</span>
     </div>
     <div class="modal-actions">
@@ -1724,7 +1724,10 @@ function editJob(id){
   document.getElementById('j-notes').value=j.fields['Notes']||'';
   selectBoardColor(j.fields['Board Color']||'#2980b9');
   loadTaskTemplate(j.fields['Job Type']||'Tear-off');
-  j.fields['Notify Customer']?document.getElementById('j-notify-toggle').classList.add('on'):document.getElementById('j-notify-toggle').classList.remove('on');
+  const notifyOn=!!j.fields['Notify Customer'];
+  notifyOn?document.getElementById('j-notify-toggle').classList.add('on'):document.getElementById('j-notify-toggle').classList.remove('on');
+  // Show share button only if notify is ON
+  document.getElementById('j-share-btn').style.display=notifyOn?'block':'none';
   openModal('job');
 }
 async function saveJob(){
@@ -1745,6 +1748,17 @@ async function saveJob(){
     closeModal('job');await refreshData();
   }catch(e){alert('Error saving job.');console.error(e);}
 }
+function toggleNotifyCustomer(){
+  const toggle=document.getElementById('j-notify-toggle');
+  toggle.classList.toggle('on');
+  const notifyOn=toggle.classList.contains('on');
+  const shareBtn=document.getElementById('j-share-btn');
+  // Only show share button if editing existing job AND notify is ON
+  if(shareBtn&&state.editingJobId){
+    shareBtn.style.display=notifyOn?'block':'none';
+  }
+}
+
 function shareJobPortal(){
   if(!state.editingJobId) return;
   const url='https://tonydiaz-century.github.io/Century-ops/customer-portal.html?job='+state.editingJobId;

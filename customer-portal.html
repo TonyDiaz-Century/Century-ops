@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Status — Century Roof & Solar</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--green:#2d7a3a;--green-dark:#1e5527;--green-light:#e8f5eb;--gold:#f0b429;--red:#c0392b;--bg:#f4f5f0;--surface:#fff;--border:#e0e2d9;--text:#1a1c18;--text-muted:#6b7066;--radius:10px;--shadow:0 2px 8px rgba(0,0,0,0.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
+.header{background:var(--green-dark);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.header-left{}
+.header-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:1px}
+.header-sub{font-size:11px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
+.lang-toggle{display:flex;gap:2px;background:rgba(255,255,255,0.1);border-radius:8px;padding:3px}
+.lang-btn{padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;border:none;background:transparent;color:rgba(255,255,255,0.6);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.lang-btn.active{background:var(--gold);color:#1a1c18}
+.wrap{padding:24px 16px;max-width:600px;margin:0 auto}
+.not-found{text-align:center;padding:48px 24px}
+.not-found-icon{font-size:56px;margin-bottom:16px}
+.not-found-title{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green-dark);letter-spacing:0.5px;margin-bottom:8px}
+.not-found-sub{font-size:14px;color:var(--text-muted);line-height:1.6}
+.status-header{background:var(--green-dark);border-radius:var(--radius);padding:20px;margin-bottom:16px;color:#fff}
+.status-customer{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:1px}
+.status-address{font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px}
+.status-badge{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600}
+.progress-tracker{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:20px;margin-bottom:16px;box-shadow:var(--shadow)}
+.progress-title{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--green-dark);letter-spacing:0.5px;margin-bottom:16px}
+.progress-steps{display:flex;flex-direction:column;gap:0}
+.progress-step{display:flex;gap:14px;align-items:flex-start;position:relative;padding-bottom:20px}
+.progress-step:last-child{padding-bottom:0}
+.step-line{position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--border)}
+.progress-step:last-child .step-line{display:none}
+.step-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;border:2px solid var(--border);background:#fff;z-index:1}
+.step-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.step-dot.active{background:var(--gold);border-color:var(--gold);color:#1a1c18}
+.step-dot.pending{background:#fff;border-color:var(--border);color:var(--text-muted)}
+.step-content{flex:1;padding-top:5px}
+.step-name{font-size:14px;font-weight:600;color:var(--text)}
+.step-name.pending{color:var(--text-muted)}
+.step-desc{font-size:12px;color:var(--text-muted);margin-top:2px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.info-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:14px;box-shadow:var(--shadow)}
+.info-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);margin-bottom:5px;font-family:'DM Mono',monospace}
+.info-value{font-size:15px;font-weight:600;color:var(--text)}
+.info-value.green{color:var(--green)}
+.notes-card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:16px;margin-bottom:16px;box-shadow:var(--shadow)}
+.notes-title{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green-dark);letter-spacing:0.5px;margin-bottom:10px}
+.notes-text{font-size:14px;color:var(--text);line-height:1.6}
+.contact-card{background:var(--green-light);border-radius:var(--radius);border:1px solid var(--green);padding:16px;text-align:center}
+.contact-title{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--green-dark);letter-spacing:0.5px;margin-bottom:8px}
+.contact-sub{font-size:13px;color:var(--green-dark);opacity:0.8;margin-bottom:14px}
+.contact-btn{display:inline-flex;align-items:center;gap:6px;padding:11px 20px;border-radius:8px;background:var(--green);color:#fff;text-decoration:none;font-size:14px;font-weight:600;margin:4px;transition:background 0.15s}
+.contact-btn:hover{background:var(--green-dark)}
+.loading{text-align:center;padding:48px 24px}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.alert-card{border-radius:var(--radius);padding:14px 16px;margin-bottom:16px;font-size:14px;line-height:1.5}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">Century Roof &amp; Solar</div>
+    <div class="header-sub" id="header-sub">Job Status Portal</div>
+  </div>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+    <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="loading" id="loading-state">
+    <div class="spinner"></div>
+    <div style="font-size:14px;color:var(--text-muted)" id="loading-text">Loading your job status...</div>
+  </div>
+  <div id="portal-content" style="display:none"></div>
+</div>
+
+<script>
+const BASE_ID='appn1m7nkB7AqfMsN';
+const TOKEN='patdw99npBzStV62o.9de4eaaa1b0a38c79d37a0e6eca7e1e58e0b1e8d4a32c725f6731ffe65aedd0e';
+const JOBS_TABLE='tblyIpCuDl7SoH8hy';
+
+let currentLang='en';
+let currentJob=null;
+
+const TRANSLATIONS={
+  en:{
+    headerSub:'Job Status Portal',
+    loading:'Loading your job status...',
+    notFoundTitle:'Job Not Found',
+    notFoundSub:'Please use the link provided by Century Roof & Solar to view your job status.',
+    callUs:'Call Us',
+    progressTitle:'Project Progress',
+    jobType:'Job Type',
+    startDate:'Start Date',
+    crew:'Assigned Crew',
+    contractValue:'Contract Value',
+    toBeScheduled:'To be scheduled',
+    toBeAssigned:'To be assigned',
+    onFile:'On file',
+    notesTitle:'Project Notes',
+    contactTitle:'Questions about your project?',
+    contactSub:'Our team is here to help. Give us a call or send us an email.',
+    emailUs:'Email Us',
+    weatherAlert:'Weather Delay: Your project has been temporarily delayed due to weather conditions. We will reschedule as soon as possible and contact you directly.',
+    holdAlert:'On Hold: Your project is temporarily on hold. Please contact our office for more information.',
+    steps:[
+      {name:'Contract Signed',desc:'Your project has been confirmed with Century Roof & Solar'},
+      {name:'Scheduled',desc:'Your job has been added to our schedule'},
+      {name:'Work in Progress',desc:'Our crew is actively working on your project'},
+      {name:'Complete',desc:'Your project is finished — thank you for choosing us!'}
+    ]
+  },
+  es:{
+    headerSub:'Portal de Estado del Trabajo',
+    loading:'Cargando el estado de su trabajo...',
+    notFoundTitle:'Trabajo No Encontrado',
+    notFoundSub:'Por favor use el enlace proporcionado por Century Roof & Solar para ver el estado de su trabajo.',
+    callUs:'Llámenos',
+    progressTitle:'Progreso del Proyecto',
+    jobType:'Tipo de Trabajo',
+    startDate:'Fecha de Inicio',
+    crew:'Equipo Asignado',
+    contractValue:'Valor del Contrato',
+    toBeScheduled:'Por programar',
+    toBeAssigned:'Por asignar',
+    onFile:'En archivo',
+    notesTitle:'Notas del Proyecto',
+    contactTitle:'¿Preguntas sobre su proyecto?',
+    contactSub:'Nuestro equipo está aquí para ayudar. Llámenos o envíenos un correo electrónico.',
+    emailUs:'Enviar Correo',
+    weatherAlert:'Retraso por Clima: Su proyecto ha sido temporalmente retrasado por condiciones climáticas. Lo reprogramaremos lo antes posible y nos comunicaremos con usted directamente.',
+    holdAlert:'En Espera: Su proyecto está temporalmente en pausa. Comuníquese con nuestra oficina para más información.',
+    steps:[
+      {name:'Contrato Firmado',desc:'Su proyecto ha sido confirmado con Century Roof & Solar'},
+      {name:'Programado',desc:'Su trabajo ha sido agregado a nuestro calendario'},
+      {name:'Trabajo en Progreso',desc:'Nuestro equipo está trabajando activamente en su proyecto'},
+      {name:'Completado',desc:'Su proyecto está terminado — ¡gracias por elegirnos!'}
+    ]
+  }
+};
+
+const STATUS_STEPS={'Sold':1,'Scheduled':2,'In Progress':3,'Complete':4,'On Hold':2,'Weather Delay':2};
+const TYPE_COLORS={'Tear-off':'#c0392b','Solar':'#27ae60','Repair':'#f0b429','Electrical':'#e67e22','Installation':'#2980b9','Gutters':'#8e44ad','Stucco':'#7f8c8d','Inspection':'#16a085'};
+const STATUS_COLORS={'Sold':'#f0b429','Scheduled':'#2980b9','In Progress':'#e67e22','Complete':'#27ae60','On Hold':'#7f8c8d','Weather Delay':'#c0392b'};
+const STATUS_ICONS={'Sold':'📋','Scheduled':'📅','In Progress':'🔨','Complete':'✅','On Hold':'⏸️','Weather Delay':'🌧️'};
+
+function setLang(lang,btn){
+  currentLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('header-sub').textContent=TRANSLATIONS[lang].headerSub;
+  if(currentJob) renderPortal(currentJob);
+}
+
+async function loadJob(){
+  const params=new URLSearchParams(window.location.search);
+  const jobId=params.get('job');
+
+  if(!jobId){
+    showNotFound();
+    return;
+  }
+
+  try{
+    const r=await fetch(`https://api.airtable.com/v0/${BASE_ID}/${JOBS_TABLE}/${jobId}`,{
+      headers:{Authorization:'Bearer '+TOKEN}
+    });
+    const d=await r.json();
+    if(d.id){
+      currentJob=d;
+      renderPortal(d);
+    } else {
+      showNotFound();
+    }
+  }catch(e){
+    showNotFound();
+  }
+}
+
+function renderPortal(job){
+  const t=TRANSLATIONS[currentLang];
+  const f=job.fields;
+  const status=f['Status']||'Sold';
+  const stepNum=STATUS_STEPS[status]||1;
+  const statusColor=STATUS_COLORS[status]||'#888';
+  const statusIcon=STATUS_ICONS[status]||'📋';
+  const typeColor=TYPE_COLORS[f['Job Type']]||'#888';
+
+  const stepsHTML=t.steps.map((step,i)=>{
+    const idx=i+1;
+    let dotClass='pending',dotIcon='○';
+    if(idx<stepNum){dotClass='done';dotIcon='✓';}
+    else if(idx===stepNum){dotClass='active';dotIcon=statusIcon;}
+    return `<div class="progress-step">
+      <div class="step-line"></div>
+      <div class="step-dot ${dotClass}">${dotIcon}</div>
+      <div class="step-content">
+        <div class="step-name ${dotClass==='pending'?'pending':''}">${step.name}</div>
+        <div class="step-desc">${step.desc}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  let alertHTML='';
+  if(status==='Weather Delay') alertHTML=`<div class="alert-card" style="background:#fdecea;border:1px solid #fca5a5;color:#991b1b">🌧️ ${t.weatherAlert}</div>`;
+  if(status==='On Hold') alertHTML=`<div class="alert-card" style="background:#f0f0f0;border:1px solid #ccc;color:#555">⏸️ ${t.holdAlert}</div>`;
+
+  const startDateDisplay=f['Start Date']
+    ?new Date(f['Start Date']+'T12:00:00').toLocaleDateString(currentLang==='es'?'es-US':'en-US',{month:'long',day:'numeric',year:'numeric'})
+    :t.toBeScheduled;
+
+  const html=`
+    <div class="status-header">
+      <div class="status-customer">${f['Customer Name']||f['Job Name']||'—'}</div>
+      <div class="status-address">📍 ${f['Address']||''}</div>
+      <div class="status-badge" style="background:${statusColor}22;color:${statusColor};border:1px solid ${statusColor}44">
+        ${statusIcon} ${status}
+      </div>
+    </div>
+
+    ${alertHTML}
+
+    <div class="progress-tracker">
+      <div class="progress-title">📊 ${t.progressTitle}</div>
+      <div class="progress-steps">${stepsHTML}</div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-label">${t.jobType}</div>
+        <div class="info-value" style="color:${typeColor}">${f['Job Type']||'—'}</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">${t.startDate}</div>
+        <div class="info-value">${startDateDisplay}</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">${t.crew}</div>
+        <div class="info-value">${f['Assigned Crew']||t.toBeAssigned}</div>
+      </div>
+      <div class="info-card">
+        <div class="info-label">${t.contractValue}</div>
+        <div class="info-value green">${f['Contract Value']?'$'+Number(f['Contract Value']).toLocaleString():t.onFile}</div>
+      </div>
+    </div>
+
+    ${f['Notes']?`<div class="notes-card">
+      <div class="notes-title">📋 ${t.notesTitle}</div>
+      <div class="notes-text">${f['Notes']}</div>
+    </div>`:''}
+
+    <div class="contact-card">
+      <div class="contact-title">${t.contactTitle}</div>
+      <div class="contact-sub">${t.contactSub}</div>
+      <a href="tel:5107809489" class="contact-btn">📞 ${t.callUs}: (510) 780-9489</a>
+      <a href="mailto:tonyd@centuryrooftile.com" class="contact-btn">✉️ ${t.emailUs}</a>
+    </div>`;
+
+  document.getElementById('loading-state').style.display='none';
+  document.getElementById('portal-content').style.display='block';
+  document.getElementById('portal-content').innerHTML=html;
+}
+
+function showNotFound(){
+  const t=TRANSLATIONS[currentLang];
+  document.getElementById('loading-state').style.display='none';
+  document.getElementById('portal-content').style.display='block';
+  document.getElementById('portal-content').innerHTML=`
+    <div class="not-found">
+      <div class="not-found-icon">🏠</div>
+      <div class="not-found-title">${t.notFoundTitle}</div>
+      <div class="not-found-sub">${t.notFoundSub}</div>
+      <div style="margin-top:24px">
+        <a href="tel:5107809489" class="contact-btn">📞 ${t.callUs}: (510) 780-9489</a>
+      </div>
+    </div>`;
+}
+
+loadJob();
+</script>
+</body>
+</html>
