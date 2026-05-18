@@ -1860,6 +1860,8 @@ async function saveEmployee(){
   const digits=phoneRaw.replace(/\D/g,'');
   const phone=digits.length===10?`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`:phoneRaw;
   if(phone) fields['Phone']=phone;
+  const lang=document.getElementById('e-lang').value;
+  if(lang) fields['Language']=lang;
   const crew2=document.getElementById('e-crew2').value;
   if(crew2) fields['Secondary Crew']=crew2;
   if(state.editingEmpId)await api.patch(TABLES.employees,state.editingEmpId,fields);
