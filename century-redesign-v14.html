@@ -1,0 +1,2602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Century Roof & Solar — One Company. One Warranty. Zero Finger-Pointing.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,800&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0a0a;
+  --paper:#fafaf7;
+  --cream:#f4f1ea;
+  --sun:#ff5722;
+  --sun-deep:#e64a19;
+  --gold:#d4a574;
+  --storm:#1a3a5c;
+  --storm-deep:#0d2440;
+  --slate:#2c2c2c;
+  --rule:rgba(10,10,10,0.12);
+  --rule-strong:rgba(10,10,10,0.25);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Geist',-apple-system,sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  font-weight:400;
+  line-height:1.5;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+.serif{font-family:'Fraunces',Georgia,serif;font-weight:400;letter-spacing:-0.02em}
+.mono{font-family:'Geist Mono',monospace;font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase}
+
+/* ============ STORM ALERT BAR ============ */
+.alert-bar{
+  background:var(--storm-deep);
+  color:var(--paper);
+  padding:0.65rem 1.5rem;
+  display:flex;align-items:center;justify-content:center;gap:0.75rem;
+  font-size:0.82rem;
+  position:relative;z-index:101;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.alert-bar .pulse{
+  width:8px;height:8px;border-radius:50%;background:var(--sun);
+  animation:pulse 2s infinite;flex-shrink:0;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,87,34,0.6)}
+  50%{box-shadow:0 0 0 8px rgba(255,87,34,0)}
+}
+.alert-bar a{color:var(--sun);text-decoration:none;font-weight:500;white-space:nowrap}
+.alert-bar a:hover{text-decoration:underline}
+.alert-bar .alert-text{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:600px){.alert-bar{font-size:0.72rem;padding:0.5rem 1rem}}
+
+/* ============ NAV ============ */
+nav{
+  position:sticky;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.25rem 2rem;
+  background:rgba(250,250,247,0.85);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--rule);
+}
+.logo{
+  font-family:'Fraunces',serif;
+  font-weight:600;font-size:1.35rem;
+  letter-spacing:-0.02em;
+  display:flex;align-items:center;gap:0.6rem;
+  text-decoration:none;color:var(--ink);
+}
+.logo-mark{
+  width:32px;height:32px;background:var(--ink);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--sun);
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;font-weight:600;
+}
+.nav-links{display:flex;gap:2.25rem;align-items:center}
+.nav-links a{
+  color:var(--ink);text-decoration:none;font-size:0.9rem;
+  font-weight:500;letter-spacing:-0.01em;
+  transition:opacity 0.2s;
+}
+.nav-links a:hover{opacity:0.55}
+.nav-cta{
+  background:var(--ink);color:var(--paper) !important;
+  padding:0.7rem 1.4rem;border-radius:100px;
+  font-size:0.85rem;font-weight:500;
+  transition:all 0.2s ease;
+}
+.nav-cta:hover{background:var(--sun);transform:translateY(-1px);opacity:1 !important}
+.nav-phone{font-family:'Geist Mono',monospace;font-size:0.8rem;color:var(--slate)}
+.menu-toggle{display:none;background:none;border:none;cursor:pointer;width:32px;height:32px;flex-direction:column;justify-content:center;gap:5px}
+.menu-toggle span{width:24px;height:1.5px;background:var(--ink);display:block}
+
+@media(max-width:1080px){
+  .nav-links{
+    position:fixed;top:0;right:0;
+    width:80%;max-width:340px;height:100vh;
+    background:var(--paper);
+    flex-direction:column;
+    justify-content:center;align-items:flex-start;
+    padding:2rem;gap:1.5rem;
+    transform:translateX(100%);
+    transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    border-left:1px solid var(--rule);
+  }
+  .nav-links.open{transform:translateX(0)}
+  .nav-links a{font-size:1.35rem;font-family:'Fraunces',serif}
+  .menu-toggle{display:flex}
+  .nav-phone{display:none}
+  nav{padding:1rem 1.25rem}
+}
+
+/* ============ HERO ============ */
+.hero{
+  min-height:calc(100vh - 80px);
+  padding:5rem 2rem 3rem;
+  position:relative;
+  display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(180deg,var(--paper) 0%,var(--cream) 100%);
+  overflow:hidden;
+}
+.hero-grain{
+  position:absolute;inset:0;opacity:0.4;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");
+}
+.hero-eyebrow{
+  display:flex;align-items:center;gap:1rem;
+  margin-bottom:2.5rem;opacity:0;
+  animation:fadeUp 0.8s 0.2s forwards;
+}
+.hero-eyebrow .dot{width:6px;height:6px;background:var(--sun);border-radius:50%}
+
+.hero-headline{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.6rem,9vw,8rem);
+  font-weight:300;line-height:0.92;
+  letter-spacing:-0.045em;max-width:1200px;
+}
+.hero-headline .line{
+  display:block;opacity:0;
+  animation:fadeUp 0.9s forwards;
+}
+.hero-headline .line-1{animation-delay:0.35s}
+.hero-headline .line-2{animation-delay:0.5s}
+.hero-headline .line-3{animation-delay:0.65s}
+.hero-headline em{
+  font-style:italic;font-weight:400;
+  background:linear-gradient(120deg,var(--sun) 0%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hero-secondary{
+  font-size:1.15rem;font-weight:400;color:var(--slate);
+  max-width:640px;margin-top:2.5rem;line-height:1.55;
+  opacity:0;animation:fadeUp 0.9s 0.85s forwards;
+}
+.hero-actions{
+  display:flex;gap:1rem;margin-top:2.5rem;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 0.9s 1s forwards;
+}
+.btn-primary{
+  background:var(--ink);color:var(--paper);
+  padding:1.1rem 2rem;border-radius:100px;
+  font-size:0.95rem;font-weight:500;
+  text-decoration:none;
+  display:inline-flex;align-items:center;gap:0.6rem;
+  transition:all 0.3s cubic-bezier(0.16,1,0.3,1);
+  border:none;cursor:pointer;
+}
+.btn-primary:hover{background:var(--sun);transform:translateY(-2px);box-shadow:0 12px 30px rgba(255,87,34,0.25)}
+.btn-primary .arrow{transition:transform 0.3s}
+.btn-primary:hover .arrow{transform:translateX(4px)}
+.btn-secondary{
+  background:transparent;color:var(--ink);
+  padding:1.1rem 2rem;border-radius:100px;
+  font-size:0.95rem;font-weight:500;text-decoration:none;
+  border:1px solid var(--rule-strong);
+  display:inline-flex;align-items:center;gap:0.6rem;
+  transition:all 0.2s;
+}
+.btn-secondary:hover{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+
+.hero-meta{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-top:4rem;padding-top:2rem;
+  border-top:1px solid var(--rule);
+  flex-wrap:wrap;gap:2rem;
+  opacity:0;animation:fadeUp 0.9s 1.15s forwards;
+}
+.hero-meta-item{display:flex;flex-direction:column;gap:0.4rem}
+.hero-meta-item .num{
+  font-family:'Fraunces',serif;font-size:2.2rem;font-weight:400;
+  letter-spacing:-0.03em;line-height:1;
+}
+.hero-meta-item .label{font-size:0.78rem;color:var(--slate);max-width:160px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ============ TRUST BAR ============ */
+.trust{
+  padding:2rem;
+  border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);
+  background:var(--paper);
+}
+.trust-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1.5rem;
+}
+.trust-item{
+  display:flex;align-items:center;gap:0.6rem;
+  font-size:0.82rem;color:var(--slate);font-weight:500;
+}
+.trust-item .badge{width:8px;height:8px;border-radius:50%;background:var(--sun)}
+
+/* ============ INTEGRATION PROMISE ============ */
+.promise{
+  padding:8rem 2rem;
+  background:var(--paper);
+  position:relative;
+}
+.promise-head{
+  max-width:1400px;margin:0 auto 5rem;
+  text-align:center;
+}
+.promise-head .mono{
+  color:var(--sun);margin-bottom:1.5rem;display:block;
+}
+.promise-head h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.2rem,5vw,4.5rem);
+  font-weight:300;line-height:1;letter-spacing:-0.03em;
+  max-width:900px;margin:0 auto;
+}
+.promise-head h2 em{
+  font-style:italic;
+  background:linear-gradient(120deg,var(--sun) 0%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.promise-head .lead{
+  font-size:1.1rem;color:var(--slate);
+  max-width:680px;margin:2rem auto 0;line-height:1.55;
+}
+
+.promise-grid{
+  max-width:1400px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;
+}
+@media(max-width:900px){.promise-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.promise-grid{grid-template-columns:1fr}}
+
+.promise-card{
+  background:var(--cream);
+  border-radius:20px;padding:2rem;
+  display:flex;flex-direction:column;
+  min-height:340px;
+  position:relative;overflow:hidden;
+  transition:transform 0.3s;
+}
+.promise-card:hover{transform:translateY(-4px)}
+.promise-card .num{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.15em;
+  color:var(--sun);margin-bottom:1.5rem;
+}
+.promise-card h4{
+  font-family:'Fraunces',serif;
+  font-size:1.4rem;font-weight:400;
+  letter-spacing:-0.02em;line-height:1.15;
+  margin-bottom:1.5rem;color:var(--ink);
+}
+.promise-compare{
+  margin-top:auto;
+  display:flex;flex-direction:column;gap:0.75rem;
+  padding-top:1.25rem;
+  border-top:1px solid rgba(10,10,10,0.08);
+}
+.promise-compare .row{
+  display:flex;align-items:flex-start;gap:0.6rem;
+  font-size:0.82rem;line-height:1.4;
+}
+.promise-compare .x{
+  color:#999;font-family:'Fraunces',serif;
+  font-size:1rem;line-height:1;flex-shrink:0;margin-top:1px;
+}
+.promise-compare .check{
+  color:var(--sun);font-family:'Fraunces',serif;
+  font-size:1rem;line-height:1;flex-shrink:0;margin-top:1px;
+}
+.promise-compare .bad{color:#777;text-decoration:line-through;text-decoration-color:rgba(0,0,0,0.2)}
+.promise-compare .good{color:var(--ink);font-weight:500}
+
+.promise-footer{
+  max-width:1400px;margin:4rem auto 0;
+  text-align:center;
+}
+.promise-footer .punch{
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:clamp(1.3rem,2.5vw,2rem);
+  font-weight:400;color:var(--ink);
+  max-width:820px;margin:0 auto;line-height:1.3;
+  letter-spacing:-0.02em;
+}
+.promise-footer .punch strong{
+  font-style:normal;font-weight:500;
+  background:linear-gradient(120deg,var(--sun) 0%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* ============ SECTION HEAD (shared) ============ */
+.section-head{
+  max-width:1400px;margin:0 auto 4rem;
+  display:flex;justify-content:space-between;align-items:flex-end;
+  gap:3rem;flex-wrap:wrap;
+}
+.section-head h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.2rem,5vw,4.5rem);
+  font-weight:300;letter-spacing:-0.03em;line-height:1;
+  max-width:700px;
+}
+.section-head p{font-size:1rem;color:var(--slate);max-width:380px;line-height:1.55}
+
+/* ============ SERVICES ============ */
+.services{padding:7rem 2rem;background:var(--cream);position:relative}
+.service-grid{
+  max-width:1400px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;
+}
+@media(max-width:900px){.service-grid{grid-template-columns:1fr}}
+
+.service-card{
+  background:var(--ink);color:var(--paper);
+  padding:2.5rem;border-radius:24px;
+  min-height:540px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  position:relative;overflow:hidden;cursor:pointer;
+  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.service-card:nth-child(2){background:var(--paper);color:var(--ink)}
+.service-card:nth-child(3){background:var(--sun);color:var(--paper)}
+.service-card:hover{transform:translateY(-6px)}
+.service-card .num{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.15em;opacity:0.6;
+}
+.service-card h3{
+  font-family:'Fraunces',serif;
+  font-size:2.2rem;font-weight:400;
+  letter-spacing:-0.03em;line-height:1;
+  margin-top:1rem;
+}
+.service-card .desc{
+  font-size:0.95rem;opacity:0.8;margin-top:1.25rem;line-height:1.55;
+}
+.service-card ul{
+  list-style:none;margin-top:1.5rem;
+  display:flex;flex-direction:column;gap:0.55rem;
+}
+.service-card ul li{
+  font-size:0.85rem;opacity:0.75;
+  padding-left:1.25rem;position:relative;
+}
+.service-card ul li::before{
+  content:'';position:absolute;left:0;top:0.5rem;
+  width:8px;height:1px;background:currentColor;
+}
+.service-card .plus-line{
+  margin-top:1.5rem;padding-top:1.5rem;
+  border-top:1px solid currentColor;
+  opacity:0.4;
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.1em;
+}
+.service-card .plus-list{
+  font-family:'Geist',sans-serif;
+  font-size:0.85rem;letter-spacing:-0.01em;
+  text-transform:none;
+  margin-top:0.5rem;opacity:0.85;line-height:1.5;
+}
+.service-card .icon{
+  align-self:flex-end;
+  font-size:2.5rem;opacity:0.4;
+  font-family:'Fraunces',serif;font-style:italic;
+}
+
+/* ============ PROBLEM SOLVERS ============ */
+.problems{
+  padding:8rem 2rem;
+  background:var(--ink);color:var(--paper);
+  position:relative;overflow:hidden;
+}
+.problems::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--sun),transparent);
+}
+.problems-head{
+  max-width:1400px;margin:0 auto 4rem;
+  display:grid;grid-template-columns:1.2fr 1fr;gap:4rem;align-items:end;
+}
+@media(max-width:800px){.problems-head{grid-template-columns:1fr;gap:2rem}}
+.problems-head h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.4rem,5.5vw,5rem);
+  font-weight:300;line-height:0.98;letter-spacing:-0.03em;
+}
+.problems-head h2 em{font-style:italic;color:var(--sun)}
+.problems-head .lead{
+  font-size:1.05rem;color:rgba(255,255,255,0.65);line-height:1.55;
+  border-left:1px solid rgba(255,255,255,0.2);
+  padding-left:1.5rem;
+}
+
+.problem-grid{
+  max-width:1400px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+  border-top:1px solid rgba(255,255,255,0.15);
+}
+@media(max-width:900px){.problem-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.problem-grid{grid-template-columns:1fr}}
+
+.problem{
+  padding:2rem 1.5rem 2rem 0;
+  border-right:1px solid rgba(255,255,255,0.15);
+  border-bottom:1px solid rgba(255,255,255,0.15);
+  transition:background 0.3s;cursor:pointer;
+}
+.problem:hover{background:rgba(255,87,34,0.05)}
+.problem-grid > .problem:nth-child(3n){border-right:none}
+@media(max-width:900px){
+  .problem-grid > .problem:nth-child(3n){border-right:1px solid rgba(255,255,255,0.15)}
+  .problem-grid > .problem:nth-child(2n){border-right:none}
+}
+@media(max-width:560px){.problem-grid > .problem{border-right:none}}
+
+.problem .cat{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.1em;
+  color:var(--sun);margin-bottom:1rem;display:block;
+}
+.problem h4{
+  font-family:'Fraunces',serif;
+  font-size:1.5rem;font-weight:400;
+  letter-spacing:-0.02em;line-height:1.1;
+  margin-bottom:0.6rem;
+}
+.problem p{font-size:0.85rem;color:rgba(255,255,255,0.6);line-height:1.5}
+.problems-cta{max-width:1400px;margin:3rem auto 0;text-align:center}
+.problems-cta a{
+  color:var(--paper);text-decoration:none;
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:1.4rem;
+  border-bottom:1px solid rgba(255,255,255,0.3);
+  padding-bottom:0.4rem;
+  transition:border-color 0.2s,color 0.2s;
+}
+.problems-cta a:hover{color:var(--sun);border-color:var(--sun)}
+
+/* ============ EL NIÑO SECTION ============ */
+.elnino{
+  padding:8rem 2rem;
+  background:linear-gradient(160deg,var(--storm-deep) 0%,var(--storm) 60%,#2a4a6b 100%);
+  color:var(--paper);position:relative;overflow:hidden;
+}
+.elnino::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(circle at 20% 30%,rgba(255,255,255,0.04) 0%,transparent 50%),
+    radial-gradient(circle at 80% 70%,rgba(255,87,34,0.06) 0%,transparent 50%);
+  pointer-events:none;
+}
+.rain{
+  position:absolute;inset:0;pointer-events:none;opacity:0.15;
+  background-image:url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='10' y1='0' x2='5' y2='15' stroke='white' stroke-width='0.5'/%3E%3Cline x1='40' y1='10' x2='35' y2='25' stroke='white' stroke-width='0.5'/%3E%3Cline x1='70' y1='5' x2='65' y2='20' stroke='white' stroke-width='0.5'/%3E%3Cline x1='25' y1='40' x2='20' y2='55' stroke='white' stroke-width='0.5'/%3E%3Cline x1='80' y1='45' x2='75' y2='60' stroke='white' stroke-width='0.5'/%3E%3Cline x1='55' y1='70' x2='50' y2='85' stroke='white' stroke-width='0.5'/%3E%3C/svg%3E");
+}
+.elnino-inner{max-width:1400px;margin:0 auto;position:relative;z-index:2}
+.elnino-tag{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  background:rgba(255,87,34,0.15);
+  border:1px solid rgba(255,87,34,0.3);
+  color:var(--sun);
+  padding:0.5rem 1rem;border-radius:100px;
+  font-family:'Geist Mono',monospace;
+  font-size:0.72rem;letter-spacing:0.1em;
+  margin-bottom:2rem;
+}
+.elnino-tag .pulse-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--sun);
+  animation:pulse 2s infinite;
+}
+.elnino h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.4rem,6vw,5.5rem);
+  font-weight:300;line-height:0.98;letter-spacing:-0.03em;
+  max-width:1100px;
+}
+.elnino h2 em{font-style:italic;color:var(--sun)}
+.elnino .lead{
+  font-size:1.1rem;color:rgba(255,255,255,0.7);
+  max-width:680px;margin-top:2rem;line-height:1.6;
+}
+.elnino-cite{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.08em;
+  color:rgba(255,255,255,0.4);margin-top:1rem;
+}
+.elnino-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1.25rem;margin-top:4rem;
+}
+@media(max-width:900px){.elnino-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.elnino-grid{grid-template-columns:1fr}}
+.elnino-item{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:16px;padding:1.75rem 1.5rem;
+  backdrop-filter:blur(10px);
+  transition:transform 0.3s,background 0.3s;
+}
+.elnino-item:hover{transform:translateY(-4px);background:rgba(255,255,255,0.07)}
+.elnino-item .num{
+  font-family:'Fraunces',serif;
+  font-size:2.5rem;font-weight:400;
+  color:var(--sun);letter-spacing:-0.03em;line-height:1;
+  margin-bottom:1rem;display:block;
+}
+.elnino-item h5{
+  font-family:'Fraunces',serif;
+  font-size:1.15rem;font-weight:500;
+  margin-bottom:0.5rem;letter-spacing:-0.01em;
+}
+.elnino-item p{font-size:0.82rem;color:rgba(255,255,255,0.55);line-height:1.5}
+.elnino-actions{margin-top:3.5rem;display:flex;gap:1rem;flex-wrap:wrap}
+.elnino-actions .btn-primary{background:var(--sun)}
+.elnino-actions .btn-primary:hover{background:var(--paper);color:var(--ink)}
+.elnino-actions .btn-secondary{color:var(--paper);border-color:rgba(255,255,255,0.3)}
+.elnino-actions .btn-secondary:hover{border-color:var(--paper);background:var(--paper);color:var(--ink)}
+
+/* ============ MANIFESTO ============ */
+.manifesto{
+  padding:8rem 2rem;
+  background:var(--ink);color:var(--paper);
+  position:relative;overflow:hidden;
+}
+.manifesto-inner{max-width:1100px;margin:0 auto;position:relative;z-index:2}
+.manifesto .mono{color:var(--sun);margin-bottom:2rem;display:block}
+.manifesto h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2rem,5vw,4rem);
+  font-weight:300;line-height:1.1;letter-spacing:-0.025em;
+}
+.manifesto h2 em{font-style:italic;font-weight:400;color:var(--gold)}
+.manifesto-sig{
+  margin-top:3rem;display:flex;align-items:center;gap:1rem;
+  font-size:0.85rem;color:rgba(255,255,255,0.5);
+}
+.manifesto-sig .line{flex:1;height:1px;background:rgba(255,255,255,0.15);max-width:60px}
+
+/* ============ PROJECTS ============ */
+.projects{padding:7rem 2rem;background:var(--paper)}
+.project-grid{
+  max-width:1400px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(12,1fr);gap:1.5rem;
+}
+.project{
+  border-radius:20px;overflow:hidden;
+  position:relative;cursor:pointer;
+  background:var(--ink);aspect-ratio:4/3;
+  transition:transform 0.4s ease;
+}
+.project:hover{transform:scale(1.02)}
+.project:nth-child(1){grid-column:span 7}
+.project:nth-child(2){grid-column:span 5}
+.project:nth-child(3){grid-column:span 5}
+.project:nth-child(4){grid-column:span 7}
+@media(max-width:900px){.project:nth-child(n){grid-column:span 12}}
+.project-img{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  transition:transform 0.6s cubic-bezier(0.16,1,0.3,1);
+}
+.project:hover .project-img{transform:scale(1.05)}
+.project-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85) 100%);
+}
+.project-info{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:2rem;color:var(--paper);
+  display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;
+}
+.project-info h4{
+  font-family:'Fraunces',serif;
+  font-size:1.5rem;font-weight:400;letter-spacing:-0.02em;
+}
+.project-info .tag{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.1em;
+  background:rgba(255,255,255,0.15);
+  padding:0.4rem 0.8rem;border-radius:100px;
+  backdrop-filter:blur(10px);
+}
+.proj-1{background:linear-gradient(135deg,#8b6f47 0%,#a8896b 50%,#c9a989 100%)}
+.proj-2{background:linear-gradient(135deg,#1a2332 0%,#2d3e54 50%,#3b5070 100%)}
+.proj-3{background:linear-gradient(135deg,#5c4033 0%,#7a5942 50%,#9a7858 100%)}
+.proj-4{background:linear-gradient(135deg,#4a4a4a 0%,#6b6b6b 50%,#8c8c8c 100%)}
+
+/* ============ PROCESS ============ */
+.process{padding:7rem 2rem;background:var(--cream)}
+.process-grid{
+  max-width:1400px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  border-top:1px solid var(--rule);
+}
+@media(max-width:800px){.process-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.process-grid{grid-template-columns:1fr}}
+.process-step{
+  padding:2.5rem 1.5rem 2.5rem 0;
+  border-right:1px solid var(--rule);position:relative;
+}
+.process-step:last-child{border-right:none}
+@media(max-width:800px){.process-step:nth-child(2){border-right:none}}
+.process-step .num{
+  font-family:'Fraunces',serif;
+  font-size:0.9rem;color:var(--sun);
+  margin-bottom:2rem;display:block;
+}
+.process-step h4{
+  font-family:'Fraunces',serif;
+  font-size:1.5rem;font-weight:400;
+  letter-spacing:-0.02em;line-height:1.15;
+  margin-bottom:0.75rem;
+}
+.process-step p{font-size:0.9rem;color:var(--slate);line-height:1.55}
+
+/* ============ REVIEWS ============ */
+.reviews{padding:7rem 2rem;background:var(--paper);overflow:hidden}
+.review-track{
+  display:flex;gap:1.5rem;
+  max-width:1400px;margin:0 auto;
+  overflow-x:auto;scroll-snap-type:x mandatory;
+  padding-bottom:1rem;-webkit-overflow-scrolling:touch;
+}
+.review-track::-webkit-scrollbar{height:2px}
+.review-track::-webkit-scrollbar-thumb{background:var(--ink)}
+.review{
+  flex:0 0 380px;background:var(--cream);
+  border-radius:20px;padding:2.5rem;
+  scroll-snap-align:start;border:1px solid var(--rule);
+}
+.review .stars{color:var(--sun);font-size:0.95rem;letter-spacing:0.15em;margin-bottom:1.25rem}
+.review .quote{
+  font-family:'Fraunces',serif;
+  font-size:1.15rem;font-weight:400;line-height:1.4;
+  letter-spacing:-0.01em;color:var(--ink);margin-bottom:2rem;
+}
+.review .author{display:flex;align-items:center;gap:0.75rem}
+.review .avatar{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--ink);color:var(--sun);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Geist Mono',monospace;font-size:0.75rem;
+}
+.review .meta{font-size:0.8rem;color:var(--slate)}
+.review .meta strong{color:var(--ink);display:block;font-size:0.9rem;font-weight:500}
+
+/* ============ CTA ============ */
+.cta{
+  padding:8rem 2rem;background:var(--ink);color:var(--paper);
+  position:relative;overflow:hidden;
+}
+.cta::before{
+  content:'';position:absolute;
+  top:-50%;right:-20%;width:80%;height:200%;
+  background:radial-gradient(circle,rgba(255,87,34,0.18) 0%,transparent 60%);
+  pointer-events:none;
+}
+.cta-inner{
+  max-width:1100px;margin:0 auto;position:relative;z-index:2;
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;
+}
+@media(max-width:900px){.cta-inner{grid-template-columns:1fr;gap:3rem}}
+.cta h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.4rem,5vw,4.5rem);
+  font-weight:300;line-height:1;letter-spacing:-0.03em;
+}
+.cta h2 em{font-style:italic;color:var(--sun)}
+.cta p{
+  font-size:1rem;color:rgba(255,255,255,0.65);
+  margin-top:1.5rem;line-height:1.55;max-width:420px;
+}
+.estimate-form{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;padding:2.5rem;backdrop-filter:blur(10px);
+}
+.form-row{margin-bottom:1.25rem}
+.form-row label{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;color:rgba(255,255,255,0.5);
+  letter-spacing:0.1em;display:block;margin-bottom:0.5rem;
+}
+.form-row input,.form-row select{
+  width:100%;background:transparent;color:var(--paper);
+  border:none;border-bottom:1px solid rgba(255,255,255,0.2);
+  padding:0.7rem 0;font-size:1rem;
+  font-family:'Geist',sans-serif;transition:border-color 0.2s;
+}
+.form-row input:focus,.form-row select:focus{outline:none;border-color:var(--sun)}
+.form-row select option{background:var(--ink);color:var(--paper)}
+.form-row input::placeholder{color:rgba(255,255,255,0.3)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:500px){.form-grid{grid-template-columns:1fr}}
+.estimate-form .btn-primary{
+  width:100%;justify-content:center;background:var(--sun);margin-top:1rem;
+}
+.estimate-form .btn-primary:hover{background:var(--paper);color:var(--ink)}
+.form-note{
+  font-size:0.75rem;color:rgba(255,255,255,0.4);
+  text-align:center;margin-top:1rem;
+}
+
+/* ============ FOOTER ============ */
+footer{background:var(--paper);padding:5rem 2rem 2rem;border-top:1px solid var(--rule)}
+.foot-inner{max-width:1400px;margin:0 auto}
+.foot-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:3rem;margin-bottom:4rem;
+}
+@media(max-width:800px){.foot-top{grid-template-columns:1fr 1fr;gap:2.5rem}}
+@media(max-width:500px){.foot-top{grid-template-columns:1fr}}
+.foot-brand h3{
+  font-family:'Fraunces',serif;
+  font-size:2rem;font-weight:400;letter-spacing:-0.025em;
+  margin-bottom:0.75rem;
+}
+.foot-brand .tagline{
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:1.05rem;color:var(--sun);
+  margin-bottom:1rem;letter-spacing:-0.01em;
+}
+.foot-brand p{font-size:0.9rem;color:var(--slate);max-width:340px;line-height:1.55}
+.foot-col h5{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.1em;color:var(--slate);
+  text-transform:uppercase;margin-bottom:1.25rem;
+}
+.foot-col a{
+  display:block;text-decoration:none;color:var(--ink);
+  font-size:0.9rem;padding:0.35rem 0;transition:opacity 0.2s;
+}
+.foot-col a:hover{opacity:0.55}
+.foot-bottom{
+  display:flex;justify-content:space-between;
+  border-top:1px solid var(--rule);
+  padding-top:2rem;flex-wrap:wrap;gap:1rem;
+}
+.foot-bottom .mono{color:var(--slate)}
+.foot-bottom a{color:var(--slate);text-decoration:none;margin-left:1.5rem;font-size:0.8rem}
+
+/* ============ TECHNOLOGY PARTNERS ============ */
+.tech{
+  padding:8rem 2rem;
+  background:var(--paper);
+  position:relative;
+}
+.tech-head{
+  max-width:1400px;margin:0 auto 4rem;
+  text-align:center;
+}
+.tech-head .mono{color:var(--sun);margin-bottom:1.5rem;display:block}
+.tech-head h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.2rem,5vw,4.5rem);
+  font-weight:300;line-height:1;letter-spacing:-0.03em;
+  max-width:900px;margin:0 auto;
+}
+.tech-head h2 em{
+  font-style:italic;
+  background:linear-gradient(120deg,var(--sun) 0%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.tech-head .lead{
+  font-size:1.05rem;color:var(--slate);
+  max-width:680px;margin:2rem auto 0;line-height:1.55;
+}
+.tech-grid{
+  max-width:1400px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;
+}
+@media(max-width:900px){.tech-grid{grid-template-columns:1fr}}
+.tech-card{
+  background:var(--cream);
+  border-radius:20px;padding:2.5rem;
+  display:flex;flex-direction:column;
+  min-height:380px;
+  position:relative;overflow:hidden;
+}
+.tech-card .badge-row{
+  display:flex;align-items:center;gap:0.5rem;
+  margin-bottom:1.5rem;
+}
+.tech-card .badge-row .mono{
+  font-size:0.65rem;color:var(--sun);
+  background:rgba(255,87,34,0.1);
+  padding:0.3rem 0.7rem;border-radius:100px;
+}
+.tech-card h4{
+  font-family:'Fraunces',serif;
+  font-size:1.8rem;font-weight:400;
+  letter-spacing:-0.025em;line-height:1.1;
+  margin-bottom:0.5rem;
+}
+.tech-card .sub{
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:1rem;color:var(--sun);
+  margin-bottom:1.25rem;
+}
+.tech-card p{
+  font-size:0.92rem;color:var(--slate);
+  line-height:1.55;margin-bottom:1.5rem;
+}
+.tech-card .specs{
+  margin-top:auto;
+  padding-top:1.25rem;
+  border-top:1px solid rgba(10,10,10,0.08);
+  display:flex;flex-direction:column;gap:0.5rem;
+}
+.tech-card .specs .spec{
+  display:flex;justify-content:space-between;
+  font-size:0.8rem;
+}
+.tech-card .specs .spec-label{color:var(--slate)}
+.tech-card .specs .spec-value{
+  font-family:'Geist Mono',monospace;
+  font-size:0.75rem;color:var(--ink);font-weight:500;
+}
+
+/* ============ BIDIRECTIONAL CHARGING ============ */
+.bidir{
+  padding:8rem 2rem;
+  background:linear-gradient(135deg,#1a1a1a 0%,#0a0a0a 100%);
+  color:var(--paper);
+  position:relative;overflow:hidden;
+}
+.bidir::before{
+  content:'';position:absolute;
+  top:-30%;right:-10%;width:60%;height:160%;
+  background:radial-gradient(circle,rgba(255,87,34,0.15) 0%,transparent 60%);
+  pointer-events:none;
+}
+.bidir-inner{
+  max-width:1400px;margin:0 auto;
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1.1fr 1fr;
+  gap:5rem;align-items:center;
+}
+@media(max-width:900px){.bidir-inner{grid-template-columns:1fr;gap:3rem}}
+.bidir .mono{color:var(--sun);margin-bottom:1.5rem;display:block}
+.bidir h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.2rem,5vw,4.5rem);
+  font-weight:300;line-height:0.98;letter-spacing:-0.03em;
+}
+.bidir h2 em{font-style:italic;color:var(--sun)}
+.bidir .lead{
+  font-size:1.05rem;color:rgba(255,255,255,0.7);
+  margin-top:2rem;line-height:1.6;
+}
+.bidir-flow{
+  position:relative;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:24px;padding:2.5rem;
+  backdrop-filter:blur(10px);
+}
+.bidir-flow h4{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.15em;
+  color:var(--sun);margin-bottom:1.5rem;
+}
+.bidir-flow .step{
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:1rem 0;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.bidir-flow .step:last-child{border-bottom:none}
+.bidir-flow .step-icon{
+  width:36px;height:36px;
+  background:rgba(255,87,34,0.15);
+  border:1px solid rgba(255,87,34,0.3);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fraunces',serif;
+  color:var(--sun);font-size:1rem;
+  flex-shrink:0;
+}
+.bidir-flow .step-body h5{
+  font-family:'Fraunces',serif;
+  font-size:1.1rem;font-weight:500;
+  letter-spacing:-0.01em;
+  margin-bottom:0.25rem;
+}
+.bidir-flow .step-body p{
+  font-size:0.82rem;
+  color:rgba(255,255,255,0.55);
+  line-height:1.5;
+}
+.bidir-actions{margin-top:2.5rem;display:flex;gap:1rem;flex-wrap:wrap}
+.bidir-actions .btn-primary{background:var(--sun)}
+.bidir-actions .btn-primary:hover{background:var(--paper);color:var(--ink)}
+.bidir-actions .btn-secondary{color:var(--paper);border-color:rgba(255,255,255,0.3)}
+.bidir-actions .btn-secondary:hover{border-color:var(--paper);background:var(--paper);color:var(--ink)}
+
+/* ============ PVC vs TPO ============ */
+.compare{
+  padding:7rem 2rem;
+  background:var(--cream);
+  position:relative;
+}
+.compare-inner{
+  max-width:1200px;margin:0 auto;
+}
+.compare-head{
+  text-align:center;
+  margin-bottom:4rem;
+}
+.compare-head .mono{color:var(--sun);margin-bottom:1.5rem;display:block}
+.compare-head h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2rem,4.5vw,3.6rem);
+  font-weight:300;line-height:1.05;letter-spacing:-0.03em;
+  max-width:780px;margin:0 auto;
+}
+.compare-head h2 em{
+  font-style:italic;
+  background:linear-gradient(120deg,var(--sun) 0%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.compare-head .lead{
+  font-size:1rem;color:var(--slate);
+  max-width:620px;margin:1.5rem auto 0;line-height:1.55;
+}
+.compare-table{
+  background:var(--paper);
+  border-radius:20px;
+  overflow:hidden;
+  border:1px solid var(--rule);
+}
+.compare-row{
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  border-bottom:1px solid var(--rule);
+}
+.compare-row:last-child{border-bottom:none}
+.compare-row > div{
+  padding:1.25rem 1.5rem;
+  font-size:0.9rem;
+  line-height:1.5;
+  display:flex;align-items:center;
+}
+.compare-row.head > div{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--slate);
+  background:rgba(10,10,10,0.02);
+  padding-top:1rem;padding-bottom:1rem;
+}
+.compare-row.head .pvc{color:var(--sun)}
+.compare-row .label{
+  font-family:'Fraunces',serif;
+  font-size:1.05rem;font-weight:500;
+  letter-spacing:-0.01em;
+  color:var(--ink);
+}
+.compare-row .pvc{
+  font-weight:500;color:var(--ink);
+  border-left:2px solid var(--sun);
+}
+.compare-row .tpo{
+  color:var(--slate);
+}
+@media(max-width:700px){
+  .compare-row{grid-template-columns:1fr;border-bottom:none;padding:1.25rem 0}
+  .compare-row > div{padding:0.5rem 1.5rem;border:none}
+  .compare-row.head{display:none}
+  .compare-row .label{
+    font-size:1.1rem;
+    padding-bottom:0.75rem;
+    margin-bottom:0.25rem;
+    border-bottom:1px solid var(--rule) !important;
+    width:100%;
+  }
+  .compare-row .pvc::before{
+    content:'PVC (Century) — ';
+    font-family:'Geist Mono',monospace;
+    font-size:0.65rem;letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--sun);margin-right:0.5rem;
+  }
+  .compare-row .tpo::before{
+    content:'TPO — ';
+    font-family:'Geist Mono',monospace;
+    font-size:0.65rem;letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--slate);margin-right:0.5rem;
+  }
+  .compare-row .pvc{border-left:none;padding-left:1.5rem}
+  .compare-row{border-bottom:1px solid var(--rule)}
+  .compare-row:last-child{border-bottom:none}
+}
+.compare-footer{
+  margin-top:2.5rem;
+  text-align:center;
+}
+.compare-footer p{
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:clamp(1.05rem,2vw,1.35rem);
+  color:var(--ink);line-height:1.4;
+  max-width:780px;margin:0 auto;
+  letter-spacing:-0.01em;
+}
+
+/* ============ REDWDS REBATE ============ */
+.rebate{
+  padding:7rem 2rem;
+  background:linear-gradient(135deg,#fafaf7 0%,#f4f1ea 100%);
+  position:relative;overflow:hidden;
+}
+.rebate::before{
+  content:'';position:absolute;
+  top:-20%;left:-10%;width:50%;height:140%;
+  background:radial-gradient(circle,rgba(255,87,34,0.06) 0%,transparent 60%);
+  pointer-events:none;
+}
+.rebate-inner{
+  max-width:1400px;margin:0 auto;
+  position:relative;z-index:2;
+}
+.rebate-banner{
+  display:inline-flex;align-items:center;gap:0.7rem;
+  background:var(--ink);color:var(--paper);
+  padding:0.55rem 1.1rem;border-radius:100px;
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.12em;
+  margin-bottom:2rem;
+}
+.rebate-banner .live{
+  width:7px;height:7px;border-radius:50%;
+  background:#22c55e;animation:pulse-green 2s infinite;
+}
+@keyframes pulse-green{
+  0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.7)}
+  50%{box-shadow:0 0 0 7px rgba(34,197,94,0)}
+}
+.rebate h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.4rem,6vw,5.5rem);
+  font-weight:300;line-height:0.95;letter-spacing:-0.03em;
+  max-width:1100px;
+}
+.rebate h2 em{
+  font-style:italic;
+  background:linear-gradient(120deg,var(--sun) 0%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.rebate .amount{
+  font-family:'Fraunces',serif;
+  font-weight:600;font-style:normal;
+  background:none;-webkit-text-fill-color:var(--sun);color:var(--sun);
+}
+.rebate .lead{
+  font-size:1.1rem;color:var(--slate);
+  max-width:720px;margin-top:2rem;line-height:1.6;
+}
+.rebate-cite{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.08em;
+  color:var(--slate);opacity:0.65;margin-top:1rem;
+}
+
+.rebate-cols{
+  display:grid;
+  grid-template-columns:1.3fr 1fr;
+  gap:4rem;margin-top:4rem;
+  align-items:start;
+}
+@media(max-width:900px){.rebate-cols{grid-template-columns:1fr;gap:3rem}}
+
+.rebate-breakdown{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:24px;
+  overflow:hidden;
+}
+.rebate-breakdown .head{
+  padding:1.5rem 2rem;
+  border-bottom:1px solid var(--rule);
+  background:var(--ink);color:var(--paper);
+}
+.rebate-breakdown .head h4{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.12em;
+  font-weight:500;
+}
+.rebate-breakdown .head .total{
+  font-family:'Fraunces',serif;
+  font-size:2.2rem;font-weight:400;
+  letter-spacing:-0.025em;line-height:1;
+  margin-top:0.5rem;
+  color:var(--sun);
+}
+.rebate-breakdown .head .total .unit{
+  font-size:0.85rem;color:rgba(255,255,255,0.5);
+  font-family:'Geist Mono',monospace;
+  letter-spacing:0.1em;margin-left:0.5rem;
+}
+.rebate-breakdown .item{
+  padding:1.1rem 2rem;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--rule);
+  gap:1rem;
+}
+.rebate-breakdown .item:last-child{border-bottom:none}
+.rebate-breakdown .item .what{
+  font-family:'Fraunces',serif;
+  font-size:1rem;color:var(--ink);
+  letter-spacing:-0.01em;
+}
+.rebate-breakdown .item .amt{
+  font-family:'Geist Mono',monospace;
+  font-size:0.85rem;color:var(--sun);
+  font-weight:500;
+  flex-shrink:0;
+}
+
+.rebate-side{
+  display:flex;flex-direction:column;gap:1.5rem;
+}
+.rebate-card{
+  background:var(--paper);
+  border:1px solid var(--rule);
+  border-radius:20px;padding:1.75rem;
+}
+.rebate-card .icon-row{
+  display:flex;align-items:center;gap:0.75rem;
+  margin-bottom:1rem;
+}
+.rebate-card .ring{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,87,34,0.1);
+  color:var(--sun);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fraunces',serif;font-size:0.9rem;font-weight:500;
+}
+.rebate-card .mono{
+  font-size:0.65rem;color:var(--slate);
+}
+.rebate-card h5{
+  font-family:'Fraunces',serif;
+  font-size:1.2rem;font-weight:500;
+  letter-spacing:-0.015em;line-height:1.2;
+  margin-bottom:0.5rem;
+}
+.rebate-card p{
+  font-size:0.88rem;color:var(--slate);
+  line-height:1.5;
+}
+.rebate-card.highlight{
+  background:var(--ink);color:var(--paper);
+  border-color:var(--ink);
+}
+.rebate-card.highlight h5{color:var(--paper)}
+.rebate-card.highlight p{color:rgba(255,255,255,0.65)}
+.rebate-card.highlight .ring{
+  background:rgba(255,87,34,0.2);color:var(--sun);
+}
+.rebate-card.highlight .mono{color:rgba(255,255,255,0.5)}
+
+.rebate-actions{
+  margin-top:3.5rem;
+  display:flex;gap:1rem;flex-wrap:wrap;align-items:center;
+}
+.rebate-actions .urgency{
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:0.95rem;color:var(--slate);
+}
+.rebate-actions .urgency strong{
+  font-style:normal;font-weight:500;color:var(--sun);
+}
+
+/* ============ CREDENTIALS ============ */
+.creds{
+  padding:8rem 2rem;
+  background:var(--paper);
+  position:relative;
+}
+.creds-head{
+  max-width:1400px;margin:0 auto 4rem;
+}
+.creds-head .mono{color:var(--sun);margin-bottom:1.5rem;display:block}
+.creds-head h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.2rem,5vw,4.5rem);
+  font-weight:300;line-height:1;letter-spacing:-0.03em;
+  max-width:900px;
+}
+.creds-head h2 em{
+  font-style:italic;
+  background:linear-gradient(120deg,var(--sun) 0%,var(--gold) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.creds-head .lead{
+  font-size:1.05rem;color:var(--slate);
+  max-width:680px;margin-top:1.75rem;line-height:1.55;
+}
+
+.creds-spotlight{
+  max-width:1400px;margin:0 auto 2rem;
+  background:var(--ink);color:var(--paper);
+  border-radius:24px;
+  padding:3rem;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:3rem;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
+}
+.creds-spotlight::before{
+  content:'';position:absolute;
+  top:-30%;right:-10%;width:50%;height:160%;
+  background:radial-gradient(circle,rgba(255,87,34,0.15) 0%,transparent 60%);
+  pointer-events:none;
+}
+@media(max-width:800px){.creds-spotlight{grid-template-columns:1fr;gap:2rem;padding:2.5rem}}
+.creds-spotlight-text{position:relative;z-index:2}
+.creds-spotlight .mono{
+  font-size:0.7rem;letter-spacing:0.12em;
+  color:var(--sun);margin-bottom:1.25rem;display:block;
+}
+.creds-spotlight h3{
+  font-family:'Fraunces',serif;
+  font-size:clamp(1.8rem,3vw,2.6rem);
+  font-weight:400;line-height:1.1;letter-spacing:-0.025em;
+}
+.creds-spotlight h3 em{
+  font-style:italic;color:var(--sun);
+}
+.creds-spotlight p{
+  font-size:0.95rem;color:rgba(255,255,255,0.65);
+  line-height:1.55;margin-top:1.25rem;max-width:480px;
+}
+.creds-spotlight-stat{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;gap:1.25rem;
+}
+.creds-spotlight-stat .row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding-bottom:1rem;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  gap:1rem;
+}
+.creds-spotlight-stat .row:last-child{border-bottom:none}
+.creds-spotlight-stat .label{
+  font-family:'Fraunces',serif;
+  font-size:1rem;font-weight:400;
+  letter-spacing:-0.01em;color:var(--paper);
+}
+.creds-spotlight-stat .value{
+  font-family:'Geist Mono',monospace;
+  font-size:0.75rem;letter-spacing:0.1em;
+  color:var(--sun);text-align:right;
+}
+
+.creds-grid{
+  max-width:1400px;margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.25rem;
+}
+@media(max-width:900px){.creds-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.creds-grid{grid-template-columns:1fr}}
+
+.cred-card{
+  background:var(--cream);
+  border-radius:18px;
+  padding:1.75rem;
+  display:flex;flex-direction:column;
+  min-height:240px;
+  transition:transform 0.3s,background 0.3s;
+  cursor:default;
+}
+.cred-card:hover{transform:translateY(-3px);background:#ebe7de}
+.cred-card .num{
+  font-family:'Geist Mono',monospace;
+  font-size:0.65rem;letter-spacing:0.12em;
+  color:var(--sun);margin-bottom:1.25rem;
+}
+.cred-card h4{
+  font-family:'Fraunces',serif;
+  font-size:1.3rem;font-weight:500;
+  letter-spacing:-0.015em;line-height:1.15;
+  margin-bottom:0.5rem;
+  color:var(--ink);
+}
+.cred-card .cert-id{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.08em;
+  color:var(--slate);
+  margin-bottom:1rem;
+}
+.cred-card p{
+  font-size:0.85rem;color:var(--slate);
+  line-height:1.5;
+  margin-top:auto;
+}
+.cred-card .why{
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-size:0.9rem;color:var(--ink);
+  margin-top:1rem;padding-top:1rem;
+  border-top:1px solid rgba(10,10,10,0.08);
+  letter-spacing:-0.01em;
+}
+
+/* ============ EXPERT WITNESS ============ */
+.expert{
+  padding:8rem 2rem;
+  background:linear-gradient(135deg,#0a0a0a 0%,#1a1a1a 50%,#0a0a0a 100%);
+  color:var(--paper);
+  position:relative;overflow:hidden;
+}
+.expert::before{
+  content:'';position:absolute;
+  top:-30%;left:50%;width:60%;height:160%;
+  background:radial-gradient(ellipse,rgba(212,165,116,0.12) 0%,transparent 60%);
+  pointer-events:none;
+  transform:translateX(-50%);
+}
+.expert-head{
+  max-width:1400px;margin:0 auto 4rem;
+  position:relative;z-index:2;
+}
+.expert-head .mono{
+  color:var(--gold);margin-bottom:1.5rem;display:block;
+}
+.expert-head h2{
+  font-family:'Fraunces',serif;
+  font-size:clamp(2.4rem,5.5vw,5rem);
+  font-weight:300;line-height:0.98;letter-spacing:-0.03em;
+  max-width:1100px;
+}
+.expert-head h2 em{
+  font-style:italic;
+  background:linear-gradient(120deg,var(--gold) 0%,var(--sun) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.expert-head .lead{
+  font-size:1.1rem;color:rgba(255,255,255,0.7);
+  max-width:780px;margin-top:2rem;line-height:1.6;
+}
+.expert-grid{
+  max-width:1400px;margin:0 auto;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;
+  position:relative;z-index:2;
+}
+@media(max-width:900px){.expert-grid{grid-template-columns:1fr}}
+.expert-case{
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(212,165,116,0.2);
+  border-radius:20px;
+  padding:2rem;
+  position:relative;overflow:hidden;
+  transition:transform 0.3s,border-color 0.3s;
+  backdrop-filter:blur(10px);
+}
+.expert-case:hover{
+  transform:translateY(-4px);
+  border-color:rgba(212,165,116,0.4);
+}
+.expert-case::before{
+  content:'';position:absolute;
+  top:0;left:0;width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0.4;
+}
+.expert-case .year{
+  font-family:'Fraunces',serif;
+  font-size:3rem;font-weight:300;
+  letter-spacing:-0.03em;
+  color:var(--gold);line-height:1;
+  margin-bottom:1.25rem;
+  display:block;
+}
+.expert-case .mono{
+  font-size:0.65rem;letter-spacing:0.12em;
+  color:rgba(255,255,255,0.4);margin-bottom:0.75rem;display:block;
+}
+.expert-case h4{
+  font-family:'Fraunces',serif;
+  font-size:1.4rem;font-weight:500;
+  line-height:1.2;letter-spacing:-0.015em;
+  color:var(--paper);margin-bottom:0.75rem;
+}
+.expert-case .case-name{
+  font-family:'Fraunces',serif;font-style:italic;
+  font-size:0.92rem;color:var(--gold);
+  margin-bottom:1.25rem;line-height:1.4;
+}
+.expert-case p{
+  font-size:0.88rem;color:rgba(255,255,255,0.65);
+  line-height:1.55;
+}
+.expert-case .outcome{
+  margin-top:1.5rem;padding-top:1.25rem;
+  border-top:1px solid rgba(255,255,255,0.1);
+  display:flex;justify-content:space-between;align-items:baseline;
+  gap:0.75rem;
+}
+.expert-case .outcome-label{
+  font-family:'Geist Mono',monospace;
+  font-size:0.65rem;letter-spacing:0.12em;
+  color:rgba(255,255,255,0.4);
+}
+.expert-case .outcome-value{
+  font-family:'Fraunces',serif;
+  font-size:1.1rem;font-weight:500;
+  color:var(--gold);
+  letter-spacing:-0.01em;
+}
+
+.expert-originator{
+  max-width:1400px;margin:2.5rem auto 0;
+  padding:2rem 2.5rem;
+  background:rgba(212,165,116,0.08);
+  border-left:3px solid var(--gold);
+  border-radius:0 16px 16px 0;
+  position:relative;z-index:2;
+}
+.expert-originator p{
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-size:clamp(1.05rem,1.8vw,1.3rem);
+  font-weight:400;line-height:1.5;
+  color:var(--paper);letter-spacing:-0.01em;
+}
+.expert-originator p strong{
+  font-style:normal;font-weight:500;color:var(--gold);
+}
+
+.expert-consulting{
+  max-width:1400px;margin:4rem auto 0;
+  background:rgba(212,165,116,0.06);
+  border:1px solid rgba(212,165,116,0.2);
+  border-radius:24px;
+  padding:3rem;
+  display:grid;grid-template-columns:1fr 1.2fr;gap:3rem;
+  align-items:center;
+  position:relative;z-index:2;
+}
+@media(max-width:800px){
+  .expert-consulting{grid-template-columns:1fr;gap:2rem;padding:2.5rem}
+}
+.expert-consulting h3{
+  font-family:'Fraunces',serif;
+  font-size:clamp(1.6rem,3vw,2.4rem);
+  font-weight:400;line-height:1.1;letter-spacing:-0.025em;
+}
+.expert-consulting h3 em{
+  font-style:italic;color:var(--gold);
+}
+.expert-consulting p{
+  font-size:0.95rem;color:rgba(255,255,255,0.7);
+  line-height:1.6;
+}
+.expert-consulting .clients{
+  display:flex;flex-direction:column;gap:0.75rem;
+  margin-top:1.5rem;
+}
+.expert-consulting .clients .client{
+  display:flex;align-items:center;gap:0.75rem;
+  font-size:0.88rem;color:var(--paper);
+}
+.expert-consulting .clients .marker{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--gold);flex-shrink:0;
+}
+.expert-consulting .clients .years{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;letter-spacing:0.08em;
+  color:rgba(255,255,255,0.4);
+  margin-left:auto;
+}
+
+/* ============ SCROLL REVEAL ============ */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.8s,transform 0.8s}
+.reveal.in{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- STORM ALERT BAR -->
+<div class="alert-bar">
+  <span class="pulse"></span>
+  <span class="alert-text"><strong>$13,800 California rebate for bidirectional EV charging — EVITP installer required.</strong></span>
+  <a href="#redwds">Check eligibility →</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <span class="logo-mark">C</span>
+    <span>Century</span>
+  </a>
+  <div class="nav-links" id="nav-links">
+    <a href="#promise">The Promise</a>
+    <a href="#services">Services</a>
+    <a href="#redwds">$13,800 Rebate</a>
+    <a href="#credentials">Credentials</a>
+    <a href="#expert">Expert Witness</a>
+    <a href="#problems">Problem Solvers</a>
+    <a class="nav-phone" href="tel:5107809489">510.780.9489</a>
+    <a href="#estimate" class="nav-cta">Free Estimate →</a>
+  </div>
+  <button class="menu-toggle" id="menu-toggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grain"></div>
+  <div>
+    <div class="hero-eyebrow mono">
+      <span class="dot"></span>
+      <span>The Bay Area's integrated roof, solar &amp; electrical contractor · Since 1996</span>
+    </div>
+    <h1 class="hero-headline serif">
+      <span class="line line-1">One company.</span>
+      <span class="line line-2">One warranty.</span>
+      <span class="line line-3"><em>Zero finger-pointing.</em></span>
+    </h1>
+    <p class="hero-secondary">
+      Roofing, solar, electrical and waterproofing — integrated correctly, by the same team, under one accountable contractor. The way it should have been done the first time.
+    </p>
+    <div class="hero-actions">
+      <a href="#estimate" class="btn-primary">
+        Get my free estimate <span class="arrow">→</span>
+      </a>
+      <a href="tel:5107809489" class="btn-secondary">
+        Or call (510) 780-9489
+      </a>
+    </div>
+  </div>
+
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="num serif">1996</span>
+      <span class="label">roofing the Bay Area since</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="num serif">1999</span>
+      <span class="label">GAF Master Elite since</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="num serif">2001</span>
+      <span class="label">installing Bay Area solar since</span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="num serif">2008</span>
+      <span class="label">NABCEP certified &amp; SEI instructor since</span>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust">
+  <div class="trust-inner">
+    <div class="trust-item"><span class="badge"></span>Diamond Certified #004 (since 2002)</div>
+    <div class="trust-item"><span class="badge"></span>GAF Master Elite (since 1999)</div>
+    <div class="trust-item"><span class="badge"></span>NABCEP PV Installation Pro</div>
+    <div class="trust-item"><span class="badge"></span>SEI Contract Instructor</div>
+    <div class="trust-item"><span class="badge"></span>EVITP #4051504</div>
+    <div class="trust-item"><span class="badge"></span>RISE Certified</div>
+  </div>
+</div>
+
+<!-- INTEGRATION PROMISE -->
+<section class="promise" id="promise">
+  <div class="promise-head reveal">
+    <span class="mono">— The Integration Promise</span>
+    <h2 class="serif">
+      Most homes get four contractors.<br>
+      <em>You only need one.</em>
+    </h2>
+    <p class="lead">
+      A modern home is a system: roof, solar, electrical, waterproofing. When four different contractors install it, four different contractors blame each other when something goes wrong. We're the only company in the East Bay that does all four under one license, one warranty, and one accountable owner.
+    </p>
+  </div>
+
+  <div class="promise-grid">
+    <div class="promise-card reveal">
+      <span class="num">01 / The fear</span>
+      <h4 class="serif">No more finger-pointing</h4>
+      <div class="promise-compare">
+        <div class="row"><span class="x">×</span><span class="bad">"Call your solar guy, that's not our flashing."</span></div>
+        <div class="row"><span class="check">✓</span><span class="good">One number. One owner. One responsibility.</span></div>
+      </div>
+    </div>
+
+    <div class="promise-card reveal">
+      <span class="num">02 / The fear</span>
+      <h4 class="serif">No warranty conflicts</h4>
+      <div class="promise-compare">
+        <div class="row"><span class="x">×</span><span class="bad">"Voided by the other contractor's work."</span></div>
+        <div class="row"><span class="check">✓</span><span class="good">GAF Golden Pledge + integrated solar coverage.</span></div>
+      </div>
+    </div>
+
+    <div class="promise-card reveal">
+      <span class="num">03 / The fear</span>
+      <h4 class="serif">No coordination failures</h4>
+      <div class="promise-compare">
+        <div class="row"><span class="x">×</span><span class="bad">"Solar crew showed up before the roof was dry."</span></div>
+        <div class="row"><span class="check">✓</span><span class="good">Tony schedules every trade in the right order.</span></div>
+      </div>
+    </div>
+
+    <div class="promise-card reveal">
+      <span class="num">04 / The fear</span>
+      <h4 class="serif">No permit confusion</h4>
+      <div class="promise-compare">
+        <div class="row"><span class="x">×</span><span class="bad">"You'll need to pull a separate electrical permit."</span></div>
+        <div class="row"><span class="check">✓</span><span class="good">We pull every permit, handle every inspection.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="promise-footer reveal">
+    <p class="punch serif">
+      <strong>Premium roof systems without contractor finger-pointing.</strong> That's not marketing language — that's a thirty-year track record you can verify by phone.
+    </p>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-head reveal">
+    <h2 class="serif">Four trades.<br><em>One responsible team.</em></h2>
+    <p>Most contractors hand you off. We don't. Roofing, solar, electrical, and waterproofing — all coordinated by Tony, all under one warranty.</p>
+  </div>
+
+  <div class="service-grid">
+    <div class="service-card reveal">
+      <div>
+        <span class="num">01 / Roofing &amp; Waterproofing</span>
+        <h3 class="serif">Roofs that retire after you do.</h3>
+        <p class="desc">Composition shingle, lightweight tile, and PVC single-ply for flat &amp; commercial. GAF Master Elite — one of fewer than 2% of US roofers qualified to install systems backed by the Golden Pledge warranty.</p>
+        <ul>
+          <li>Composition &amp; architectural shingle</li>
+          <li>Concrete &amp; clay tile</li>
+          <li>PVC single-ply commercial (we don't install TPO — <a href="#pvc-vs-tpo" style="color:inherit;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;opacity:0.85">here's why</a>)</li>
+          <li>Tubular skylights &amp; ventilation</li>
+        </ul>
+        <div class="plus-line">+ We also fix:</div>
+        <p class="plus-list">Leaks · skylight failures · flashing · tile slip · underlayment failures · drain &amp; gutter issues</p>
+      </div>
+      <span class="icon">↗</span>
+    </div>
+
+    <div class="service-card reveal">
+      <div>
+        <span class="num">02 / Solar &amp; Storage · Installing since 2001</span>
+        <h3 class="serif">Solar that actually pencils.</h3>
+        <p class="desc">25 years of Bay Area solar — installed before the federal tax credit, before the California Solar Initiative, before most installers existed. Maxeon premium installer (the highest-efficiency panel made, 40-year warranty), paired with Enphase, the world's leading microinverter manufacturer.</p>
+        <ul>
+          <li>Maxeon residential &amp; commercial PV</li>
+          <li>Enphase IQ Battery home storage</li>
+          <li>dcbel bidirectional EV + home energy</li>
+          <li>Roof + solar bundled warranty</li>
+        </ul>
+        <div class="plus-line">+ We also fix:</div>
+        <p class="plus-list">Solar leak diagnostics · bird intrusion · orphan systems (including former SunPower customers — we outlasted them) · panel removal &amp; reinstall · failed attachments</p>
+      </div>
+      <span class="icon">☀</span>
+    </div>
+
+    <div class="service-card reveal">
+      <div>
+        <span class="num">03 / Electrical &amp; EV</span>
+        <h3 class="serif">Charge the car. Power the house.</h3>
+        <p class="desc">Tony is a licensed electrician and EVITP-certified — the state-required certification for California-funded charger installations. We're an active dcbel installer, bringing bidirectional V2H charging and up to $13,800 in state rebates to qualifying Bay Area homeowners.</p>
+        <ul>
+          <li>EVITP-certified EV charger installation</li>
+          <li>dcbel Ara bidirectional V2H (REDWDS-eligible)</li>
+          <li>Enphase IQ Battery installation</li>
+          <li>Main &amp; sub-panel upgrades</li>
+        </ul>
+        <div class="plus-line">+ We also fix:</div>
+        <p class="plus-list">Electrical troubleshooting · backup generator installation · whole-home diagnostics · code corrections</p>
+      </div>
+      <span class="icon">⚡</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM SOLVERS -->
+<section class="problems" id="problems">
+  <div class="problems-head reveal">
+    <h2 class="serif">Called us after three other<br>contractors said no? <em>Good.</em></h2>
+    <p class="lead">The jobs nobody wants are the jobs we're known for. Mystery leaks. Orphaned solar arrays. Tile that slipped six years ago and finally gave up. If it's broken and complicated, you've found the right number.</p>
+  </div>
+
+  <div class="problem-grid">
+    <div class="problem reveal">
+      <span class="cat">Roofing · Diagnostics</span>
+      <h4 class="serif">Mystery leaks</h4>
+      <p>Water shows up in one place but starts in another. We track it back to source — no guesswork, no "let's try this and see."</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Diagnostics · Thermography</span>
+      <h4 class="serif">Infrared moisture mapping</h4>
+      <p>Level 1 thermography certified. We use infrared cameras to find moisture intrusion, failed solar cells, and electrical hot spots invisible to the naked eye.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Roofing</span>
+      <h4 class="serif">Skylight failures</h4>
+      <p>Curb leaks, fogged glazing, failed flashing kits. Repair, reseal, or full skylight replacement with proper integration.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Roofing · Tile</span>
+      <h4 class="serif">Tile slip &amp; cracked tile</h4>
+      <p>Concrete &amp; clay tile that's slid, cracked, or broken under foot traffic. We match profiles others can't source.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Roofing · Hidden damage</span>
+      <h4 class="serif">Flashing &amp; underlayment</h4>
+      <p>The two failure points behind almost every "sudden" leak. We open it up, fix it right, and document everything.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Roofing</span>
+      <h4 class="serif">Drain &amp; gutter issues</h4>
+      <p>Internal drains, scuppers, overflow problems on flat roofs. Storm-season triage and permanent fixes both.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Solar · Diagnostics</span>
+      <h4 class="serif">Solar leak diagnostics</h4>
+      <p>Penetration leaks under PV arrays are the worst kind of mystery. We've found them when three other contractors couldn't.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Solar · Pest</span>
+      <h4 class="serif">Bird intrusion under panels</h4>
+      <p>Pigeons under solar = wire damage, droppings, and noise. Full panel removal, clean-out, critter guard, reinstall.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Solar · Orphans</span>
+      <h4 class="serif">Orphan solar systems</h4>
+      <p>Former SunPower customer? Installer out of business? Inverter dead and no one to call? We adopt orphan systems and bring them back online.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Solar · Roof work</span>
+      <h4 class="serif">Removal &amp; reinstall</h4>
+      <p>Re-roofing under existing solar. We remove, re-roof, and reinstall — one team, one warranty, no finger-pointing.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Solar · Structural</span>
+      <h4 class="serif">Failed attachments</h4>
+      <p>Improper mounts, leaking flashings, sagging rails. We re-engineer attachment points so it holds for the next 25 years.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Electrical · EV</span>
+      <h4 class="serif">EV charger troubleshooting</h4>
+      <p>Charger won't pull full amperage? Tripping breakers? We diagnose, correct, and certify — including load calculations.</p>
+    </div>
+    <div class="problem reveal">
+      <span class="cat">Electrical · Backup power</span>
+      <h4 class="serif">Generator installation</h4>
+      <p>Certified Generac technician. Standby generators, transfer switches, and code-compliant interconnect. Stay powered when PG&amp;E doesn't.</p>
+    </div>
+  </div>
+
+  <div class="problems-cta reveal">
+    <a href="#estimate">Have a problem nobody's solved? Tell us about it →</a>
+  </div>
+</section>
+
+<!-- CREDENTIALS -->
+<section class="creds" id="credentials">
+  <div class="creds-head reveal">
+    <span class="mono">— Credentials that matter</span>
+    <h2 class="serif">
+      We've been installing solar<br>
+      <em>longer than most installers have existed.</em>
+    </h2>
+    <p class="lead">
+      Tony Diaz installed his first solar system in 2001 — before the federal tax credit, before the California Solar Initiative, before SolarCity, Sunrun, or SunPower's residential business were even founded. He's held NABCEP, the gold standard for solar professionals in North America, since 2008. That same year, Solar Energy International — the industry's leading training organization — brought him on as a contract instructor. Century has been a GAF Master Elite contractor since 1999, making us, by written confirmation from GAF, the <strong>longest active Master Elite contractor in the entire Bay Area.</strong> And our Diamond Certified Service Provider number — <strong>#004</strong> — places us among the first four businesses ever issued the certification. The credentials below aren't badges in a footer. Each one represents a capability we deliver on the roof.
+    </p>
+  </div>
+
+  <div class="creds-spotlight reveal">
+    <div class="creds-spotlight-text">
+      <span class="mono">— Tony Diaz, Founder</span>
+      <h3 class="serif">
+        Installing solar <em>since 2001.</em><br>
+        NABCEP-certified and teaching for SEI <em>since 2008.</em>
+      </h3>
+      <p>
+        We were installing Bay Area solar before the federal tax credit existed, before the California Solar Initiative existed, and before most of today's solar companies were founded. NABCEP is the highest professional certification in North American solar — Tony has held it continuously since 2008, the same year he became a contract instructor for Solar Energy International. The expertise reaching your roof has been validated by the people who set the standards, and battle-tested through every solar cycle since the start.
+      </p>
+    </div>
+    <div class="creds-spotlight-stat">
+      <div class="row">
+        <span class="label">Installing Bay Area solar</span>
+        <span class="value">SINCE 2001 · 25 YEARS</span>
+      </div>
+      <div class="row">
+        <span class="label">NABCEP PV Installation Pro</span>
+        <span class="value">SINCE 2008 · 18 YEARS</span>
+      </div>
+      <div class="row">
+        <span class="label">SEI Contract Instructor</span>
+        <span class="value">SINCE 2008 · 18 YEARS</span>
+      </div>
+      <div class="row">
+        <span class="label">NABCEP CE Provider</span>
+        <span class="value">SINCE 2012 · 14 YEARS</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="creds-grid">
+    <div class="cred-card reveal">
+      <span class="num">01 / SOLAR</span>
+      <h4 class="serif">NABCEP PV Installation Professional</h4>
+      <p class="cert-id">Cert #031409-30 · Held since 2008</p>
+      <p>The gold-standard solar certification in North America. Demonstrates mastery of design, installation, and safety across PV systems.</p>
+      <p class="why">Most solar installers don't hold this. We've held it for 18 years.</p>
+    </div>
+
+    <div class="cred-card reveal">
+      <span class="num">02 / EDUCATION</span>
+      <h4 class="serif">SEI Contract Instructor</h4>
+      <p class="cert-id">Solar Energy International · Since 2008</p>
+      <p>SEI is the leading solar training organization in the U.S. Tony has been a contract instructor since 2008 — teaching working solar professionals their craft.</p>
+      <p class="why">When solar pros need to learn, our founder is who teaches them.</p>
+    </div>
+
+    <div class="cred-card reveal">
+      <span class="num">03 / EDUCATION</span>
+      <h4 class="serif">NABCEP Continuing Education Provider</h4>
+      <p class="cert-id">Approved by NABCEP · Since 2012</p>
+      <p>NABCEP-approved to deliver continuing education credits to certified solar professionals across the industry — a designation we've held for 14 years.</p>
+      <p class="why">NABCEP itself trusts us to keep its certified pros current.</p>
+    </div>
+
+    <div class="cred-card reveal">
+      <span class="num">04 / EV</span>
+      <h4 class="serif">EVITP Certified Electrician</h4>
+      <p class="cert-id">EVITP #4051504 · Certified 2026</p>
+      <p>The state-required certification for California-funded EV charger installations (CPUC §740.20). Unlocks REDWDS, PG&amp;E, and SCE rebate programs.</p>
+      <p class="why">Without this, your state-funded charger work is illegal.</p>
+    </div>
+
+    <div class="cred-card reveal">
+      <span class="num">05 / INTEGRATION</span>
+      <h4 class="serif">RISE Certified</h4>
+      <p class="cert-id">Roof Integrated Solar Energy</p>
+      <p>Specialized certification covering the integration of solar PV with roofing systems — exactly the intersection most contractors get wrong.</p>
+      <p class="why">Third-party proof of our One Company / One Warranty thesis.</p>
+    </div>
+
+    <div class="cred-card reveal">
+      <span class="num">06 / DIAGNOSTICS</span>
+      <h4 class="serif">Level 1 Thermography Certified</h4>
+      <p class="cert-id">Infrared imaging certification</p>
+      <p>Trained and certified to use infrared thermal imaging — to find moisture intrusion, failed solar cells, electrical hot spots, and insulation gaps invisible to the eye.</p>
+      <p class="why">How we solve the leaks three other roofers missed.</p>
+    </div>
+
+    <div class="cred-card reveal">
+      <span class="num">07 / BACKUP POWER</span>
+      <h4 class="serif">Certified Generac Technician</h4>
+      <p class="cert-id">Tech #52601046</p>
+      <p>Factory-trained and certified to install, commission, and service Generac standby generators — the most widely-deployed home backup brand in North America.</p>
+      <p class="why">Your generator is installed by the manufacturer's own certified tech.</p>
+    </div>
+
+    <div class="cred-card reveal">
+      <span class="num">08 / ROOFING</span>
+      <h4 class="serif">GAF Master Elite</h4>
+      <p class="cert-id">Held since 1999 · Longest active in Bay Area</p>
+      <p>GAF launched the Master Elite program in 1998. We signed in the following year and have held the certification continuously since — making Century, by written confirmation from GAF, the longest active Master Elite contractor in the entire Bay Area.</p>
+      <p class="why">27 years installing the strongest roof systems North America's largest manufacturer makes.</p>
+    </div>
+
+    <div class="cred-card reveal">
+      <span class="num">09 / TRUST</span>
+      <h4 class="serif">Diamond Certified</h4>
+      <p class="cert-id">Service Provider #004 · Since 2002</p>
+      <p>Diamond Certified launched in 2002 with a rigorous customer-survey vetting process. Century was issued Service Provider Number 004 — meaning we are one of the first four Diamond Certified businesses ever issued in the program's history.</p>
+      <p class="why">Three businesses got in before us. Out of thousands since.</p>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERT WITNESS -->
+<section class="expert" id="expert">
+  <div class="expert-head reveal">
+    <span class="mono">— Court-qualified expertise</span>
+    <h2 class="serif">
+      Sometimes the lawyers call us.<br>
+      <em>Sometimes we call the lawyers.</em>
+    </h2>
+    <p class="lead">
+      Tony has served as a technical expert in some of the largest product-defect class actions in the history of the residential roofing and solar industries — and in one of those cases, he was the contractor who originally identified the defect and brought the matter to counsel. Below: three cases, two decades of consulting for the manufacturers themselves, and a track record that has been tested by federal judges and stipulated to by the defendants' own counsel.
+    </p>
+  </div>
+
+  <div class="expert-grid">
+    <div class="expert-case reveal">
+      <span class="year serif">2006</span>
+      <span class="mono">CASE 01 · ROOFING</span>
+      <h4 class="serif">Concrete Roof Tile Class Action</h4>
+      <p class="case-name">Class action against Monier Lifetile</p>
+      <p>Retained as a technical expert in the consumer class action against the concrete roof tile manufacturer. Case resolved in favor of the plaintiff class.</p>
+      <div class="outcome">
+        <span class="outcome-label">OUTCOME</span>
+        <span class="outcome-value">Plaintiff verdict</span>
+      </div>
+    </div>
+
+    <div class="expert-case reveal">
+      <span class="year serif">2016</span>
+      <span class="mono">CASE 02 · SOLAR</span>
+      <h4 class="serif">BP Solar Defective Panels</h4>
+      <p class="case-name"><em>Allagas v. BP Solar International, Inc.</em><br>U.S. District Court, N.D. Cal.</p>
+      <p>Class action against BP Solar &amp; Home Depot alleging that S-type junction box failures on panels manufactured 1999–2007 caused burn marks, shattered glass, and fire hazards. While serving as expert in the Suntech case, Tony was called to a separate panel-fire incident on a Danville rooftop — a field observation that became one of the evidentiary inputs for the broader BP class action that followed. Final settlement approved December 2016.</p>
+      <div class="outcome">
+        <span class="outcome-label">SETTLEMENT</span>
+        <span class="outcome-value">$67 million</span>
+      </div>
+    </div>
+
+    <div class="expert-case reveal">
+      <span class="year serif">2015</span>
+      <span class="mono">CASE 03 · SOLAR + ROOFING · ORIGINATED</span>
+      <h4 class="serif">Suntech BIPV Solar Tile Defect</h4>
+      <p class="case-name">Class action against Wuxi Suntech Power<br>&amp; Suntech America (SolarSave / SolarBlend)</p>
+      <p>A rare cross-disciplinary case — defective building-integrated photovoltaic <em>tiles</em>, which are simultaneously a roofing product and a solar product. Tony identified the defect pattern in the field, brought the matter to attorney David Birka-White, and served as the technical expert through resolution. Final order entered December 2015.</p>
+      <div class="outcome">
+        <span class="outcome-label">OUTCOME</span>
+        <span class="outcome-value">Plaintiff verdict</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="expert-originator reveal">
+    <p><strong>Worth saying plainly:</strong> in the Suntech case, Tony wasn't a witness who got hired. He was the contractor who identified the defect pattern in the field, brought the matter to counsel, and then served as the technical expert through resolution. That's a different category of expertise than "qualified expert" — it's the practitioner who spotted what an entire industry missed.</p>
+  </div>
+
+  <div class="expert-consulting reveal">
+    <div>
+      <h3 class="serif">
+        Twenty years a <em>paid consultant</em> to the manufacturers themselves.
+      </h3>
+      <p>Long before being retained as an expert witness against them, Tony was consulting <em>for</em> the manufacturers — a multi-decade record of being paid by both sides of the industry for the same expertise. The work is for sale to whichever side the engineering truth requires.</p>
+    </div>
+    <div class="clients">
+      <div class="client">
+        <span class="marker"></span>
+        <span>Monier</span>
+        <span class="years">CONSULTANT · 20 YEARS</span>
+      </div>
+      <div class="client">
+        <span class="marker"></span>
+        <span>Monier Lifetile</span>
+        <span class="years">CONSULTANT · 20 YEARS</span>
+      </div>
+      <div class="client">
+        <span class="marker"></span>
+        <span>Boral Roofing Products</span>
+        <span class="years">CONSULTANT · 20 YEARS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECHNOLOGY PARTNERS -->
+<section class="tech" id="tech">
+  <div class="tech-head reveal">
+    <span class="mono">— What we install</span>
+    <h2 class="serif">
+      Best-in-class equipment.<br>
+      <em>Best-in-class warranties.</em>
+    </h2>
+    <p class="lead">
+      We don't carry second-tier brands. Every system we install is built around the most efficient, longest-warrantied equipment in its category — installed by the same team that's accountable for the roof underneath it.
+    </p>
+  </div>
+
+  <div class="tech-grid">
+    <div class="tech-card reveal">
+      <div class="badge-row">
+        <span class="mono">SOLAR PANELS</span>
+        <span class="mono">PREMIUM INSTALLER</span>
+      </div>
+      <h4 class="serif">Maxeon</h4>
+      <p class="sub">The highest-efficiency solar panel made.</p>
+      <p>Maxeon's interdigitated back-contact (IBC) cell technology — the same technology that defined the premium solar market for two decades — delivers the highest efficiency commercially available, in a panel guaranteed for 40 years. Engineered in Singapore, installed in the Bay Area.</p>
+      <div class="specs">
+        <div class="spec"><span class="spec-label">Peak efficiency</span><span class="spec-value">24.1%</span></div>
+        <div class="spec"><span class="spec-label">Product warranty</span><span class="spec-value">40 YEARS</span></div>
+        <div class="spec"><span class="spec-label">Annual degradation</span><span class="spec-value">&lt;0.25%</span></div>
+      </div>
+    </div>
+
+    <div class="tech-card reveal">
+      <div class="badge-row">
+        <span class="mono">INVERTERS &amp; BATTERY</span>
+        <span class="mono">PLATINUM PARTNER</span>
+      </div>
+      <h4 class="serif">Enphase</h4>
+      <p class="sub">The world's leading microinverter manufacturer.</p>
+      <p>Panel-level optimization means one shaded panel doesn't drag the whole system down. Enphase IQ8 microinverters deliver per-module monitoring; Enphase IQ Battery storage adds whole-home backup with industry-leading safety and a 15-year warranty.</p>
+      <div class="specs">
+        <div class="spec"><span class="spec-label">Global market share</span><span class="spec-value">#1</span></div>
+        <div class="spec"><span class="spec-label">Microinverter warranty</span><span class="spec-value">25 YEARS</span></div>
+        <div class="spec"><span class="spec-label">IQ Battery warranty</span><span class="spec-value">15 YEARS</span></div>
+      </div>
+    </div>
+
+    <div class="tech-card reveal">
+      <div class="badge-row">
+        <span class="mono">BIDIRECTIONAL EV</span>
+        <span class="mono">CERTIFIED INSTALLER</span>
+      </div>
+      <h4 class="serif">dcbel</h4>
+      <p class="sub">Your EV becomes your home battery.</p>
+      <p>The first UL-certified bidirectional DC EV charger in the US. The dcbel Ara Home Energy Station charges your EV, runs your house from your EV during outages (V2H), and integrates solar plus home batteries — replacing $12,000+ of separate equipment. Eligible California homes get up to $13,800 in state rebates.</p>
+      <div class="specs">
+        <div class="spec"><span class="spec-label">California rebate</span><span class="spec-value">UP TO $13,800</span></div>
+        <div class="spec"><span class="spec-label">UL certification</span><span class="spec-value">FIRST IN US</span></div>
+        <div class="spec"><span class="spec-label">Installer requirement</span><span class="spec-value">EVITP ✓</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BIDIRECTIONAL CHARGING SPOTLIGHT -->
+<section class="bidir" id="bidir">
+  <div class="bidir-inner">
+    <div class="reveal">
+      <span class="mono">— Spotlight</span>
+      <h2 class="serif">
+        Your car is the biggest battery<br>
+        in your driveway.<br>
+        <em>Now it can run your house.</em>
+      </h2>
+      <p class="lead">
+        Bidirectional charging — the ability for your EV to push power back to your home — is the most important shift in residential energy since solar itself. Century is one of the few Bay Area contractors actively installing dcbel's Ara Home Energy Station, the first UL-certified bidirectional DC charger in the US. When PG&amp;E goes down, your driveway stays online. And right now, qualifying California homeowners receive <a href="#redwds" style="color:var(--sun);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px">up to $13,800 in state rebates</a> when installed by an EVITP-certified contractor — like Century.
+      </p>
+      <div class="bidir-actions">
+        <a href="#estimate" class="btn-primary">
+          Ask about bidirectional charging <span class="arrow">→</span>
+        </a>
+        <a href="tel:5107809489" class="btn-secondary">
+          Talk to Tony directly
+        </a>
+      </div>
+    </div>
+
+    <div class="bidir-flow reveal">
+      <h4>How it works</h4>
+      <div class="step">
+        <div class="step-icon">☀</div>
+        <div class="step-body">
+          <h5 class="serif">Solar charges your EV</h5>
+          <p>Maxeon panels feed the dcbel Ara, which routes excess solar directly into your EV battery — bypassing AC conversion losses.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">⚡</div>
+        <div class="step-body">
+          <h5 class="serif">Time-shift expensive power</h5>
+          <p>During PG&amp;E peak-rate hours, your home draws from the EV instead of the grid. Cut hundreds off your annual bill.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">⚙</div>
+        <div class="step-body">
+          <h5 class="serif">Add Enphase IQ Battery</h5>
+          <p>For longer outages or smaller EV batteries, layer in stationary home storage — all integrated into one system, one app, one warranty.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">⌂</div>
+        <div class="step-body">
+          <h5 class="serif">Blackout? You don't notice.</h5>
+          <p>When the grid drops, the system seamlessly islands. Solar + battery + EV keeps the lights on for days, not hours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REDWDS REBATE -->
+<section class="rebate" id="redwds">
+  <div class="rebate-inner">
+    <div class="reveal">
+      <div class="rebate-banner">
+        <span class="live"></span>
+        <span>CA REDWDS Program · Phase 1 · Limited Spots</span>
+      </div>
+      <h2 class="serif">
+        Up to <span class="amount">$13,800</span><br>
+        in California rebates.<br>
+        <em>If your installer is EVITP-certified.</em>
+      </h2>
+      <p class="lead">
+        The California Energy Commission's <strong>REDWDS program</strong> (Responsive, Easy Charging Products with Dynamic Signals) was designed to put bidirectional charging into 200 California homes in Phase 1. Eligible homeowners receive up to $13,800 in stacked rebates — but state law requires that <strong>every dollar of state-funded charger work be installed by an EVITP-certified electrician.</strong>
+        <br><br>
+        Tony is EVITP-certified (#4051504) and NABCEP-certified. Century is an active dcbel installer. We are one of a small number of Bay Area contractors who can install the Ara Home Energy Station, deliver the rebate paperwork, and pull permits — all under one license and one warranty.
+      </p>
+      <p class="rebate-cite">Source: California Energy Commission REDWDS Phase 1 (GFO-22-609) · CA Public Utilities Code §740.20</p>
+    </div>
+
+    <div class="rebate-cols">
+      <div class="rebate-breakdown reveal">
+        <div class="head">
+          <h4>REBATE BREAKDOWN</h4>
+          <div class="total">$13,800<span class="unit">MAX PER HOME</span></div>
+        </div>
+        <div class="item">
+          <span class="what">dcbel Ara Home Energy Station</span>
+          <span class="amt">UP TO $7,000</span>
+        </div>
+        <div class="item">
+          <span class="what">Installation rebate</span>
+          <span class="amt">UP TO $2,000</span>
+        </div>
+        <div class="item">
+          <span class="what">Interconnection &amp; permitting</span>
+          <span class="amt">UP TO $1,500</span>
+        </div>
+        <div class="item">
+          <span class="what">Dynamic rate plan enrollment</span>
+          <span class="amt">REBATE</span>
+        </div>
+        <div class="item">
+          <span class="what">Bidirectional EV purchase/lease</span>
+          <span class="amt">UP TO $3,300</span>
+        </div>
+      </div>
+
+      <div class="rebate-side">
+        <div class="rebate-card reveal">
+          <div class="icon-row">
+            <div class="ring">1</div>
+            <span class="mono">REQUIREMENT</span>
+          </div>
+          <h5 class="serif">EVITP-certified installer</h5>
+          <p>California law requires it for any state-funded charger installation. Tony holds active EVITP certification.</p>
+        </div>
+        <div class="rebate-card reveal">
+          <div class="icon-row">
+            <div class="ring">2</div>
+            <span class="mono">REQUIREMENT</span>
+          </div>
+          <h5 class="serif">Bidirectional-capable EV</h5>
+          <p>Nissan Leaf, Volvo EX90, and select 2024+ models. Don't have one yet? You can still reserve and qualify.</p>
+        </div>
+        <div class="rebate-card highlight reveal">
+          <div class="icon-row">
+            <div class="ring">!</div>
+            <span class="mono">STATUS · MAY 2026</span>
+          </div>
+          <h5 class="serif">Phase 1 nearly full</h5>
+          <p>dcbel is approaching the 200-home Phase 1 cap. Spots are still open but limited — and the application takes weeks. Don't wait.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rebate-actions reveal">
+      <a href="#estimate" class="btn-primary">
+        Check my REDWDS eligibility <span class="arrow">→</span>
+      </a>
+      <a href="tel:5107809489" class="btn-secondary">
+        Or call (510) 780-9489
+      </a>
+      <span class="urgency">
+        <strong>Final note:</strong> Rebate amounts shown are program maximums. Actual amounts depend on equipment, EV, and your specific qualifications. Tony walks you through it — no obligation.
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- PVC vs TPO -->
+<section class="compare" id="pvc-vs-tpo">
+  <div class="compare-inner">
+    <div class="compare-head reveal">
+      <span class="mono">— Commercial membrane roofing</span>
+      <h2 class="serif">
+        Why we install PVC,<br><em>not TPO.</em>
+      </h2>
+      <p class="lead">
+        Most Bay Area commercial roofers install TPO by default because it's cheaper. We don't. After 30 years on Bay Area roofs, we install PVC — the membrane that actually holds up to California sun, chemical exposure, and ponding water. Here's the side-by-side.
+      </p>
+    </div>
+
+    <div class="compare-table reveal">
+      <div class="compare-row head">
+        <div></div>
+        <div class="pvc">PVC — what we install</div>
+        <div>TPO — what we don't</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">UV &amp; heat resistance</div>
+        <div class="pvc">Chemically stable under California sun for 25–30+ years.</div>
+        <div class="tpo">Field studies show accelerated degradation in high-UV climates.</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Chemical exposure</div>
+        <div class="pvc">Resists kitchen grease, HVAC oils, animal fats — critical for restaurants &amp; commercial.</div>
+        <div class="tpo">Susceptible to chemical damage; voids many warranties.</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Seam strength</div>
+        <div class="pvc">Hot-air-welded seams chemically fuse; weld is stronger than the membrane.</div>
+        <div class="tpo">Welds work, but narrower welding window and more field-seam failures over time.</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Ponding water</div>
+        <div class="pvc">Designed for ponding conditions — common on Bay Area flat roofs.</div>
+        <div class="tpo">Most TPO warranties exclude or limit ponding water claims.</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Real-world lifespan</div>
+        <div class="pvc">25–30 years documented on installed roofs.</div>
+        <div class="tpo">Industry-quoted 15–20 years; field failures often earlier.</div>
+      </div>
+      <div class="compare-row">
+        <div class="label">Up-front cost</div>
+        <div class="pvc">Roughly 15–25% more per square.</div>
+        <div class="tpo">Cheaper today. More expensive over the building's lifespan.</div>
+      </div>
+    </div>
+
+    <div class="compare-footer reveal">
+      <p>
+        Came to us looking for a TPO bid? Great — let's walk your roof and talk through whether PVC, modified bitumen, or a hybrid approach is right for your building. No pressure, just a straight answer.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- EL NIÑO / WINTER READINESS -->
+<section class="elnino" id="elnino">
+  <div class="rain"></div>
+  <div class="elnino-inner">
+    <div class="reveal">
+      <div class="elnino-tag">
+        <span class="pulse-dot"></span>
+        <span>NOAA Climate Prediction Center · May 2026</span>
+      </div>
+      <h2 class="serif">Winter 2026 is coming<br>in <em>hot &amp; wet.</em></h2>
+      <p class="lead">
+        NOAA puts the odds at 96% that El Niño persists through winter 2026–27, with a 2-in-3 chance of strong or very-strong intensity. In California that translates plainly: more rain, heavier storms, more atmospheric river events.
+        <br><br>
+        If your roof barely made it through last winter, it will not make it through this one. Now is the window — not November.
+      </p>
+      <p class="elnino-cite">Source: NOAA Climate Prediction Center ENSO Diagnostic Discussion</p>
+    </div>
+
+    <div class="elnino-grid">
+      <div class="elnino-item reveal">
+        <span class="num serif">01</span>
+        <h5 class="serif">Storm-readiness inspection</h5>
+        <p>Drone &amp; foot inspection. We identify every weak point — flashing, underlayment, skylight curbs, drains — before the rain finds them.</p>
+      </div>
+      <div class="elnino-item reveal">
+        <span class="num serif">02</span>
+        <h5 class="serif">Targeted pre-storm repairs</h5>
+        <p>Fix what needs fixing now. Re-flash, re-seal, replace failed underlayment, secure loose tile. Done before October.</p>
+      </div>
+      <div class="elnino-item reveal">
+        <span class="num serif">03</span>
+        <h5 class="serif">Gutter &amp; drain clearing</h5>
+        <p>Atmospheric rivers fail through clogged drains, not bad roofs. Full clear-out, scupper check, downspout flow test.</p>
+      </div>
+      <div class="elnino-item reveal">
+        <span class="num serif">04</span>
+        <h5 class="serif">Emergency tarp &amp; triage</h5>
+        <p>If a storm beats you to it, we run emergency leak response across the Bay Area. Tarp on, leak stopped, repair scheduled.</p>
+      </div>
+    </div>
+
+    <div class="elnino-actions reveal">
+      <a href="#estimate" class="btn-primary">
+        Book my winter readiness inspection <span class="arrow">→</span>
+      </a>
+      <a href="tel:5107809489" class="btn-secondary">
+        Emergency leak? Call now
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="manifesto-inner reveal">
+    <span class="mono">— Our standard</span>
+    <h2 class="serif">
+      A roof is the most expensive thing on your house you'll never see. So we build it like <em>you can</em> — and we take responsibility for every system that touches it.
+    </h2>
+    <div class="manifesto-sig">
+      <span class="line"></span>
+      <span>Tony Diaz, Founder · Installing Bay Area solar since 2001 · NABCEP Certified &amp; SEI Instructor since 2008<br>Century Roof &amp; Solar · GAF Master Elite since 1999 (longest active in Bay Area) · Diamond Certified Service Provider #004 (since 2002)</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects" id="projects">
+  <div class="section-head reveal">
+    <h2 class="serif">Recent work<br>around the bay.</h2>
+    <p>Every project photographed before, during, and after — and every customer gets the file. No hidden conditions, no surprise change orders.</p>
+  </div>
+
+  <div class="project-grid">
+    <div class="project reveal">
+      <div class="project-img proj-1"></div>
+      <div class="project-overlay"></div>
+      <div class="project-info">
+        <h4 class="serif">Mediterranean tile re-roof + solar</h4>
+        <span class="tag">Orinda · 2025</span>
+      </div>
+    </div>
+    <div class="project reveal">
+      <div class="project-img proj-2"></div>
+      <div class="project-overlay"></div>
+      <div class="project-info">
+        <h4 class="serif">Maxeon + Enphase + dcbel V2H</h4>
+        <span class="tag">Lafayette · 2025</span>
+      </div>
+    </div>
+    <div class="project reveal">
+      <div class="project-img proj-3"></div>
+      <div class="project-overlay"></div>
+      <div class="project-info">
+        <h4 class="serif">Orphan solar adoption + re-roof</h4>
+        <span class="tag">Berkeley · 2024</span>
+      </div>
+    </div>
+    <div class="project reveal">
+      <div class="project-img proj-4"></div>
+      <div class="project-overlay"></div>
+      <div class="project-info">
+        <h4 class="serif">Commercial PVC + EV chargers</h4>
+        <span class="tag">Fremont · 2024</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process">
+  <div class="section-head reveal">
+    <h2 class="serif">How we work.</h2>
+    <p>Same process whether it's a small repair or a full roof-solar-electrical integration. Nothing scribbled on the back of a card.</p>
+  </div>
+
+  <div class="process-grid">
+    <div class="process-step reveal">
+      <span class="num">— 01</span>
+      <h4 class="serif">Free site walk</h4>
+      <p>Tony or a senior estimator walks every roof. Photos, measurements, and an honest assessment — no high-pressure sales.</p>
+    </div>
+    <div class="process-step reveal">
+      <span class="num">— 02</span>
+      <h4 class="serif">Integrated proposal</h4>
+      <p>One scope, one price, one timeline covering every trade. Permit fees and our fixed-price list for unexpected repairs spelled out.</p>
+    </div>
+    <div class="process-step reveal">
+      <span class="num">— 03</span>
+      <h4 class="serif">Coordinated install</h4>
+      <p>Our crews — not subs. Tony sequences roof, solar, and electrical so every trade gets clean handoffs.</p>
+    </div>
+    <div class="process-step reveal">
+      <span class="num">— 04</span>
+      <h4 class="serif">One unified warranty</h4>
+      <p>GAF Golden Pledge plus our system warranty covering all integration points. We pick up the phone for years after.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews" id="reviews">
+  <div class="section-head reveal" style="max-width:1400px">
+    <h2 class="serif">What our<br>customers say.</h2>
+    <p>150+ reviews on Yelp, Angi, and Diamond Certified. Here are a few in their own words.</p>
+  </div>
+
+  <div class="review-track">
+    <div class="review">
+      <div class="stars">★★★★★</div>
+      <p class="quote serif">"Century is one of a handful of providers who will do both the solar and roof systems as one responsible entity. Impressed by Tony's knowledge of both."</p>
+      <div class="author">
+        <div class="avatar">JS</div>
+        <div class="meta"><strong>James S.</strong>Angi · Verified Customer</div>
+      </div>
+    </div>
+    <div class="review">
+      <div class="stars">★★★★★</div>
+      <p class="quote serif">"Tony sized our solar system to move PG&amp;E into the lowest tier — smart strategy. He could have sold us more panels. He didn't."</p>
+      <div class="author">
+        <div class="avatar">MR</div>
+        <div class="meta"><strong>Michael R.</strong>Angi · Verified Customer</div>
+      </div>
+    </div>
+    <div class="review">
+      <div class="stars">★★★★★</div>
+      <p class="quote serif">"Tony did my roof and skylights eight years ago and the investment continues to pay off. The GAF roof has held up great."</p>
+      <div class="author">
+        <div class="avatar">LK</div>
+        <div class="meta"><strong>Linda K.</strong>Yelp · Hayward</div>
+      </div>
+    </div>
+    <div class="review">
+      <div class="stars">★★★★★</div>
+      <p class="quote serif">"The San Mateo solar inspector told my husband he was impressed with Tony's knowledge. We were Tony's first customer 25 years ago."</p>
+      <div class="author">
+        <div class="avatar">DH</div>
+        <div class="meta"><strong>Deborah H.</strong>Long-time Client · San Mateo</div>
+      </div>
+    </div>
+    <div class="review">
+      <div class="stars">★★★★★</div>
+      <p class="quote serif">"Century gives you a fixed price list for typical unexpected repairs, so there were no worries we were being gouged. Crew left the property clean."</p>
+      <div class="author">
+        <div class="avatar">PT</div>
+        <div class="meta"><strong>Paul T.</strong>Oakland · 2024 install</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / ESTIMATE -->
+<section class="cta" id="estimate">
+  <div class="cta-inner">
+    <div class="reveal">
+      <h2 class="serif">One company.<br>One call.<br><em>Done right.</em></h2>
+      <p>Tell us a little about your project. Tony or one of our estimators will follow up within one business day to schedule your free site walk — and we'll handle every trade your project needs.</p>
+    </div>
+
+    <form class="estimate-form reveal" id="est-form">
+      <div class="form-row">
+        <label>Your name</label>
+        <input type="text" placeholder="First and last" required>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Email</label>
+          <input type="email" placeholder="you@email.com" required>
+        </div>
+        <div class="form-row">
+          <label>Phone</label>
+          <input type="tel" placeholder="(510) 555-0100" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Property address</label>
+        <input type="text" placeholder="Street, city" required>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Project type</label>
+          <select>
+            <option>Bidirectional EV + REDWDS rebate ($13,800)</option>
+            <option>Roof + solar integration</option>
+            <option>Roof + solar + EV charger</option>
+            <option>Enphase IQ Battery / home backup</option>
+            <option>Winter readiness inspection</option>
+            <option>Active leak — needs urgent attention</option>
+            <option>Roof replacement</option>
+            <option>Roof repair</option>
+            <option>Solar installation (Maxeon)</option>
+            <option>Solar repair / orphan SunPower system</option>
+            <option>EV charger</option>
+            <option>Electrical / panel</option>
+            <option>Generator installation</option>
+            <option>Not sure — need advice</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Timeline</label>
+          <select>
+            <option>Emergency / today</option>
+            <option>ASAP / urgent</option>
+            <option>Within 1 month</option>
+            <option>Before winter (Oct)</option>
+            <option>1–3 months</option>
+            <option>Just researching</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary">
+        Send my estimate request <span class="arrow">→</span>
+      </button>
+      <p class="form-note">We reply within one business day. No spam, ever.</p>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <h3 class="serif">Century Roof &amp; Solar</h3>
+        <p class="tagline">One company. One warranty. Zero finger-pointing.</p>
+        <p>The Bay Area's only integrated roofing, solar, and electrical contractor under one license. Roofing since 1996. The longest active GAF Master Elite contractor in the Bay Area since 1999. Diamond Certified Service Provider #004 since 2002. Installing solar since 2001. Hayward, California.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Services</h5>
+        <a href="#">Roofing</a>
+        <a href="#">Solar (Maxeon)</a>
+        <a href="#">Enphase IQ Battery</a>
+        <a href="#redwds">Bidirectional EV + REDWDS</a>
+        <a href="#">EV chargers (EVITP)</a>
+        <a href="#">Electrical &amp; panel</a>
+        <a href="#">Winter readiness</a>
+      </div>
+      <div class="foot-col">
+        <h5>Service area</h5>
+        <a href="#">Oakland · Berkeley</a>
+        <a href="#">Lafayette · Orinda</a>
+        <a href="#">San Ramon · Danville</a>
+        <a href="#">Fremont · San Jose</a>
+        <a href="#">View all 25 cities →</a>
+      </div>
+      <div class="foot-col">
+        <h5>Contact</h5>
+        <a href="tel:5107809489">510.780.9489</a>
+        <a href="mailto:info@centuryroofandsolar.com">info@centuryroofandsolar.com</a>
+        <a href="#">23135 Saklan Rd<br>Hayward, CA 94545</a>
+        <a href="#">Mon–Fri 7am–5pm</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span class="mono">© 2026 Century Roof &amp; Solar Inc · Lic. #721502 · Bonded &amp; Insured</span>
+      <div>
+        <a href="#">Privacy</a>
+        <a href="#">Yelp</a>
+        <a href="#">Facebook</a>
+        <a href="#">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const toggle=document.getElementById('menu-toggle');
+const links=document.getElementById('nav-links');
+toggle.addEventListener('click',()=>links.classList.toggle('open'));
+links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open')));
+
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
+},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+document.getElementById('est-form').addEventListener('submit',e=>{
+  e.preventDefault();
+  alert('In the real site, this submits to your Plaud → AI estimator pipeline. Demo only.');
+});
+</script>
+</body>
+</html>
