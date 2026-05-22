@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Century Roof &amp; Solar — Attic Ventilation Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- PWA HOME BUTTON -->
+<style>
+.pwa-home-btn {
+  position: fixed; top: 12px; left: 12px; z-index: 99999;
+  background: #005c34; color: white; border: none; border-radius: 50px;
+  padding: 9px 16px 9px 12px; font-size: 13px; font-weight: 800;
+  cursor: pointer; box-shadow: 0 3px 14px rgba(0,0,0,.35);
+  display: none; align-items: center; gap: 6px; text-decoration: none;
+  letter-spacing: .02em; text-transform: uppercase; font-family: Arial, Helvetica, sans-serif;
+}
+.pwa-home-btn:hover { background: #007a45; }
+</style>
+<a class="pwa-home-btn" id="pwaHomeBtn" href="index.html">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  Tools
+</a>
+<script>(function(){var s=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone===true;var b=document.getElementById('pwaHomeBtn');if(b)b.style.display=s?'flex':'none';})();</script>
+<style>
+:root {
+  --green:#005c34; --green2:#007a45; --gold:#f0b429;
+  --light:#f3faf6; --border:#b8d0c2; --text:#17231d; --muted:#5d6b63;
+  --red:#c8302d; --shadow:0 4px 18px rgba(0,92,52,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',Arial,sans-serif;background:#f4f8f5;color:var(--text);line-height:1.45;}
+.topbar{height:5px;background:var(--green);}
+
+/* HEADER */
+header{background:white;border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;gap:18px;box-shadow:var(--shadow);}
+header img{height:60px;width:auto;}
+.hd{border-left:2px solid var(--border);padding-left:18px;}
+.hd h1{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--green);line-height:1;}
+.hd p{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:3px;}
+.hd-right{margin-left:auto;text-align:right;}
+.ver-pill{background:var(--green);color:white;font-family:'DM Mono',monospace;font-size:10px;padding:3px 10px;border-radius:3px;letter-spacing:1px;display:inline-block;margin-bottom:4px;}
+.rule-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+
+/* TAB BAR */
+.tab-bar{display:flex;background:white;border-bottom:2px solid var(--border);padding:0 28px;}
+.tab{padding:12px 20px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;text-transform:uppercase;letter-spacing:.05em;transition:all .15s;}
+.tab.active{color:var(--green);border-bottom-color:var(--green);}
+.tab:hover{color:var(--green);}
+
+/* MAIN */
+.main{max-width:1000px;margin:0 auto;padding:20px 16px 60px;}
+.tab-panel{display:none;} .tab-panel.active{display:block;}
+
+/* CARDS */
+.card{background:white;border-radius:12px;padding:20px;box-shadow:var(--shadow);border:1px solid #dbe8e1;margin-bottom:16px;}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--green);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border);}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.form-grid.full{grid-template-columns:1fr;}
+label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;color:var(--text);}
+input,select{width:100%;border:1px solid #cfdcd5;border-radius:7px;padding:10px 12px;font-size:15px;background:white;font-family:inherit;}
+.help{font-size:11px;color:var(--muted);font-style:italic;margin-top:3px;}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:13px;font-weight:700;}
+.toggle{position:relative;width:44px;height:24px;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:24px;transition:.2s;}
+.slider:before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.2s;}
+input:checked + .slider{background:var(--green);}
+input:checked + .slider:before{transform:translateX(20px);}
+
+/* SECTION HEADERS */
+.section-hdr{font-family:'DM Mono',monospace;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--green);margin:16px 0 10px;border-left:3px solid var(--green);padding-left:8px;}
+
+/* VENT ITEM */
+.vent-item{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:8px 12px;background:var(--light);border-radius:8px;border:1px solid var(--border);margin-bottom:6px;}
+.vent-label{font-size:13px;font-weight:600;}
+.vent-spec{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+.vent-qty{width:64px;text-align:center;}
+
+/* RESULTS */
+.results-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;}
+.result-card{background:var(--light);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.result-card.pass{background:#edf7f1;border-color:#7ec99a;}
+.result-card.fail{background:#fff0f0;border-color:#f5b6b4;}
+.result-card.warn{background:#fff8e6;border-color:#ffc966;}
+.result-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--green);line-height:1;}
+.result-card.fail .result-num{color:var(--red);}
+.result-card.warn .result-num{color:#8a5a00;}
+.result-label{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-top:4px;}
+.result-sub{font-size:12px;color:var(--muted);margin-top:4px;}
+
+/* BALANCE BAR */
+.balance-wrap{margin:12px 0;}
+.balance-label{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:4px;}
+.balance-bar{height:14px;background:#ddd;border-radius:7px;overflow:hidden;display:flex;}
+.balance-intake{background:#5b9bd5;transition:width .4s;}
+.balance-exhaust{background:#e07070;transition:width .4s;}
+.balance-status{font-size:12px;font-weight:700;margin-top:6px;}
+.balance-status.pass{color:var(--green2);}
+.balance-status.fail{color:var(--red);}
+
+/* ACTION ROW */
+.action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+.btn{border:none;border-radius:8px;padding:11px 20px;font-size:13px;font-weight:800;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;font-family:inherit;}
+.btn-calc{background:var(--green);color:white;}
+.btn-clear{background:white;color:var(--green);border:1px solid var(--border)!important;}
+.btn-print{background:var(--gold);color:var(--text);}
+
+/* WARN BANNER */
+.warn-banner{background:#fff8e6;border:1px solid #ffc966;border-radius:8px;padding:10px 14px;font-size:12px;color:#8a5a00;margin-top:8px;display:none;}
+.warn-banner.show{display:block;}
+
+@media(max-width:640px){
+  header{flex-wrap:wrap;padding:12px 16px;} .hd-right{width:100%;text-align:left;}
+  .form-grid,.form-grid.three{grid-template-columns:1fr;}
+  .results-grid{grid-template-columns:1fr 1fr;}
+  .tab{padding:10px 12px;font-size:11px;}
+  .main{padding:14px 12px 50px;}
+}
+
+/* ============================================================
+   PRINT — hide everything, show only the generated report div
+   ============================================================ */
+@media print {
+  body > *:not(#print-report) { display:none !important; }
+  #print-report { display:block !important; font-family:'DM Sans',Arial,sans-serif; color:#17231d; }
+
+  .pr-header { display:flex; align-items:center; gap:18px; border-bottom:3px solid #005c34; padding-bottom:14px; margin-bottom:20px; }
+  .pr-header img { height:56px; width:auto; }
+  .pr-header-mid { border-left:2px solid #b8d0c2; padding-left:16px; }
+  .pr-header-mid h1 { font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:2px; color:#005c34; line-height:1; }
+  .pr-header-mid p { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:2px; color:#5d6b63; text-transform:uppercase; margin-top:3px; }
+  .pr-header-right { margin-left:auto; text-align:right; font-family:'DM Mono',monospace; font-size:9px; color:#5d6b63; line-height:1.6; }
+  .pr-pill { background:#005c34; color:white; padding:2px 8px; border-radius:3px; font-size:9px; display:inline-block; margin-bottom:4px; }
+
+  .pr-section-title { font-family:'Bebas Neue',sans-serif; font-size:13px; letter-spacing:1.5px; color:#005c34; border-bottom:1px solid #b8d0c2; padding-bottom:4px; margin:16px 0 10px; }
+
+  .pr-area-row { display:flex; gap:24px; background:#f3faf6; border:1px solid #b8d0c2; border-radius:6px; padding:10px 14px; margin-bottom:12px; }
+  .pr-area-label { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.08em; color:#5d6b63; }
+  .pr-area-value { font-size:15px; font-weight:700; color:#17231d; }
+
+  .pr-vent-table { width:100%; border-collapse:collapse; margin-bottom:6px; font-size:12px; }
+  .pr-vent-table th { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.06em; color:#5d6b63; text-align:left; padding:4px 8px; border-bottom:1px solid #b8d0c2; }
+  .pr-vent-table th:last-child, .pr-vent-table td:last-child { text-align:right; }
+  .pr-vent-table td { padding:5px 8px; border-bottom:1px solid #e8f0eb; }
+  .pr-vent-table tr:last-child td { border-bottom:none; }
+  .pr-vent-subtotal { font-family:'DM Mono',monospace; font-size:10px; font-weight:700; color:#005c34; }
+
+  .pr-results-row { display:flex; gap:12px; margin:14px 0; }
+  .pr-result-box { flex:1; border:1px solid #b8d0c2; border-radius:6px; padding:10px 12px; text-align:center; }
+  .pr-result-box.pass { background:#edf7f1; border-color:#7ec99a; }
+  .pr-result-box.fail { background:#fff0f0; border-color:#f5b6b4; }
+  .pr-result-num { font-family:'Bebas Neue',sans-serif; font-size:28px; color:#005c34; line-height:1; }
+  .pr-result-box.fail .pr-result-num { color:#c8302d; }
+  .pr-result-lbl { font-family:'DM Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:.05em; color:#5d6b63; margin-top:3px; }
+
+  .pr-balance-wrap { margin:10px 0; }
+  .pr-balance-labels { display:flex; justify-content:space-between; font-family:'DM Mono',monospace; font-size:9px; color:#5d6b63; margin-bottom:3px; }
+  .pr-balance-bar { height:12px; background:#ddd; border-radius:6px; overflow:hidden; display:flex; }
+  .pr-balance-intake { background:#5b9bd5; }
+  .pr-balance-exhaust { background:#e07070; }
+  .pr-balance-status { font-size:11px; font-weight:700; margin-top:5px; }
+  .pr-balance-status.pass { color:#007a45; }
+  .pr-balance-status.fail { color:#c8302d; }
+
+  .pr-verdict { font-size:12px; font-weight:700; margin-top:10px; padding:8px 12px; border-radius:6px; }
+  .pr-verdict.pass { background:#edf7f1; color:#007a45; border:1px solid #7ec99a; }
+  .pr-verdict.fail { background:#fff0f0; color:#c8302d; border:1px solid #f5b6b4; }
+
+  .pr-footer { margin-top:24px; padding-top:10px; border-top:1px solid #b8d0c2; font-family:'DM Mono',monospace; font-size:9px; color:#5d6b63; display:flex; justify-content:space-between; }
+
+  @page { margin:0.6in; size:letter; }
+}
+
+/* Hide print report on screen */
+#print-report { display:none; }
+</style>
+</head>
+<body>
+<div id="print-report"></div>
+<div class="topbar"></div>
+
+<!-- PRINT REPORT — populated by JS, invisible on screen -->
+<div id="print-report"></div>
+
+<header>
+  <img src="data:image/png;base64,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" alt="Century Roof and Solar">
+  <div class="hd">
+    <h1>Attic Ventilation Calculator</h1>
+    <p>Century Roof &amp; Solar &nbsp;•&nbsp; License 721502</p>
+  </div>
+  <div class="hd-right">
+    <div class="ver-pill">v1.0.0 &nbsp;·&nbsp; 2026</div>
+    <div class="rule-note">FHA: 1 sq ft NFVA per 300 sq ft attic</div>
+    <div class="rule-note">Shingle warranty: balanced 50/50 intake/exhaust</div>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('standard',this)">Standard Ventilation</div>
+  <div class="tab" onclick="switchTab('wui',this)">WUI / Fire Zone</div>
+</div>
+
+<div class="main">
+
+<!-- ==================== STANDARD TAB ==================== -->
+<div class="tab-panel active" id="tab-standard">
+
+  <div class="card">
+    <div class="card-title">1. Attic Area</div>
+    <div class="form-grid three">
+      <div>
+        <label>Living Area (sq ft)</label>
+        <input type="number" id="s_living" placeholder="e.g. 2000" oninput="calcStandard()">
+        <div class="help">From Zillow / Redfin / permit</div>
+      </div>
+      <div>
+        <label>Garage Area (sq ft)</label>
+        <input type="number" id="s_garage" placeholder="e.g. 400 if drywalled" oninput="calcStandard()">
+        <div class="help">Include only if drywalled ceiling</div>
+      </div>
+      <div>
+        <label>Total Attic Area (sq ft)</label>
+        <input type="number" id="s_total" placeholder="Auto-calculated or enter manually" oninput="calcStandard()">
+        <div class="help">Auto-sums above or enter directly</div>
+      </div>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="s_rule150" onchange="calcStandard()"><span class="slider"></span></label>
+      <span>Use 1:150 rule (vapor barrier present or climate zone)</span>
+    </div>
+    <div id="s_required_banner" class="warn-banner">Required NFVA will update as you enter vent quantities below.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">2. Exhaust Vents (High / Ridge)</div>
+
+    <div class="section-hdr">O'Hagin Roof Vents</div>
+    <div class="vent-item"><div><div class="vent-label">O'Hagin Comp 72</div><div class="vent-spec">72 sq in NFA each</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_ohcomp" value="0" min="0" oninput="calcStandard()"></div><div id="e_ohcomp_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">O'Hagin Flat Tile</div><div class="vent-spec">98.75 sq in NFA each</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_ohflat" value="0" min="0" oninput="calcStandard()"></div><div id="e_ohflat_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">O'Hagin Villa</div><div class="vent-spec">86.25 sq in NFA each</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_ohvilla" value="0" min="0" oninput="calcStandard()"></div><div id="e_ohvilla_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">O'Hagin S-Tile</div><div class="vent-spec">97.5 sq in NFA each</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_ohstile" value="0" min="0" oninput="calcStandard()"></div><div id="e_ohstile_nfa" class="vent-spec">0 sq in</div></div>
+
+    <div class="section-hdr">Standard Roof Box / Eyebrow Vents</div>
+    <div class="vent-item"><div><div class="vent-label">Standard Box Vent 8×16</div><div class="vent-spec">50 sq in NFA each (typical)</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_box8x16" value="0" min="0" oninput="calcStandard()"></div><div id="e_box8x16_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">Standard Box Vent 12×12</div><div class="vent-spec">75 sq in NFA each (typical)</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_box12x12" value="0" min="0" oninput="calcStandard()"></div><div id="e_box12x12_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">Eyebrow / Hip Vent (small)</div><div class="vent-spec">~40 sq in NFA each</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_eyebrow_sm" value="0" min="0" oninput="calcStandard()"></div><div id="e_eyebrow_sm_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">Eyebrow / Hip Vent (large)</div><div class="vent-spec">~60 sq in NFA each</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_eyebrow_lg" value="0" min="0" oninput="calcStandard()"></div><div id="e_eyebrow_lg_nfa" class="vent-spec">0 sq in</div></div>
+
+    <div class="section-hdr">GAF Ridge &amp; Power Vents</div>
+    <div class="vent-item"><div><div class="vent-label">GAF Cobra Ridge Vent</div><div class="vent-spec">18 sq in NFA per linear foot</div></div><div><label>Lin Ft</label><input type="number" class="vent-qty" id="e_cobra" value="0" min="0" oninput="calcStandard()"></div><div id="e_cobra_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">GAF Snow Country Ridge</div><div class="vent-spec">16 sq in NFA per linear foot</div></div><div><label>Lin Ft</label><input type="number" class="vent-qty" id="e_snow" value="0" min="0" oninput="calcStandard()"></div><div id="e_snow_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">GAF Power Vent PR1D (1 motor)</div><div class="vent-spec">Equiv. ~144 sq in NFA</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_pr1d" value="0" min="0" oninput="calcStandard()"></div><div id="e_pr1d_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">GAF Power Vent PR2D (2 motor)</div><div class="vent-spec">Equiv. ~216 sq in NFA</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_pr2d" value="0" min="0" oninput="calcStandard()"></div><div id="e_pr2d_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">GAF Power Vent PR3D (3 motor)</div><div class="vent-spec">Equiv. ~288 sq in NFA</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="e_pr3d" value="0" min="0" oninput="calcStandard()"></div><div id="e_pr3d_nfa" class="vent-spec">0 sq in</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">3. Intake Vents (Low / Soffit)</div>
+
+    <div class="section-hdr">Continuous Soffit Strip</div>
+    <div class="vent-item"><div><div class="vent-label">2×4 Continuous Soffit Strip</div><div class="vent-spec">26 sq in NFA per linear foot</div></div><div><label>Lin Ft</label><input type="number" class="vent-qty" id="i_s4" value="0" min="0" oninput="calcStandard()"></div><div id="i_s4_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">2×6 Continuous Soffit Strip</div><div class="vent-spec">62 sq in NFA per linear foot</div></div><div><label>Lin Ft</label><input type="number" class="vent-qty" id="i_s6" value="0" min="0" oninput="calcStandard()"></div><div id="i_s6_nfa" class="vent-spec">0 sq in</div></div>
+
+    <div class="section-hdr">Drilled Hole Upgrades</div>
+    <div class="vent-item"><div><div class="vent-label">2″ Drilled Holes (2×4 strip upgrade)</div><div class="vent-spec">+9 sq in NFA per hole vs plain strip</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="i_hole4" value="0" min="0" oninput="calcStandard()"></div><div id="i_hole4_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">2″ Drilled Holes (2×6 strip upgrade)</div><div class="vent-spec">+9 sq in NFA per hole vs plain strip</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="i_hole6" value="0" min="0" oninput="calcStandard()"></div><div id="i_hole6_nfa" class="vent-spec">0 sq in</div></div>
+
+    <div class="section-hdr">O'Hagin Under-Eave Vents</div>
+    <div class="vent-item"><div><div class="vent-label">O'Hagin Under-Eave (Comp)</div><div class="vent-spec">50 sq in NFA each</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="i_oheave" value="0" min="0" oninput="calcStandard()"></div><div id="i_oheave_nfa" class="vent-spec">0 sq in</div></div>
+  </div>
+
+  <div class="card" id="s_results">
+    <div class="card-title">Results</div>
+    <div class="results-grid">
+      <div class="result-card" id="r_required_card">
+        <div class="result-num" id="r_required">—</div>
+        <div class="result-label">Required NFVA (sq in)</div>
+        <div class="result-sub" id="r_rule">1:300 rule</div>
+      </div>
+      <div class="result-card" id="r_exhaust_card">
+        <div class="result-num" id="r_exhaust">—</div>
+        <div class="result-label">Exhaust NFA (sq in)</div>
+      </div>
+      <div class="result-card" id="r_intake_card">
+        <div class="result-num" id="r_intake">—</div>
+        <div class="result-label">Intake NFA (sq in)</div>
+      </div>
+    </div>
+
+    <div class="balance-wrap">
+      <div class="balance-label"><span>Intake</span><span>Exhaust</span></div>
+      <div class="balance-bar">
+        <div class="balance-intake" id="b_intake" style="width:50%"></div>
+        <div class="balance-exhaust" id="b_exhaust" style="width:50%"></div>
+      </div>
+      <div class="balance-status" id="b_status">Enter vent quantities to see balance</div>
+    </div>
+
+    <div id="s_verdict" style="margin-top:12px;font-size:13px;font-weight:700;"></div>
+    <div class="action-row">
+      <button class="btn btn-print" onclick="printReport('standard')">&#128196; Print Report</button>
+      <button class="btn btn-clear" onclick="clearStandard()">Clear</button>
+    </div>
+  </div>
+
+</div><!-- end standard tab -->
+
+<!-- ==================== WUI TAB ==================== -->
+<div class="tab-panel" id="tab-wui">
+
+  <div class="card" style="background:#fff8e6;border-color:#ffc966;">
+    <div class="card-title" style="color:#8a5a00;">&#128293; WUI / Fire Zone — Assembly Selection</div>
+    <p style="font-size:13px;color:#8a5a00;margin-bottom:14px;">In WUI (Wildland Urban Interface) and high fire hazard severity zones, standard vents may not comply. Use fire-rated assemblies below. All NFA values are published manufacturer specifications.</p>
+    <div class="form-grid">
+      <div>
+        <label>Living Area (sq ft)</label>
+        <input type="number" id="w_living" placeholder="e.g. 2000" oninput="calcWUI()">
+      </div>
+      <div>
+        <label>Garage Area (sq ft)</label>
+        <input type="number" id="w_garage" placeholder="e.g. 400" oninput="calcWUI()">
+      </div>
+    </div>
+    <div class="toggle-row">
+      <label class="toggle"><input type="checkbox" id="w_rule150" onchange="calcWUI()"><span class="slider"></span></label>
+      <span>Use 1:150 rule</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">WUI-Rated Exhaust Assemblies</div>
+    <div class="section-hdr">Vulcan Vents</div>
+    <div class="vent-item"><div><div class="vent-label">Vulcan 1621 — 1600 sq in roof vent</div><div class="vent-spec">16 sq in NFA each (ember-resistant)</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="w_v1621" value="0" min="0" oninput="calcWUI()"></div><div id="w_v1621_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">Vulcan 808 — ridge vent</div><div class="vent-spec">9 sq in NFA per linear foot</div></div><div><label>Lin Ft</label><input type="number" class="vent-qty" id="w_v808" value="0" min="0" oninput="calcWUI()"></div><div id="w_v808_nfa" class="vent-spec">0 sq in</div></div>
+
+    <div class="section-hdr">O'Hagin Fire &amp; Ice</div>
+    <div class="vent-item"><div><div class="vent-label">O'Hagin Fire &amp; Ice — Comp</div><div class="vent-spec">40 sq in NFA each (Class A rated)</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="w_ofi_comp" value="0" min="0" oninput="calcWUI()"></div><div id="w_ofi_comp_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">O'Hagin Fire &amp; Ice — Tile</div><div class="vent-spec">48 sq in NFA each (Class A rated)</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="w_ofi_tile" value="0" min="0" oninput="calcWUI()"></div><div id="w_ofi_tile_nfa" class="vent-spec">0 sq in</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">WUI-Rated Intake Assemblies</div>
+    <div class="vent-item"><div><div class="vent-label">Vulcan Under-Eave Vent</div><div class="vent-spec">9 sq in NFA each (ember-resistant)</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="w_vue" value="0" min="0" oninput="calcWUI()"></div><div id="w_vue_nfa" class="vent-spec">0 sq in</div></div>
+    <div class="vent-item"><div><div class="vent-label">O'Hagin Fire &amp; Ice Under-Eave</div><div class="vent-spec">30 sq in NFA each</div></div><div><label>Qty</label><input type="number" class="vent-qty" id="w_ofi_eave" value="0" min="0" oninput="calcWUI()"></div><div id="w_ofi_eave_nfa" class="vent-spec">0 sq in</div></div>
+  </div>
+
+  <div class="card" id="w_results">
+    <div class="card-title">WUI Results</div>
+    <div class="results-grid">
+      <div class="result-card" id="wr_required_card">
+        <div class="result-num" id="wr_required">—</div>
+        <div class="result-label">Required NFVA (sq in)</div>
+        <div class="result-sub" id="wr_rule">1:300 rule</div>
+      </div>
+      <div class="result-card" id="wr_exhaust_card">
+        <div class="result-num" id="wr_exhaust">—</div>
+        <div class="result-label">WUI Exhaust NFA</div>
+      </div>
+      <div class="result-card" id="wr_intake_card">
+        <div class="result-num" id="wr_intake">—</div>
+        <div class="result-label">WUI Intake NFA</div>
+      </div>
+    </div>
+    <div class="balance-wrap">
+      <div class="balance-label"><span>Intake</span><span>Exhaust</span></div>
+      <div class="balance-bar">
+        <div class="balance-intake" id="wb_intake" style="width:50%"></div>
+        <div class="balance-exhaust" id="wb_exhaust" style="width:50%"></div>
+      </div>
+      <div class="balance-status" id="wb_status">Enter vent quantities to see balance</div>
+    </div>
+    <div id="w_verdict" style="margin-top:12px;font-size:13px;font-weight:700;"></div>
+    <div class="action-row">
+      <button class="btn btn-print" onclick="printReport('wui')">&#128196; Print Report</button>
+      <button class="btn btn-clear" onclick="clearWUI()">Clear</button>
+    </div>
+  </div>
+
+</div><!-- end wui tab -->
+</div><!-- end main -->
+
+<script>
+// ── TABS ──
+function switchTab(id, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── HELPERS ──
+function val(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function set(id, v) { var el = document.getElementById(id); if(el) el.textContent = v; }
+function cls(id, c) { var el = document.getElementById(id); if(el) el.className = el.className.replace(/pass|fail|warn/g,'').trim() + ' ' + c; }
+
+function updateNFA(inputId, displayId, rate) {
+  var q = val(inputId);
+  var nfa = Math.round(q * rate);
+  set(displayId, nfa.toLocaleString() + ' sq in');
+  return nfa;
+}
+
+function renderBalance(intakeNFA, exhaustNFA, balanceIntakeId, balanceExhaustId, statusId) {
+  var total = intakeNFA + exhaustNFA;
+  if (total === 0) { set(statusId, 'Enter vent quantities to see balance'); return; }
+  var ip = Math.round((intakeNFA / total) * 100);
+  var ep = 100 - ip;
+  document.getElementById(balanceIntakeId).style.width = ip + '%';
+  document.getElementById(balanceExhaustId).style.width = ep + '%';
+  var balanced = ip >= 40 && ip <= 60;
+  var statusEl = document.getElementById(statusId);
+  statusEl.textContent = 'Intake: ' + ip + '%  |  Exhaust: ' + ep + '% — ' + (balanced ? '✓ Balanced (shingle warranty compliant)' : '⚠ Unbalanced — adjust for 50/50 compliance');
+  statusEl.className = 'balance-status ' + (balanced ? 'pass' : 'fail');
+}
+
+function renderVerdict(required, exhaust, intake, verdictId) {
+  var el = document.getElementById(verdictId);
+  if (required === 0) { el.textContent = ''; return; }
+  var minEach = Math.ceil(required / 2);
+  var exOk = exhaust >= minEach;
+  var inOk = intake >= minEach;
+  var msgs = [];
+  if (!exOk) msgs.push('Exhaust short by ' + (minEach - exhaust).toLocaleString() + ' sq in');
+  if (!inOk) msgs.push('Intake short by ' + (minEach - intake).toLocaleString() + ' sq in');
+  if (exOk && inOk) {
+    el.innerHTML = '<span style="color:var(--green2)">✓ PASSES — Exhaust ' + exhaust.toLocaleString() + ' sq in ≥ ' + minEach.toLocaleString() + ' required &nbsp;|&nbsp; Intake ' + intake.toLocaleString() + ' sq in ≥ ' + minEach.toLocaleString() + ' required</span>';
+  } else {
+    el.innerHTML = '<span style="color:var(--red)">✗ FAILS — ' + msgs.join(' &nbsp;|&nbsp; ') + '<br><span style="font-size:11px;font-weight:400;">Code requires minimum 50% of required NFA on each side independently (min ' + minEach.toLocaleString() + ' sq in each).</span></span>';
+  }
+}
+
+// ── STANDARD CALC ──
+function calcStandard() {
+  var living = val('s_living');
+  var garage = val('s_garage');
+  var totalInput = val('s_total');
+  if (living > 0 || garage > 0) {
+    var auto = living + garage;
+    document.getElementById('s_total').value = auto || '';
+    totalInput = auto;
+  }
+  var rule = document.getElementById('s_rule150').checked ? 150 : 300;
+  var required = totalInput > 0 ? Math.ceil((totalInput / rule) * 144) : 0;
+  set('r_required', required > 0 ? required.toLocaleString() : '—');
+  set('r_rule', rule === 150 ? '1:150 rule' : '1:300 rule');
+
+  var ex = 0;
+  ex += updateNFA('e_box8x16','e_box8x16_nfa',50);
+  ex += updateNFA('e_box12x12','e_box12x12_nfa',75);
+  ex += updateNFA('e_eyebrow_sm','e_eyebrow_sm_nfa',40);
+  ex += updateNFA('e_eyebrow_lg','e_eyebrow_lg_nfa',60);
+  ex += updateNFA('e_ohcomp','e_ohcomp_nfa',72);
+  ex += updateNFA('e_ohflat','e_ohflat_nfa',98.75);
+  ex += updateNFA('e_ohvilla','e_ohvilla_nfa',86.25);
+  ex += updateNFA('e_ohstile','e_ohstile_nfa',97.5);
+  ex += updateNFA('e_cobra','e_cobra_nfa',18);
+  ex += updateNFA('e_snow','e_snow_nfa',16);
+  ex += updateNFA('e_pr1d','e_pr1d_nfa',144);
+  ex += updateNFA('e_pr2d','e_pr2d_nfa',216);
+  ex += updateNFA('e_pr3d','e_pr3d_nfa',288);
+
+  var ix = 0;
+  ix += updateNFA('i_s4','i_s4_nfa',26);
+  ix += updateNFA('i_s6','i_s6_nfa',62);
+  ix += updateNFA('i_hole4','i_hole4_nfa',9);
+  ix += updateNFA('i_hole6','i_hole6_nfa',9);
+  ix += updateNFA('i_oheave','i_oheave_nfa',50);
+
+  set('r_exhaust', ex > 0 ? ex.toLocaleString() : '—');
+  set('r_intake', ix > 0 ? ix.toLocaleString() : '—');
+
+  if (required > 0) {
+    var minEach = Math.ceil(required / 2);
+    cls('r_required_card', (ex >= minEach && ix >= minEach) ? 'pass' : 'fail');
+    cls('r_exhaust_card', ex >= minEach ? 'pass' : 'fail');
+    cls('r_intake_card', ix >= minEach ? 'pass' : 'fail');
+  }
+  renderBalance(ix, ex, 'b_intake', 'b_exhaust', 'b_status');
+  renderVerdict(required, ex, ix, 's_verdict');
+}
+
+function clearStandard() {
+  ['s_living','s_garage','s_total','e_box8x16','e_box12x12','e_eyebrow_sm','e_eyebrow_lg','e_ohcomp','e_ohflat','e_ohvilla','e_ohstile',
+   'e_cobra','e_snow','e_pr1d','e_pr2d','e_pr3d','i_s4','i_s6','i_hole4','i_hole6','i_oheave']
+   .forEach(id => { var el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('s_rule150').checked = false;
+  calcStandard();
+}
+
+// ── WUI CALC ──
+function calcWUI() {
+  var living = val('w_living');
+  var garage = val('w_garage');
+  var total = living + garage;
+  var rule = document.getElementById('w_rule150').checked ? 150 : 300;
+  var required = total > 0 ? Math.ceil((total / rule) * 144) : 0;
+  set('wr_required', required > 0 ? required.toLocaleString() : '—');
+  set('wr_rule', rule === 150 ? '1:150 rule' : '1:300 rule');
+
+  var ex = 0;
+  ex += updateNFA('w_v1621','w_v1621_nfa',16);
+  ex += updateNFA('w_v808','w_v808_nfa',9);
+  ex += updateNFA('w_ofi_comp','w_ofi_comp_nfa',40);
+  ex += updateNFA('w_ofi_tile','w_ofi_tile_nfa',48);
+
+  var ix = 0;
+  ix += updateNFA('w_vue','w_vue_nfa',9);
+  ix += updateNFA('w_ofi_eave','w_ofi_eave_nfa',30);
+
+  set('wr_exhaust', ex > 0 ? ex.toLocaleString() : '—');
+  set('wr_intake', ix > 0 ? ix.toLocaleString() : '—');
+  renderBalance(ix, ex, 'wb_intake', 'wb_exhaust', 'wb_status');
+  renderVerdict(required, ex, ix, 'w_verdict');
+}
+
+function clearWUI() {
+  ['w_living','w_garage','w_v1621','w_v808','w_ofi_comp','w_ofi_tile','w_vue','w_ofi_eave']
+   .forEach(id => { var el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('w_rule150').checked = false;
+  calcWUI();
+}
+
+// ── PRINT REPORT BUILDER ──
+function printReport(mode) {
+  var logoSrc = document.querySelector('header img').src;
+  var isStandard = mode === 'standard';
+
+  var living, garage, total, rule, required, exhaust, intake;
+
+  if (isStandard) {
+    living  = val('s_living');
+    garage  = val('s_garage');
+    total   = val('s_total');
+    var r150 = document.getElementById('s_rule150').checked;
+    rule    = r150 ? '1:150' : '1:300';
+    required = total > 0 ? Math.ceil((total / (r150 ? 150 : 300)) * 144) : 0;
+    exhaust = Math.round(val('e_box8x16')*50 + val('e_box12x12')*75 + val('e_eyebrow_sm')*40 + val('e_eyebrow_lg')*60 +
+              val('e_ohcomp')*72 + val('e_ohflat')*98.75 + val('e_ohvilla')*86.25 + val('e_ohstile')*97.5 +
+              val('e_cobra')*18 + val('e_snow')*16 + val('e_pr1d')*144 + val('e_pr2d')*216 + val('e_pr3d')*288);
+    intake  = Math.round(val('i_s4')*26 + val('i_s6')*62 + val('i_hole4')*9 + val('i_hole6')*9 + val('i_oheave')*50);
+  } else {
+    living  = val('w_living');
+    garage  = val('w_garage');
+    total   = living + garage;
+    var wr150 = document.getElementById('w_rule150').checked;
+    rule    = wr150 ? '1:150' : '1:300';
+    required = total > 0 ? Math.ceil((total / (wr150 ? 150 : 300)) * 144) : 0;
+    exhaust = Math.round(val('w_v1621')*16 + val('w_v808')*9 + val('w_ofi_comp')*40 + val('w_ofi_tile')*48);
+    intake  = Math.round(val('w_vue')*9 + val('w_ofi_eave')*30);
+  }
+
+  var minEach    = required > 0 ? Math.ceil(required / 2) : 0;
+  var totalV     = exhaust + intake;
+  var intakePct  = totalV > 0 ? Math.round((intake  / totalV) * 100) : 50;
+  var exhaustPct = 100 - intakePct;
+  var balanced   = intakePct >= 40 && intakePct <= 60;
+  var passes     = exhaust >= minEach && intake >= minEach;
+
+  var sExVents = [
+    {id:'e_ohcomp',label:"O'Hagin Comp 72",unit:'ea',rate:72},
+    {id:'e_ohflat',label:"O'Hagin Flat Tile",unit:'ea',rate:98.75},
+    {id:'e_ohvilla',label:"O'Hagin Villa",unit:'ea',rate:86.25},
+    {id:'e_ohstile',label:"O'Hagin S-Tile",unit:'ea',rate:97.5},
+    {id:'e_box8x16',label:'Box Vent 8×16',unit:'ea',rate:50},
+    {id:'e_box12x12',label:'Box Vent 12×12',unit:'ea',rate:75},
+    {id:'e_eyebrow_sm',label:'Eyebrow/Hip Vent (small)',unit:'ea',rate:40},
+    {id:'e_eyebrow_lg',label:'Eyebrow/Hip Vent (large)',unit:'ea',rate:60},
+    {id:'e_cobra',label:'GAF Cobra Ridge Vent',unit:'lin ft',rate:18},
+    {id:'e_snow',label:'GAF Snow Country Ridge',unit:'lin ft',rate:16},
+    {id:'e_pr1d',label:'GAF Power Vent PR1D',unit:'ea',rate:144},
+    {id:'e_pr2d',label:'GAF Power Vent PR2D',unit:'ea',rate:216},
+    {id:'e_pr3d',label:'GAF Power Vent PR3D',unit:'ea',rate:288},
+  ];
+  var sInVents = [
+    {id:'i_s4',label:'2×4 Continuous Soffit Strip',unit:'lin ft',rate:26},
+    {id:'i_s6',label:'2×6 Continuous Soffit Strip',unit:'lin ft',rate:62},
+    {id:'i_hole4',label:'2″ Drilled Holes (2×4 upgrade)',unit:'ea',rate:9},
+    {id:'i_hole6',label:'2″ Drilled Holes (2×6 upgrade)',unit:'ea',rate:9},
+    {id:'i_oheave',label:"O'Hagin Under-Eave (Comp)",unit:'ea',rate:50},
+  ];
+  var wExVents = [
+    {id:'w_v1621',label:'Vulcan 1621 Roof Vent',unit:'ea',rate:16},
+    {id:'w_v808',label:'Vulcan 808 Ridge Vent',unit:'lin ft',rate:9},
+    {id:'w_ofi_comp',label:"O'Hagin Fire & Ice — Comp",unit:'ea',rate:40},
+    {id:'w_ofi_tile',label:"O'Hagin Fire & Ice — Tile",unit:'ea',rate:48},
+  ];
+  var wInVents = [
+    {id:'w_vue',label:'Vulcan Under-Eave Vent',unit:'ea',rate:9},
+    {id:'w_ofi_eave',label:"O'Hagin Fire & Ice Under-Eave",unit:'ea',rate:30},
+  ];
+
+  var exVents = isStandard ? sExVents : wExVents;
+  var inVents = isStandard ? sInVents : wInVents;
+
+  function buildRows(vents) {
+    var rows = '';
+    vents.forEach(function(v) {
+      var q = val(v.id);
+      if (q > 0) {
+        var nfa = Math.round(q * v.rate);
+        rows += '<tr><td>' + v.label + '</td><td style="text-align:center">' + q + ' ' + v.unit + '</td><td style="text-align:center">' + v.rate + ' sq in/' + v.unit + '</td><td class="pr-vent-subtotal">' + nfa.toLocaleString() + ' sq in</td></tr>';
+      }
+    });
+    return rows || '<tr><td colspan="4" style="color:#999;font-style:italic;font-size:11px;padding:5px 8px;">None specified</td></tr>';
+  }
+
+  var dateStr = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+
+  var html = `
+    <div class="pr-header">
+      <img src="${logoSrc}" alt="Century Roof and Solar">
+      <div class="pr-header-mid">
+        <h1>Attic Ventilation Report${!isStandard?' — WUI/Fire Zone':''}</h1>
+        <p>Century Roof &amp; Solar &nbsp;·&nbsp; License 721502 &nbsp;·&nbsp; Hayward, CA</p>
+      </div>
+      <div class="pr-header-right">
+        <div class="pr-pill">v1.0.0 · 2026</div><br>${dateStr}
+      </div>
+    </div>
+
+    <div class="pr-section-title">Attic Area</div>
+    <div class="pr-area-row">
+      ${living>0?`<div class="pr-area-item"><div class="pr-area-label">Living Area</div><div class="pr-area-value">${living.toLocaleString()} sq ft</div></div>`:''}
+      ${garage>0?`<div class="pr-area-item"><div class="pr-area-label">Garage Area</div><div class="pr-area-value">${garage.toLocaleString()} sq ft</div></div>`:''}
+      <div class="pr-area-item"><div class="pr-area-label">Total Attic Area</div><div class="pr-area-value">${total.toLocaleString()} sq ft</div></div>
+      <div class="pr-area-item"><div class="pr-area-label">Ventilation Rule</div><div class="pr-area-value">${rule}</div></div>
+      <div class="pr-area-item"><div class="pr-area-label">Required NFVA</div><div class="pr-area-value">${required.toLocaleString()} sq in</div></div>
+    </div>
+
+    <div class="pr-section-title">Exhaust Vents (High / Ridge)</div>
+    <table class="pr-vent-table">
+      <thead><tr><th>Vent Type</th><th style="text-align:center">Quantity</th><th style="text-align:center">NFA Rate</th><th>NFA Total</th></tr></thead>
+      <tbody>${buildRows(exVents)}</tbody>
+    </table>
+
+    <div class="pr-section-title">Intake Vents (Low / Soffit)</div>
+    <table class="pr-vent-table">
+      <thead><tr><th>Vent Type</th><th style="text-align:center">Quantity</th><th style="text-align:center">NFA Rate</th><th>NFA Total</th></tr></thead>
+      <tbody>${buildRows(inVents)}</tbody>
+    </table>
+
+    <div class="pr-section-title">Results Summary</div>
+    <div class="pr-results-row">
+      <div class="pr-result-box ${passes?'pass':'fail'}">
+        <div class="pr-result-num">${required.toLocaleString()}</div>
+        <div class="pr-result-lbl">Required NFVA (sq in)<br>${rule} rule</div>
+      </div>
+      <div class="pr-result-box ${exhaust>=minEach?'pass':'fail'}">
+        <div class="pr-result-num">${exhaust.toLocaleString()}</div>
+        <div class="pr-result-lbl">Exhaust NFA (sq in)<br>Min required: ${minEach.toLocaleString()}</div>
+      </div>
+      <div class="pr-result-box ${intake>=minEach?'pass':'fail'}">
+        <div class="pr-result-num">${intake.toLocaleString()}</div>
+        <div class="pr-result-lbl">Intake NFA (sq in)<br>Min required: ${minEach.toLocaleString()}</div>
+      </div>
+    </div>
+
+    <div class="pr-balance-wrap">
+      <div class="pr-balance-labels"><span>Intake (${intakePct}%)</span><span>Exhaust (${exhaustPct}%)</span></div>
+      <div class="pr-balance-bar">
+        <div class="pr-balance-intake" style="width:${intakePct}%"></div>
+        <div class="pr-balance-exhaust" style="width:${exhaustPct}%"></div>
+      </div>
+      <div class="pr-balance-status ${balanced?'pass':'fail'}">
+        ${balanced?'✓ Balanced — shingle warranty compliant (50/50 intake/exhaust)':'⚠ Unbalanced — adjust for 50/50 compliance'}
+      </div>
+    </div>
+
+    <div class="pr-verdict ${passes?'pass':'fail'}">
+      ${passes
+        ? '✓ PASSES — Exhaust ' + exhaust.toLocaleString() + ' sq in and Intake ' + intake.toLocaleString() + ' sq in both meet the ' + minEach.toLocaleString() + ' sq in minimum per side.'
+        : '✗ FAILS — ' + (exhaust<minEach?'Exhaust short by '+(minEach-exhaust).toLocaleString()+' sq in. ':'') + (intake<minEach?'Intake short by '+(minEach-intake).toLocaleString()+' sq in.':'')}
+    </div>
+
+    <div class="pr-footer">
+      <span>Century Roof &amp; Solar · LIC #721502 · C10 &amp; C39 · NABCEP Certified</span>
+      <span>Generated ${dateStr}</span>
+    </div>`;
+
+  document.getElementById('print-report').innerHTML = html;
+  window.print();
+}
+
+
+// ── PRINT REPORT BUILDER ──
+function printReport(mode) {
+  var logoSrc = document.querySelector('header img').src;
+  var isStandard = mode === 'standard';
+  var living, garage, total, rule, required, exhaust, intake;
+  if (isStandard) {
+    living  = val('s_living'); garage = val('s_garage'); total = val('s_total');
+    var r150 = document.getElementById('s_rule150').checked;
+    rule = r150 ? '1:150' : '1:300';
+    required = total > 0 ? Math.ceil((total / (r150 ? 150 : 300)) * 144) : 0;
+    exhaust = Math.round(val('e_box8x16')*50 + val('e_box12x12')*75 + val('e_eyebrow_sm')*40 + val('e_eyebrow_lg')*60 +
+              val('e_ohcomp')*72 + val('e_ohflat')*98.75 + val('e_ohvilla')*86.25 + val('e_ohstile')*97.5 +
+              val('e_cobra')*18 + val('e_snow')*16 + val('e_pr1d')*144 + val('e_pr2d')*216 + val('e_pr3d')*288);
+    intake = Math.round(val('i_s4')*26 + val('i_s6')*62 + val('i_hole4')*9 + val('i_hole6')*9 + val('i_oheave')*50);
+  } else {
+    living = val('w_living'); garage = val('w_garage'); total = living + garage;
+    var wr150 = document.getElementById('w_rule150').checked;
+    rule = wr150 ? '1:150' : '1:300';
+    required = total > 0 ? Math.ceil((total / (wr150 ? 150 : 300)) * 144) : 0;
+    exhaust = Math.round(val('w_v1621')*16 + val('w_v808')*9 + val('w_ofi_comp')*40 + val('w_ofi_tile')*48);
+    intake  = Math.round(val('w_vue')*9 + val('w_ofi_eave')*30);
+  }
+  var minEach = required > 0 ? Math.ceil(required / 2) : 0;
+  var totalV = exhaust + intake;
+  var intakePct = totalV > 0 ? Math.round((intake / totalV) * 100) : 50;
+  var exhaustPct = 100 - intakePct;
+  var balanced = intakePct >= 40 && intakePct <= 60;
+  var passes = exhaust >= minEach && intake >= minEach;
+
+  var sExVents = [
+    {id:'e_ohcomp',label:"O'Hagin Comp 72",unit:'ea',rate:72},
+    {id:'e_ohflat',label:"O'Hagin Flat Tile",unit:'ea',rate:98.75},
+    {id:'e_ohvilla',label:"O'Hagin Villa",unit:'ea',rate:86.25},
+    {id:'e_ohstile',label:"O'Hagin S-Tile",unit:'ea',rate:97.5},
+    {id:'e_box8x16',label:'Box Vent 8x16',unit:'ea',rate:50},
+    {id:'e_box12x12',label:'Box Vent 12x12',unit:'ea',rate:75},
+    {id:'e_eyebrow_sm',label:'Eyebrow/Hip Vent (small)',unit:'ea',rate:40},
+    {id:'e_eyebrow_lg',label:'Eyebrow/Hip Vent (large)',unit:'ea',rate:60},
+    {id:'e_cobra',label:'GAF Cobra Ridge Vent',unit:'lin ft',rate:18},
+    {id:'e_snow',label:'GAF Snow Country Ridge',unit:'lin ft',rate:16},
+    {id:'e_pr1d',label:'GAF Power Vent PR1D',unit:'ea',rate:144},
+    {id:'e_pr2d',label:'GAF Power Vent PR2D',unit:'ea',rate:216},
+    {id:'e_pr3d',label:'GAF Power Vent PR3D',unit:'ea',rate:288}
+  ];
+  var sInVents = [
+    {id:'i_s4',label:'2x4 Continuous Soffit Strip',unit:'lin ft',rate:26},
+    {id:'i_s6',label:'2x6 Continuous Soffit Strip',unit:'lin ft',rate:62},
+    {id:'i_hole4',label:'2in Drilled Holes (2x4 upgrade)',unit:'ea',rate:9},
+    {id:'i_hole6',label:'2in Drilled Holes (2x6 upgrade)',unit:'ea',rate:9},
+    {id:'i_oheave',label:"O'Hagin Under-Eave (Comp)",unit:'ea',rate:50}
+  ];
+  var wExVents = [
+    {id:'w_v1621',label:'Vulcan 1621 Roof Vent',unit:'ea',rate:16},
+    {id:'w_v808',label:'Vulcan 808 Ridge Vent',unit:'lin ft',rate:9},
+    {id:'w_ofi_comp',label:"O'Hagin Fire and Ice Comp",unit:'ea',rate:40},
+    {id:'w_ofi_tile',label:"O'Hagin Fire and Ice Tile",unit:'ea',rate:48}
+  ];
+  var wInVents = [
+    {id:'w_vue',label:'Vulcan Under-Eave Vent',unit:'ea',rate:9},
+    {id:'w_ofi_eave',label:"O'Hagin Fire and Ice Under-Eave",unit:'ea',rate:30}
+  ];
+  var exVents = isStandard ? sExVents : wExVents;
+  var inVents = isStandard ? sInVents : wInVents;
+
+  function buildRows(vents) {
+    var rows = '';
+    vents.forEach(function(v) {
+      var q = val(v.id);
+      if (q > 0) {
+        var nfa = Math.round(q * v.rate);
+        rows += '<tr><td>' + v.label + '</td><td style="text-align:center">' + q + ' ' + v.unit + '</td><td style="text-align:center">' + v.rate + ' sq in/' + v.unit + '</td><td class="pr-vent-subtotal">' + nfa.toLocaleString() + ' sq in</td></tr>';
+      }
+    });
+    return rows || '<tr><td colspan="4" style="color:#999;font-style:italic;font-size:11px;padding:5px 8px;">None specified</td></tr>';
+  }
+
+  var dateStr = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  var html = '<div class="pr-header"><img src="' + logoSrc + '" alt="Century Roof and Solar"><div class="pr-header-mid"><h1>Attic Ventilation Report' + (!isStandard ? ' — WUI/Fire Zone' : '') + '</h1><p>Century Roof &amp; Solar &nbsp;&middot;&nbsp; License 721502 &nbsp;&middot;&nbsp; Hayward, CA</p></div><div class="pr-header-right"><div class="pr-pill">v1.0.0 &middot; 2026</div><br>' + dateStr + '</div></div>' +
+    '<div class="pr-section-title">Attic Area</div>' +
+    '<div class="pr-area-row">' +
+    (living>0 ? '<div class="pr-area-item"><div class="pr-area-label">Living Area</div><div class="pr-area-value">' + living.toLocaleString() + ' sq ft</div></div>' : '') +
+    (garage>0 ? '<div class="pr-area-item"><div class="pr-area-label">Garage Area</div><div class="pr-area-value">' + garage.toLocaleString() + ' sq ft</div></div>' : '') +
+    '<div class="pr-area-item"><div class="pr-area-label">Total Attic Area</div><div class="pr-area-value">' + total.toLocaleString() + ' sq ft</div></div>' +
+    '<div class="pr-area-item"><div class="pr-area-label">Ventilation Rule</div><div class="pr-area-value">' + rule + '</div></div>' +
+    '<div class="pr-area-item"><div class="pr-area-label">Required NFVA</div><div class="pr-area-value">' + required.toLocaleString() + ' sq in</div></div></div>' +
+    '<div class="pr-section-title">Exhaust Vents (High / Ridge)</div>' +
+    '<table class="pr-vent-table"><thead><tr><th>Vent Type</th><th style="text-align:center">Quantity</th><th style="text-align:center">NFA Rate</th><th>NFA Total</th></tr></thead><tbody>' + buildRows(exVents) + '</tbody></table>' +
+    '<div class="pr-section-title">Intake Vents (Low / Soffit)</div>' +
+    '<table class="pr-vent-table"><thead><tr><th>Vent Type</th><th style="text-align:center">Quantity</th><th style="text-align:center">NFA Rate</th><th>NFA Total</th></tr></thead><tbody>' + buildRows(inVents) + '</tbody></table>' +
+    '<div class="pr-section-title">Results Summary</div>' +
+    '<div class="pr-results-row">' +
+    '<div class="pr-result-box ' + (passes?'pass':'fail') + '"><div class="pr-result-num">' + required.toLocaleString() + '</div><div class="pr-result-lbl">Required NFVA (sq in)<br>' + rule + ' rule</div></div>' +
+    '<div class="pr-result-box ' + (exhaust>=minEach?'pass':'fail') + '"><div class="pr-result-num">' + exhaust.toLocaleString() + '</div><div class="pr-result-lbl">Exhaust NFA (sq in)<br>Min required: ' + minEach.toLocaleString() + '</div></div>' +
+    '<div class="pr-result-box ' + (intake>=minEach?'pass':'fail') + '"><div class="pr-result-num">' + intake.toLocaleString() + '</div><div class="pr-result-lbl">Intake NFA (sq in)<br>Min required: ' + minEach.toLocaleString() + '</div></div></div>' +
+    '<div class="pr-balance-wrap"><div class="pr-balance-labels"><span>Intake (' + intakePct + '%)</span><span>Exhaust (' + exhaustPct + '%)</span></div><div class="pr-balance-bar"><div class="pr-balance-intake" style="width:' + intakePct + '%"></div><div class="pr-balance-exhaust" style="width:' + exhaustPct + '%"></div></div><div class="pr-balance-status ' + (balanced?'pass':'fail') + '">' + (balanced ? '&#10003; Balanced — shingle warranty compliant (50/50 intake/exhaust)' : '&#9888; Unbalanced — adjust for 50/50 compliance') + '</div></div>' +
+    '<div class="pr-verdict ' + (passes?'pass':'fail') + '">' + (passes ? '&#10003; PASSES — Exhaust ' + exhaust.toLocaleString() + ' sq in and Intake ' + intake.toLocaleString() + ' sq in both meet the ' + minEach.toLocaleString() + ' sq in minimum per side.' : '&#10007; FAILS — ' + (exhaust<minEach?'Exhaust short by '+(minEach-exhaust).toLocaleString()+' sq in. ':'') + (intake<minEach?'Intake short by '+(minEach-intake).toLocaleString()+' sq in.':'')) + '</div>' +
+    '<div class="pr-footer"><span>Century Roof &amp; Solar &middot; LIC #721502 &middot; C10 &amp; C39 &middot; NABCEP Certified</span><span>Generated ' + dateStr + '</span></div>';
+
+  document.getElementById('print-report').innerHTML = html;
+  window.print();
+}
+
+// PWA home button
+(function(){
+  var s=window.matchMedia('(display-mode:standalone)').matches||navigator.standalone===true;
+  var b=document.getElementById('pwaHomeBtn');
+  if(b)b.style.display=s?'flex':'none';
+})();
+</script>
+</body>
+</html>
