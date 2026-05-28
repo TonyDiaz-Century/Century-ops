@@ -1,1 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Field Report — Century Roof & Solar</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#2d7a3a;--green-dark:#1e5527;--green-light:#e8f5eb;
+  --gold:#f0b429;--red:#c0392b;--blue:#1a6fa8;--blue-light:#e8f2fb;
+  --bg:#f4f5f0;--surface:#ffffff;--border:#e0e2d9;
+  --text:#1a1c18;--text-muted:#6b7066;--radius:10px;
+  --shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:40px}
+.header{background:var(--green-dark);padding:16px 20px 14px;position:sticky;top:0;z-index:10;display:flex;align-items:flex-start;justify-content:space-between}
+.header-left{}
+.header-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:1px}
+.header-sub{font-size:11px;color:rgba(255,255,255,0.5);letter-spacing:0.5px;text-transform:uppercase;margin-top:1px}
+.lang-toggle{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:20px;padding:6px 14px;color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.15s;margin-top:2px}
+.lang-toggle:active{background:rgba(255,255,255,0.25)}
+.form-wrap{padding:20px 16px;max-width:560px;margin:0 auto}
+.section{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--green-dark);letter-spacing:0.5px;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.section-title .icon{font-size:16px}
+.form-group{margin-bottom:12px}
+.form-group:last-child{margin-bottom:0}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:5px}
+.form-input{width:100%;padding:11px 14px;border-radius:8px;border:1.5px solid var(--border);font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:#fafafa;transition:border-color 0.15s;-webkit-appearance:none}
+.form-input:focus{outline:none;border-color:var(--green);background:#fff}
+.form-input:disabled{background:#f0f0f0;color:var(--text-muted);cursor:not-allowed;border-color:#ddd}
+select.form-input{cursor:pointer}
+textarea.form-input{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
+/* REPORT TYPE SELECTOR */
+.report-type-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.report-type-btn{padding:16px 10px;border-radius:var(--radius);border:2.5px solid var(--border);background:var(--surface);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;color:var(--text-muted);cursor:pointer;text-align:center;transition:all 0.15s;box-shadow:var(--shadow)}
+.report-type-btn:active{transform:scale(0.97)}
+.report-type-btn .rt-icon{font-size:28px;display:block;margin-bottom:6px}
+.report-type-btn.selected-checkin{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
+.report-type-btn.selected-eod{border-color:var(--green);background:var(--green-light);color:var(--green-dark)}
+
+/* AUTO TIME BADGE */
+.auto-time-badge{display:inline-flex;align-items:center;gap:6px;background:#e8f5eb;border:1px solid var(--green);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;color:var(--green-dark);margin-top:8px}
+.auto-time-badge.locked{background:#fff8e6;border-color:var(--gold);color:#7a5a00}
+.manual-note{font-size:11px;color:var(--text-muted);margin-top:4px;font-style:italic}
+
+.progress-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.progress-btn{padding:12px 8px;border-radius:8px;border:2px solid var(--border);background:#fafafa;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all 0.15s;text-align:center;line-height:1.3}
+.progress-btn:active{transform:scale(0.97)}
+.progress-btn.selected{border-color:var(--green);background:var(--green-light);color:var(--green-dark);font-weight:600}
+.progress-btn .pb-icon{font-size:20px;display:block;margin-bottom:4px}
+.time-display{font-size:13px;color:var(--green);font-weight:600;margin-top:5px;min-height:18px}
+.hours-badge{display:inline-block;background:var(--green-light);color:var(--green-dark);border:1px solid var(--green);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:600;margin-top:8px}
+.photo-zone{border:2px dashed var(--border);border-radius:8px;padding:20px;text-align:center;cursor:pointer;transition:all 0.15s;background:#fafafa;position:relative}
+.photo-zone:active{background:var(--green-light);border-color:var(--green)}
+.photo-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.photo-zone-icon{font-size:32px;margin-bottom:8px}
+.photo-zone-text{font-size:14px;font-weight:500;color:var(--text-muted)}
+.photo-zone-sub{font-size:12px;color:var(--text-muted);margin-top:3px;opacity:0.7}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.photo-thumb{position:relative;aspect-ratio:1;border-radius:6px;overflow:hidden;background:var(--border)}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.photo-remove{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.6);border:none;color:#fff;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.photo-count{font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center}
+.cleanup-section{background:var(--green-light);border-radius:var(--radius);border:2px solid var(--green);padding:16px;margin-bottom:14px;box-shadow:var(--shadow);cursor:pointer;user-select:none}
+.cleanup-row{display:flex;align-items:flex-start;gap:14px}
+.cleanup-box{width:26px;height:26px;border-radius:6px;border:2px solid var(--green);background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all 0.15s;font-size:16px;color:transparent}
+.cleanup-box.checked{background:var(--green);color:#fff}
+.cleanup-title{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--green-dark);letter-spacing:0.5px;margin-bottom:5px}
+.cleanup-msg{font-size:14px;color:var(--green-dark);line-height:1.55;opacity:0.9}
+.cleanup-err{font-size:12px;color:var(--red);font-weight:600;margin-top:10px;display:none}
+.cleanup-err.show{display:block}
+.submit-btn{width:100%;padding:16px;border-radius:var(--radius);border:none;background:var(--green);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;cursor:pointer;transition:all 0.15s;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.submit-btn.checkin-mode{background:var(--blue)}
+.submit-btn:active{transform:scale(0.98);opacity:0.9}
+.submit-btn:disabled{background:#aaa;cursor:not-allowed;transform:none}
+.success-screen{display:none;position:fixed;inset:0;background:var(--green-dark);flex-direction:column;align-items:center;justify-content:center;z-index:999;padding:32px;text-align:center}
+.success-screen.show{display:flex}
+.success-icon{font-size:72px;margin-bottom:24px;animation:pop 0.4s ease}
+@keyframes pop{0%{transform:scale(0.5);opacity:0}80%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}
+.success-title{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);letter-spacing:1px;margin-bottom:8px}
+.success-sub{font-size:15px;color:rgba(255,255,255,0.7);margin-bottom:32px;line-height:1.5}
+.success-btn{padding:14px 32px;border-radius:var(--radius);border:2px solid rgba(255,255,255,0.3);background:transparent;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;cursor:pointer;transition:all 0.15s}
+.success-btn:active{background:rgba(255,255,255,0.1)}
+.error-msg{background:#fdecea;border:1px solid #fca5a5;border-radius:8px;padding:12px 14px;font-size:13px;color:var(--red);margin-bottom:14px;display:none}
+.error-msg.show{display:block}
+.req{color:var(--red);margin-left:2px}
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.loading-overlay.show{display:flex}
+.spinner{width:44px;height:44px;border:4px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{color:#fff;font-size:15px;font-weight:500}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">Century Ops</div>
+    <div class="header-sub" id="header-sub">Field Report — Century Roof &amp; Solar</div>
+  </div>
+  <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">🌐 Español</button>
+</div>
+
+<div class="form-wrap">
+  <div class="error-msg" id="error-msg"></div>
+
+  <!-- REPORT TYPE SELECTOR -->
+  <div class="report-type-wrap">
+    <button class="report-type-btn" id="btn-checkin" onclick="setReportType('checkin')">
+      <span class="rt-icon">🌅</span>
+      <span data-en="Check-In" data-es="Entrada">Check-In</span><br>
+      <span style="font-size:11px;font-weight:400;opacity:0.8" data-en="Morning arrival" data-es="Llegada matutina">Morning arrival</span>
+    </button>
+    <button class="report-type-btn" id="btn-eod" onclick="setReportType('eod')">
+      <span class="rt-icon">🌇</span>
+      <span data-en="End of Day" data-es="Fin del Día">End of Day</span><br>
+      <span style="font-size:11px;font-weight:400;opacity:0.8" data-en="Daily wrap-up" data-es="Resumen del día">Daily wrap-up</span>
+    </button>
+  </div>
+
+  <!-- YOUR INFO -->
+  <div class="section">
+    <div class="section-title"><span class="icon">👷</span> <span data-en="Your Info" data-es="Tu Información">Your Info</span></div>
+    <div class="form-group">
+      <label class="form-label"><span data-en="Your Name" data-es="Tu Nombre">Your Name</span> <span class="req">*</span></label>
+      <select class="form-input" id="f-employee" onchange="onEmployeeChange()"><option value="" data-en="Select your name..." data-es="Selecciona tu nombre...">Select your name...</option></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label"><span data-en="Job Site" data-es="Sitio de Trabajo">Job Site</span> <span class="req">*</span></label>
+      <select class="form-input" id="f-job"><option value="" data-en="Select job..." data-es="Selecciona el trabajo...">Select job...</option></select>
+    </div>
+  </div>
+
+  <!-- TIME ON SITE -->
+  <div class="section" id="section-time">
+    <div class="section-title"><span class="icon">⏱️</span> <span id="time-section-title" data-en="Time In" data-es="Hora de Entrada">Time In</span></div>
+
+    <!-- CHECK-IN TIME -->
+    <div id="checkin-time-block">
+      <div class="form-group">
+        <label class="form-label"><span data-en="Time In" data-es="Hora de Entrada">Time In</span> <span class="req">*</span></label>
+        <input type="time" class="form-input" id="f-time-in" onchange="updateTimeDisplay('f-time-in','time-in-display')">
+        <div class="time-display" id="time-in-display"></div>
+        <div class="auto-time-badge hidden" id="auto-checkin-badge">🔒 <span data-en="Auto-captured at check-in" data-es="Capturado automáticamente al entrar">Auto-captured at check-in</span></div>
+        <div class="manual-note hidden" id="manual-checkin-note" data-en="Manual entry enabled by office" data-es="Entrada manual habilitada por la oficina">Manual entry enabled by office</div>
+      </div>
+    </div>
+
+    <!-- END OF DAY TIME BLOCK -->
+    <div id="eod-time-block" class="hidden">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"><span data-en="Time In" data-es="Hora de Entrada">Time In</span> <span class="req">*</span></label>
+          <input type="time" class="form-input" id="f-time-in-eod" onchange="calcHours()">
+          <div class="time-display" id="time-in-eod-display"></div>
+          <div class="auto-time-badge hidden" id="auto-timein-badge">🔒 <span data-en="From your check-in" data-es="De tu entrada">From your check-in</span></div>
+          <div class="manual-note hidden" id="no-checkin-note" style="color:var(--red)" data-en="⚠️ No check-in found today — enter manually" data-es="⚠️ No se encontró entrada hoy — ingresa manualmente">⚠️ No check-in found today — enter manually</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><span data-en="Time Out" data-es="Hora de Salida">Time Out</span> <span class="req">*</span></label>
+          <input type="time" class="form-input" id="f-time-out" onchange="calcHours()">
+          <div class="time-display" id="time-out-display"></div>
+          <div class="auto-time-badge hidden" id="auto-timeout-badge">🔒 <span data-en="Auto-captured now" data-es="Capturado automáticamente ahora">Auto-captured now</span></div>
+          <div class="manual-note hidden" id="manual-timeout-note" data-en="Manual entry enabled by office" data-es="Entrada manual habilitada por la oficina">Manual entry enabled by office</div>
+        </div>
+      </div>
+      <div id="hours-display"></div>
+      <div class="form-group" style="margin-top:10px">
+        <label class="form-label"><span data-en="Crew Members on Site Today" data-es="Trabajadores en el Sitio Hoy">Crew Members on Site Today</span> <span class="req">*</span></label>
+        <input type="number" class="form-input" id="f-crew-count" min="1" max="20" placeholder="e.g. 4" onchange="calcHours()">
+      </div>
+      <!-- LUNCH BREAK -->
+      <div style="margin-top:12px;padding:12px 14px;background:#fffbf0;border:2px solid var(--gold);border-radius:8px;cursor:pointer;user-select:none" onclick="toggleLunch()">
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <div id="lunch-box" style="width:24px;height:24px;border-radius:6px;border:2px solid var(--gold);background:#fff;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;color:transparent;transition:all 0.15s;margin-top:1px">✓</div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:#7a5a00;letter-spacing:0.5px;margin-bottom:3px">
+              🍽️ <span data-en="I took a 1-hour lunch break today" data-es="Tomé un descanso de 1 hora para almorzar hoy">I took a 1-hour lunch break today</span>
+            </div>
+            <div style="font-size:12px;color:#7a5a00;opacity:0.85;line-height:1.5" data-en="Century Roof &amp; Solar lunch break is from 12:00 PM to 1:00 PM. Checking this box confirms you took your break." data-es="El descanso para almorzar es de 12:00 PM a 1:00 PM. Al marcar esta casilla confirmas que tomaste tu descanso.">
+              Century Roof &amp; Solar lunch break is from 12:00 PM to 1:00 PM. Checking this box confirms you took your break.
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="total-hours-display"></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS (shown for both, required for EOD) -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📊</span> <span data-en="Progress Update" data-es="Actualización de Progreso">Progress Update</span> <span class="req" id="progress-req">*</span></div>
+    <div class="progress-grid" id="progress-grid">
+      <button class="progress-btn" onclick="selectProgress('Just Started',this)"><span class="pb-icon">🚀</span><span data-en="Just Started" data-es="Recién Empezamos">Just Started</span></button>
+      <button class="progress-btn" onclick="selectProgress('25% Done',this)"><span class="pb-icon">🔨</span><span data-en="25% Done" data-es="25% Terminado">25% Done</span></button>
+      <button class="progress-btn" onclick="selectProgress('Halfway',this)"><span class="pb-icon">⚡</span><span data-en="Halfway" data-es="A la Mitad">Halfway</span></button>
+      <button class="progress-btn" onclick="selectProgress('75% Done',this)"><span class="pb-icon">💪</span><span data-en="75% Done" data-es="75% Terminado">75% Done</span></button>
+      <button class="progress-btn" onclick="selectProgress('Almost Done',this)"><span class="pb-icon">🏁</span><span data-en="Almost Done" data-es="Casi Terminamos">Almost Done</span></button>
+      <button class="progress-btn" onclick="selectProgress('Complete',this)"><span class="pb-icon">✅</span><span data-en="Complete" data-es="Completo">Complete</span></button>
+    </div>
+  </div>
+
+  <!-- ETA (EOD only) -->
+  <div class="section" id="section-eta">
+    <div class="section-title"><span class="icon">🕐</span> <span data-en="Finish Time" data-es="Hora de Terminar">Finish Time</span></div>
+    <div class="form-group">
+      <label class="form-label"><span data-en="ETA to Finish Today" data-es="Hora Estimada de Terminar Hoy">ETA to Finish Today</span></label>
+      <select class="form-input" id="f-eta">
+        <option value="" data-en="Select estimated finish time..." data-es="Selecciona hora estimada...">Select estimated finish time...</option>
+        <option data-en="By noon" data-es="Al mediodía">By noon</option>
+        <option data-en="By 1pm" data-es="A la 1pm">By 1pm</option>
+        <option data-en="By 2pm" data-es="A las 2pm">By 2pm</option>
+        <option data-en="By 3pm" data-es="A las 3pm">By 3pm</option>
+        <option data-en="By 4pm" data-es="A las 4pm">By 4pm</option>
+        <option data-en="By 5pm" data-es="A las 5pm">By 5pm</option>
+        <option data-en="End of day" data-es="Al final del día">End of day</option>
+        <option data-en="Will need another day" data-es="Necesitamos otro día">Will need another day</option>
+        <option data-en="Will need 2+ more days" data-es="Necesitamos 2+ días más">Will need 2+ more days</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- NOTES -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📝</span> <span data-en="Notes" data-es="Notas">Notes</span></div>
+    <div class="form-group">
+      <label class="form-label"><span data-en="Notes / Issues / Materials Needed" data-es="Notas / Problemas / Materiales Necesarios">Notes / Issues / Materials Needed</span></label>
+      <textarea class="form-input" id="f-notes" data-en-placeholder="Any issues, material needs, or updates for the office..." data-es-placeholder="Cualquier problema, materiales necesarios, o actualizaciones para la oficina..." placeholder="Any issues, material needs, or updates for the office..."></textarea>
+    </div>
+  </div>
+
+  <!-- PHOTOS -->
+  <div class="section">
+    <div class="section-title"><span class="icon">📷</span> <span data-en="Photos" data-es="Fotos">Photos</span></div>
+    <div class="photo-zone" id="photo-zone">
+      <input type="file" accept="image/*" multiple capture="environment" id="photo-input" onchange="handlePhotos(this)">
+      <div class="photo-zone-icon">📸</div>
+      <div class="photo-zone-text" data-en="Tap to take photos or upload" data-es="Toca para tomar fotos o subir">Tap to take photos or upload</div>
+      <div class="photo-zone-sub" data-en="Up to 10 photos" data-es="Hasta 10 fotos">Up to 10 photos</div>
+    </div>
+    <div class="photo-grid" id="photo-grid"></div>
+    <div class="photo-count" id="photo-count"></div>
+  </div>
+
+  <!-- CLEANUP REMINDER (EOD only) -->
+  <div class="cleanup-section hidden" id="cleanup-section" onclick="toggleCleanup()">
+    <div class="cleanup-row">
+      <div class="cleanup-box" id="cleanup-box">✓</div>
+      <div class="cleanup-label">
+        <div class="cleanup-title">🧹 <span data-en="Job Site Cleanup" data-es="Limpieza del Sitio de Trabajo">Job Site Cleanup</span></div>
+        <div class="cleanup-msg" data-en="Remember to clean up before you leave — our next referral from this customer may rely on it! 🎉" data-es="¡Recuerda limpiar antes de irte — nuestra próxima recomendación de este cliente puede depender de ello! 🎉">Remember to clean up before you leave — our next referral from this customer may rely on it! 🎉</div>
+      </div>
+    </div>
+    <div class="cleanup-err" id="cleanup-err" data-en="⚠️ Please confirm job site cleanup before submitting." data-es="⚠️ Por favor confirma la limpieza del sitio antes de enviar.">⚠️ Please confirm job site cleanup before submitting.</div>
+  </div>
+
+  <button class="submit-btn hidden" id="submit-btn" onclick="submitReport()">
+    <span id="submit-icon">📨</span> <span id="submit-label" data-en="Submit Report" data-es="Enviar Reporte">Submit Report</span>
+  </button>
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loading-text" data-en="Submitting report..." data-es="Enviando reporte...">Submitting report...</div>
+</div>
+
+<div class="success-screen" id="success-screen">
+  <div class="success-icon" id="success-icon">✅</div>
+  <div class="success-title" id="success-title">Report Submitted!</div>
+  <div class="success-sub" id="success-sub">Your report has been sent to the office.</div>
+  <button class="success-btn" onclick="resetForm()" id="success-btn">Submit Another Report</button>
+</div>
+
+<script>
+const BASE_ID='appn1m7nkB7AqfMsN';
+const TOKEN='patdw99npBzStV62o.9de4eaaa1b0a38c79d37a0e6eca7e1e58e0b1e8d4a32c725f6731ffe65aedd0e';
+const TABLES={employees:'tblTcmlnB1W6jihNM',jobs:'tblyIpCuDl7SoH8hy',reports:'tbl9DU9ABImxcXMOr',settings:'tbljMuMbl6SxHnds'};
+
+let selectedProgress='';
+let cleanupChecked=false;
+let lunchTaken=false;
+let photos=[];
+let currentLang='en';
+let reportType=''; // 'checkin' or 'eod'
+let autoTimeCapture=true; // loaded from Airtable Settings
+let submissionLocation=null; // {lat, lng, address} or null if denied
+
+// ── LANGUAGE TOGGLE ────────────────────────────────────────────
+function toggleLang(){
+  currentLang = currentLang==='en' ? 'es' : 'en';
+  applyLang();
+}
+
+function applyLang(){
+  const isEs = currentLang==='es';
+  document.getElementById('lang-btn').textContent = isEs ? '🌐 English' : '🌐 Español';
+  document.getElementById('header-sub').textContent = isEs ? 'Reporte de Campo — Century Roof & Solar' : 'Field Report — Century Roof & Solar';
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const text = el.getAttribute('data-'+currentLang);
+    if(text) el.textContent = text;
+  });
+  document.querySelectorAll('[data-en-placeholder]').forEach(el => {
+    const attr = `data-${currentLang}-placeholder`;
+    if(el.getAttribute(attr)) el.placeholder = el.getAttribute(attr);
+  });
+  document.querySelectorAll('option[data-en]').forEach(opt => {
+    const text = opt.getAttribute('data-'+currentLang);
+    if(text) opt.textContent = text;
+  });
+  window.errMsgs = isEs ? {
+    type:'Por favor selecciona el tipo de reporte.',
+    name:'Por favor selecciona tu nombre.',
+    job:'Por favor selecciona un sitio de trabajo.',
+    progress:'Por favor selecciona una actualización de progreso.',
+    timeIn:'Por favor ingresa tu hora de entrada.',
+    timeOut:'Por favor ingresa tu hora de salida.',
+    crew:'Por favor ingresa el número de trabajadores en el sitio.',
+    photos:'Máximo 10 fotos permitidas.',
+    submit:'Error al enviar: '
+  } : {
+    type:'Please select a report type.',
+    name:'Please select your name.',
+    job:'Please select a job site.',
+    progress:'Please select a progress update.',
+    timeIn:'Please enter your time in.',
+    timeOut:'Please enter your time out.',
+    crew:'Please enter the number of crew members on site.',
+    photos:'Maximum 10 photos allowed.',
+    submit:'Submission failed: '
+  };
+}
+
+// ── REPORT TYPE ────────────────────────────────────────────────
+function setReportType(type){
+  reportType = type;
+  const isEs = currentLang==='es';
+
+  // Update button styles
+  document.getElementById('btn-checkin').className = 'report-type-btn' + (type==='checkin'?' selected-checkin':'');
+  document.getElementById('btn-eod').className = 'report-type-btn' + (type==='eod'?' selected-eod':'');
+
+  // Show/hide time blocks
+  document.getElementById('checkin-time-block').classList.toggle('hidden', type==='eod');
+  document.getElementById('eod-time-block').classList.toggle('hidden', type==='checkin');
+
+  // Show/hide ETA section (EOD only)
+  document.getElementById('section-eta').classList.toggle('hidden', type==='checkin');
+
+  // Show/hide cleanup (EOD only)
+  document.getElementById('cleanup-section').classList.toggle('hidden', type==='checkin');
+
+  // Show submit button
+  const submitBtn = document.getElementById('submit-btn');
+  submitBtn.classList.remove('hidden');
+  submitBtn.className = 'submit-btn' + (type==='checkin'?' checkin-mode':'');
+
+  // Update submit label
+  if(type==='checkin'){
+    document.getElementById('submit-icon').textContent='🌅';
+    document.getElementById('submit-label').setAttribute('data-en','Submit Check-In');
+    document.getElementById('submit-label').setAttribute('data-es','Enviar Entrada');
+    document.getElementById('submit-label').textContent = isEs?'Enviar Entrada':'Submit Check-In';
+  } else {
+    document.getElementById('submit-icon').textContent='🌇';
+    document.getElementById('submit-label').setAttribute('data-en','Submit End of Day');
+    document.getElementById('submit-label').setAttribute('data-es','Enviar Fin del Día');
+    document.getElementById('submit-label').textContent = isEs?'Enviar Fin del Día':'Submit End of Day';
+  }
+
+  // Apply auto time capture
+  applyAutoTimeCapture(type);
+
+  // If EOD and employee already selected, look up their check-in
+  if(type==='eod' && document.getElementById('f-employee').value){
+    lookupCheckin();
+  }
+}
+
+// ── AUTO TIME CAPTURE ──────────────────────────────────────────
+function applyAutoTimeCapture(type){
+  const now = new Date();
+  const hh = String(now.getHours()).padStart(2,'0');
+  const mm = String(now.getMinutes()).padStart(2,'0');
+  const timeStr = `${hh}:${mm}`;
+
+  if(type==='checkin'){
+    const input = document.getElementById('f-time-in');
+    const badge = document.getElementById('auto-checkin-badge');
+    const note = document.getElementById('manual-checkin-note');
+    if(autoTimeCapture){
+      input.value = timeStr;
+      input.disabled = true;
+      badge.classList.remove('hidden');
+      note.classList.add('hidden');
+      updateTimeDisplay('f-time-in','time-in-display');
+    } else {
+      input.disabled = false;
+      badge.classList.add('hidden');
+      note.classList.remove('hidden');
+    }
+  } else if(type==='eod'){
+    const outInput = document.getElementById('f-time-out');
+    const outBadge = document.getElementById('auto-timeout-badge');
+    const outNote = document.getElementById('manual-timeout-note');
+    if(autoTimeCapture){
+      outInput.value = timeStr;
+      outInput.disabled = true;
+      outBadge.classList.remove('hidden');
+      outNote.classList.add('hidden');
+      updateTimeDisplay('f-time-out','time-out-display');
+    } else {
+      outInput.disabled = false;
+      outBadge.classList.add('hidden');
+      outNote.classList.remove('hidden');
+    }
+    // Time In for EOD is always manual (they need to enter their morning time)
+    const inInput = document.getElementById('f-time-in-eod');
+    inInput.disabled = false;
+  }
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  window.errMsgs = {
+    type:'Please select a report type.',
+    name:'Please select your name.',job:'Please select a job site.',
+    progress:'Please select a progress update.',timeIn:'Please enter your time in.',
+    timeOut:'Please enter your time out.',crew:'Please enter the number of crew members on site.',
+    photos:'Maximum 10 photos allowed.',submit:'Submission failed: '
+  };
+  loadData();
+});
+
+function formatTime12(timeVal){
+  if(!timeVal) return '';
+  const [h,m] = timeVal.split(':').map(Number);
+  const ampm = h>=12?'PM':'AM';
+  const h12 = h%12||12;
+  return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+function updateTimeDisplay(inputId,displayId){
+  const val = document.getElementById(inputId).value;
+  document.getElementById(displayId).textContent = val ? formatTime12(val) : '';
+}
+
+function calcHours(){
+  updateTimeDisplay('f-time-in-eod','time-in-eod-display');
+  updateTimeDisplay('f-time-out','time-out-display');
+  const timeIn = document.getElementById('f-time-in-eod').value;
+  const timeOut = document.getElementById('f-time-out').value;
+  const crewCount = parseInt(document.getElementById('f-crew-count').value)||0;
+  const hoursEl = document.getElementById('hours-display');
+  const totalEl = document.getElementById('total-hours-display');
+  const isEs = currentLang==='es';
+
+  if(!timeIn||!timeOut){hoursEl.innerHTML='';totalEl.innerHTML='';return;}
+  const [inH,inM] = timeIn.split(':').map(Number);
+  const [outH,outM] = timeOut.split(':').map(Number);
+  let totalMins = (outH*60+outM)-(inH*60+inM);
+
+  if(totalMins<=0){
+    hoursEl.innerHTML = `<div style="color:var(--red);font-size:12px;margin-top:6px">⚠️ ${isEs?'La hora de salida debe ser después de la hora de entrada':'Time out must be after time in'}</div>`;
+    totalEl.innerHTML='';return;
+  }
+
+  const billableMins = lunchTaken ? totalMins-60 : totalMins;
+  const rawHrs = Math.floor(totalMins/60);
+  const rawMins = totalMins%60;
+  const rawLabel = rawMins>0?`${rawHrs}h ${rawMins}m`:`${rawHrs}h`;
+
+  if(lunchTaken){
+    const billHrs = Math.floor(billableMins/60);
+    const billMin = billableMins%60;
+    const billLabel = billMin>0?`${billHrs}h ${billMin}m`:`${billHrs}h`;
+    const arrow = isEs ? `${rawLabel} en sitio → ${billLabel} facturable (almuerzo deducido)` : `${rawLabel} on site → ${billLabel} billable (lunch deducted)`;
+    hoursEl.innerHTML = `<span class="hours-badge">⏱ ${arrow}</span>`;
+  } else {
+    hoursEl.innerHTML = `<span class="hours-badge">⏱ ${rawLabel} ${isEs?'en sitio':'on site'}</span>`;
+  }
+
+  if(crewCount>0){
+    const totalManHours = (billableMins/60*crewCount).toFixed(1);
+    const lunchNote = lunchTaken?(isEs?' después de deducción de almuerzo':' after lunch deduction'):'';
+    const label = isEs ? `👷 ${totalManHours} horas-hombre totales (${crewCount} trabajadores${lunchNote})` : `👷 ${totalManHours} total man-hours (${crewCount} crew${lunchNote})`;
+    totalEl.innerHTML = `<div style="margin-top:6px"><span class="hours-badge" style="background:#fff8e6;border-color:var(--gold);color:#7a5a00">${label}</span></div>`;
+  } else {
+    totalEl.innerHTML='';
+  }
+}
+
+function toggleLunch(){
+  lunchTaken=!lunchTaken;
+  const box=document.getElementById('lunch-box');
+  box.style.background=lunchTaken?'var(--gold)':'#fff';
+  box.style.color=lunchTaken?'#fff':'transparent';
+  calcHours();
+}
+
+async function airtableGet(table,filter=''){
+  let records=[],offset=null;
+  do{
+    let url=`https://api.airtable.com/v0/${BASE_ID}/${table}?pageSize=100${offset?'&offset='+offset:''}`;
+    if(filter) url+=`&filterByFormula=${encodeURIComponent(filter)}`;
+    const r=await fetch(url,{headers:{Authorization:'Bearer '+TOKEN}});
+    const d=await r.json();
+    records=records.concat(d.records||[]);
+    offset=d.offset;
+  }while(offset);
+  return records;
+}
+
+async function airtablePost(table,fields){
+  const r=await fetch(`https://api.airtable.com/v0/${BASE_ID}/${table}`,{
+    method:'POST',
+    headers:{Authorization:'Bearer '+TOKEN,'Content-Type':'application/json'},
+    body:JSON.stringify({records:[{fields}]})
+  });
+  return r.json();
+}
+
+async function loadData(){
+  try{
+    const [employees,jobs,settings]=await Promise.all([
+      airtableGet(TABLES.employees),
+      airtableGet(TABLES.jobs),
+      airtableGet(TABLES.settings)
+    ]);
+
+    // Load auto time capture setting
+    const atcSetting = settings.find(s=>s.fields['Setting Name']==='Auto Time Capture');
+    autoTimeCapture = atcSetting ? atcSetting.fields['Value']==='true' : true;
+
+    const empSel=document.getElementById('f-employee');
+    employees.filter(e=>e.fields['Active']).sort((a,b)=>(a.fields['Name']||'').localeCompare(b.fields['Name']||'')).forEach(e=>{
+      const opt=document.createElement('option');
+      opt.value=e.fields['Name'];
+      opt.textContent=e.fields['Name']+(e.fields['Role']?' — '+e.fields['Role']:'');
+      empSel.appendChild(opt);
+    });
+
+    const jobSel=document.getElementById('f-job');
+    jobs.filter(j=>['Scheduled','In Progress'].includes(j.fields['Status'])).sort((a,b)=>(a.fields['Customer Name']||'').localeCompare(b.fields['Customer Name']||'')).forEach(j=>{
+      const opt=document.createElement('option');
+      const name=j.fields['Customer Name']||j.fields['Job Name']||'Unnamed';
+      opt.value=name;
+      opt.textContent=name+(j.fields['Address']?' — '+j.fields['Address']:'');
+      jobSel.appendChild(opt);
+    });
+  }catch(e){
+    console.error('Load error:',e);
+    showError(currentLang==='es'?'No se pudo cargar la lista. Verifica tu conexión.':'Could not load employee/job list. Check your connection and try again.');
+  }
+}
+
+// ── GPS LOCATION ───────────────────────────────────────────────
+// ── EMPLOYEE CHANGE — lookup check-in for EOD ─────────────────
+function onEmployeeChange(){
+  if(reportType==='eod') lookupCheckin();
+}
+
+async function lookupCheckin(){
+  const emp=document.getElementById('f-employee').value;
+  if(!emp) return;
+  const today=new Date().toISOString().split('T')[0];
+  const inInput=document.getElementById('f-time-in-eod');
+  const badge=document.getElementById('auto-timein-badge');
+  const note=document.getElementById('no-checkin-note');
+
+  // Reset state
+  inInput.disabled=false;
+  inInput.value='';
+  badge.classList.add('hidden');
+  note.classList.add('hidden');
+  document.getElementById('time-in-eod-display').textContent='';
+
+  try{
+    const filter=`AND({Employee}="${emp}",{Report Date}="${today}",{Report Type}="Check-In")`;
+    const records=await airtableGet(TABLES.reports,filter);
+    if(records.length>0){
+      const checkin=records[records.length-1]; // use most recent
+      const timeInRaw=checkin.fields['Time In']||'';
+      if(timeInRaw){
+        // Convert "5:37 PM" or "07:30 AM" → "17:37" for time input
+        const match=timeInRaw.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+        if(match){
+          let h=parseInt(match[1]);const m=match[2];const ampm=match[3].toUpperCase();
+          if(ampm==='PM'&&h!==12)h+=12;
+          if(ampm==='AM'&&h===12)h=0;
+          const timeStr=String(h).padStart(2,'0')+':'+m;
+          inInput.value=timeStr;
+          inInput.disabled=true;
+          badge.classList.remove('hidden');
+          updateTimeDisplay('f-time-in-eod','time-in-eod-display');
+          calcHours();
+        }
+      }
+    } else {
+      // No check-in found
+      inInput.disabled=false;
+      note.classList.remove('hidden');
+    }
+  }catch(e){
+    console.error('Check-in lookup error:',e);
+    inInput.disabled=false;
+  }
+}
+
+function captureLocation(){
+  return new Promise((resolve)=>{
+    if(!navigator.geolocation){resolve(null);return;}
+    navigator.geolocation.getCurrentPosition(
+      async (pos)=>{
+        const lat=pos.coords.latitude;
+        const lng=pos.coords.longitude;
+        let address='';
+        try{
+          const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+          const d=await r.json();
+          address=d.display_name||`${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+          // Shorten to street + city only
+          if(d.address){
+            const parts=[];
+            if(d.address.house_number&&d.address.road) parts.push(`${d.address.house_number} ${d.address.road}`);
+            else if(d.address.road) parts.push(d.address.road);
+            if(d.address.city||d.address.town||d.address.village) parts.push(d.address.city||d.address.town||d.address.village);
+            if(d.address.state) parts.push(d.address.state);
+            if(parts.length>0) address=parts.join(', ');
+          }
+        }catch(e){address=`${lat.toFixed(5)}, ${lng.toFixed(5)}`;}
+        resolve({lat,lng,address});
+      },
+      ()=>{resolve(null);}, // denied or error — soft fail
+      {timeout:8000,maximumAge:0,enableHighAccuracy:true}
+    );
+  });
+}
+
+// ── TWILIO DIRECT SMS ─────────────────────────────────────────
+const TWILIO_SID='ACc80008fda7eceb91291cf0bf6e4374b0';
+const TWILIO_TOKEN='d5e9aab1df8ff4085e6e037e5f7222e8';
+const TWILIO_FROM='+15108801519';
+const SMS_RECIPIENTS=['+15106888080','+15109070025']; // Tony, Elena
+
+async function sendSMS(body){
+  for(const to of SMS_RECIPIENTS){
+    try{
+      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`,{
+        method:'POST',
+        headers:{
+          'Authorization':'Basic '+btoa(TWILIO_SID+':'+TWILIO_TOKEN),
+          'Content-Type':'application/x-www-form-urlencoded'
+        },
+        body:new URLSearchParams({From:TWILIO_FROM,To:to,Body:body})
+      });
+    }catch(e){console.error('SMS error:',e);}
+  }
+}
+
+function buildSMSBody(type,emp,job,progress,eta,notes,timeIn,timeOut,billableHours,location){
+  const icon=type==='Check-In'?'🌅':'🌇';
+  const loc=location?'\n📍 '+location:'';
+  let msg=`${icon} ${type} Report!\nEmployee: ${emp}\nJob: ${job}`;
+  if(progress) msg+=`\nProgress: ${progress}`;
+  if(timeIn) msg+=`\nTime In: ${timeIn}`;
+  if(timeOut) msg+=`\nTime Out: ${timeOut}`;
+  if(billableHours) msg+=`\nBillable: ${billableHours}h`;
+  if(eta) msg+=`\nETA: ${eta}`;
+  if(notes) msg+=`\nNotes: ${notes}`;
+  msg+=loc;
+  return msg;
+}
+
+function selectProgress(value,btn){
+  selectedProgress=value;
+  document.querySelectorAll('.progress-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function toggleCleanup(){
+  cleanupChecked=!cleanupChecked;
+  const box=document.getElementById('cleanup-box');
+  box.classList.toggle('checked',cleanupChecked);
+  if(cleanupChecked) document.getElementById('cleanup-err').classList.remove('show');
+}
+
+function handlePhotos(input){
+  const files=Array.from(input.files);
+  if(photos.length+files.length>10){showError(window.errMsgs.photos);return;}
+  files.forEach(file=>{
+    if(!file.type.startsWith('image/'))return;
+    const reader=new FileReader();
+    reader.onload=(e)=>{
+      compressImage(e.target.result,(compressed)=>{
+        photos.push({dataUrl:compressed,file});
+        renderPhotoGrid();
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+
+function compressImage(dataUrl,callback){
+  const img=new Image();
+  img.onload=()=>{
+    const canvas=document.createElement('canvas');
+    const MAX=1200;
+    let w=img.width,h=img.height;
+    if(w>MAX||h>MAX){if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;}}
+    canvas.width=w;canvas.height=h;
+    canvas.getContext('2d').drawImage(img,0,0,w,h);
+    callback(canvas.toDataURL('image/jpeg',0.75));
+  };
+  img.src=dataUrl;
+}
+
+function renderPhotoGrid(){
+  const grid=document.getElementById('photo-grid');
+  const isEs=currentLang==='es';
+  grid.innerHTML=photos.map((p,i)=>`<div class="photo-thumb"><img src="${p.dataUrl}" alt="${isEs?'Foto':'Photo'} ${i+1}"><button class="photo-remove" onclick="removePhoto(${i})">×</button></div>`).join('');
+  const count=photos.length;
+  document.getElementById('photo-count').textContent=count>0?(currentLang==='es'?`${count} foto${count>1?'s':''} seleccionada${count>1?'s':''}`:`${count} photo${count>1?'s':''} selected`):'';
+}
+
+function removePhoto(index){photos.splice(index,1);renderPhotoGrid();}
+
+async function submitReport(){
+  hideError();
+  const m=window.errMsgs;
+
+  if(!reportType){showError(m.type);return;}
+  const emp=document.getElementById('f-employee').value;
+  const job=document.getElementById('f-job').value;
+  const notes=document.getElementById('f-notes').value.trim();
+  if(!emp){showError(m.name);return;}
+  if(!job){showError(m.job);return;}
+
+  // Capture GPS location
+  showLoading(true);
+  submissionLocation = await captureLocation();
+
+  if(reportType==='checkin'){
+    // CHECK-IN SUBMISSION
+    const timeIn=document.getElementById('f-time-in').value;
+    if(!timeIn){showLoading(false);showError(m.timeIn);return;}
+
+    try{
+      const fields={
+        'Employee':emp,
+        'Job':job,
+        'Report Type':'Check-In',
+        'Progress':selectedProgress||'',
+        'Notes':notes,
+        'Report Date':new Date().toISOString().split('T')[0],
+        'Time In':formatTime12(timeIn),
+        ...(submissionLocation?{
+          'Latitude':submissionLocation.lat,
+          'Longitude':submissionLocation.lng,
+          'Submission Address':submissionLocation.address
+        }:{
+          'Submission Address':'⚠️ Location not provided'
+        })
+      };
+      const result=await airtablePost(TABLES.reports,fields);
+      if(result.error) throw new Error(result.error.message);
+      // Send instant SMS
+      const smsBody=buildSMSBody('Check-In',emp,job,selectedProgress||'','','',formatTime12(timeIn),'','',submissionLocation?submissionLocation.address:'');
+      sendSMS(smsBody);
+      showLoading(false);
+      showSuccessCheckin(emp,job);
+    }catch(e){
+      showLoading(false);
+      showError((m.submit||'Submission failed: ')+e.message);
+    }
+
+  } else {
+    // END OF DAY SUBMISSION
+    if(!selectedProgress){showLoading(false);showError(m.progress);return;}
+    const timeIn=document.getElementById('f-time-in-eod').value;
+    const timeOut=document.getElementById('f-time-out').value;
+    const crewCount=parseInt(document.getElementById('f-crew-count').value)||0;
+    const eta=document.getElementById('f-eta').value;
+    if(!timeIn){showLoading(false);showError(m.timeIn);return;}
+    if(!timeOut){showLoading(false);showError(m.timeOut);return;}
+    if(crewCount<1){showLoading(false);showError(m.crew);return;}
+    if(!cleanupChecked){
+      showLoading(false);
+      document.getElementById('cleanup-err').classList.add('show');
+      document.getElementById('cleanup-box').scrollIntoView({behavior:'smooth',block:'center'});
+      return;
+    }
+
+    const [inH,inM]=timeIn.split(':').map(Number);
+    const [outH,outM]=timeOut.split(':').map(Number);
+    const totalMins=(outH*60+outM)-(inH*60+inM);
+    const billableMins=lunchTaken?totalMins-60:totalMins;
+    const hoursOnSite=totalMins>0?(totalMins/60).toFixed(2):0;
+    const billableHours=billableMins>0?(billableMins/60).toFixed(2):0;
+    const manHours=billableMins>0?(billableMins/60*crewCount).toFixed(2):0;
+
+    try{
+      const fields={
+        'Employee':emp,'Job':job,
+        'Report Type':'End of Day',
+        'Progress':selectedProgress,
+        'Notes':(selectedProgress?'['+selectedProgress+'] ':'')+notes,
+        'ETA to Finish':eta||'',
+        'Report Date':new Date().toISOString().split('T')[0],
+        'Time In':formatTime12(timeIn),
+        'Time Out':formatTime12(timeOut),
+        'Hours on Site':parseFloat(hoursOnSite),
+        'Billable Hours':parseFloat(billableHours),
+        'Lunch Taken':lunchTaken,
+        'Crew Count':crewCount,
+        'Man Hours':parseFloat(manHours),
+        ...(submissionLocation?{
+          'Latitude':submissionLocation.lat,
+          'Longitude':submissionLocation.lng,
+          'Submission Address':submissionLocation.address
+        }:{
+          'Submission Address':'⚠️ Location not provided'
+        })
+      };
+      const result=await airtablePost(TABLES.reports,fields);
+      if(result.error) throw new Error(result.error.message);
+      // Send instant SMS
+      const smsBody=buildSMSBody('End of Day',emp,job,selectedProgress,eta,notes,formatTime12(timeIn),formatTime12(timeOut),billableHours,submissionLocation?submissionLocation.address:'');
+      sendSMS(smsBody);
+      showLoading(false);
+      showSuccessEOD(emp,job,billableHours,manHours,crewCount);
+    }catch(e){
+      showLoading(false);
+      showError((m.submit||'Submission failed: ')+e.message);
+    }
+  }
+}
+
+function showSuccessCheckin(emp,job){
+  const isEs=currentLang==='es';
+  document.getElementById('success-icon').textContent='🌅';
+  document.getElementById('success-title').textContent=isEs?'¡Entrada Registrada!':'Checked In!';
+  document.getElementById('success-btn').textContent=isEs?'Enviar Otro Reporte':'Submit Another Report';
+  document.getElementById('success-sub').textContent=isEs
+    ?`${emp} marcó entrada en ${job}. ¡Que tengas un buen día!`
+    :`${emp} checked in at ${job}. Have a great day!`;
+  document.getElementById('success-screen').classList.add('show');
+}
+
+function showSuccessEOD(emp,job,hours,manHours,crew){
+  const isEs=currentLang==='es';
+  document.getElementById('success-icon').textContent='🌇';
+  document.getElementById('success-title').textContent=isEs?'¡Reporte Enviado!':'Report Submitted!';
+  document.getElementById('success-btn').textContent=isEs?'Enviar Otro Reporte':'Submit Another Report';
+  document.getElementById('success-sub').textContent=isEs
+    ?`El reporte de ${emp} para ${job} fue enviado. ${hours} horas facturables, ${manHours} horas-hombre totales con ${crew} trabajadores.`
+    :`${emp}'s report for ${job} has been sent. ${hours} billable hours, ${manHours} total man-hours with ${crew} crew.`;
+  document.getElementById('success-screen').classList.add('show');
+}
+
+function resetForm(){
+  document.getElementById('success-screen').classList.remove('show');
+  reportType='';
+  document.getElementById('btn-checkin').className='report-type-btn';
+  document.getElementById('btn-eod').className='report-type-btn';
+  document.getElementById('submit-btn').classList.add('hidden');
+  document.getElementById('checkin-time-block').classList.remove('hidden');
+  document.getElementById('eod-time-block').classList.add('hidden');
+  document.getElementById('section-eta').classList.add('hidden');
+  document.getElementById('cleanup-section').classList.add('hidden');
+  document.getElementById('f-employee').value='';
+  document.getElementById('f-job').value='';
+  document.getElementById('f-eta').value='';
+  document.getElementById('f-notes').value='';
+  document.getElementById('f-time-in').value='';
+  document.getElementById('f-time-in').disabled=false;
+  document.getElementById('f-time-in-eod').value='';
+  document.getElementById('f-time-out').value='';
+  document.getElementById('f-time-out').disabled=false;
+  document.getElementById('f-crew-count').value='';
+  document.getElementById('time-in-display').textContent='';
+  document.getElementById('time-in-eod-display').textContent='';
+  document.getElementById('time-out-display').textContent='';
+  document.getElementById('hours-display').innerHTML='';
+  document.getElementById('total-hours-display').innerHTML='';
+  document.getElementById('auto-checkin-badge').classList.add('hidden');
+  document.getElementById('auto-timeout-badge').classList.add('hidden');
+  document.getElementById('auto-timein-badge').classList.add('hidden');
+  document.getElementById('no-checkin-note').classList.add('hidden');
+  selectedProgress='';
+  lunchTaken=false;
+  const lunchBox=document.getElementById('lunch-box');
+  if(lunchBox){lunchBox.style.background='#fff';lunchBox.style.color='transparent';}
+  cleanupChecked=false;
+  document.getElementById('cleanup-box').classList.remove('checked');
+  document.getElementById('cleanup-err').classList.remove('show');
+  photos=[];
+  renderPhotoGrid();
+  document.querySelectorAll('.progress-btn').forEach(b=>b.classList.remove('selected'));
+  window.scrollTo(0,0);
+}
+
+function showLoading(show){
+  document.getElementById('loading-overlay').classList.toggle('show',show);
+  document.getElementById('submit-btn').disabled=show;
+}
+
+function showError(msg){
+  const el=document.getElementById('error-msg');
+  el.textContent=msg;el.classList.add('show');
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function hideError(){document.getElementById('error-msg').classList.remove('show');}
+</script>
+</body>
+</html>
