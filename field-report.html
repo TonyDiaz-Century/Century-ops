@@ -129,7 +129,7 @@ textarea.form-input{resize:vertical;min-height:80px}
     <div class="section-title"><span class="icon">👷</span> <span data-en="Your Info" data-es="Tu Información">Your Info</span></div>
     <div class="form-group">
       <label class="form-label"><span data-en="Your Name" data-es="Tu Nombre">Your Name</span> <span class="req">*</span></label>
-      <select class="form-input" id="f-employee"><option value="" data-en="Select your name..." data-es="Selecciona tu nombre...">Select your name...</option></select>
+      <select class="form-input" id="f-employee" onchange="onEmployeeChange()"><option value="" data-en="Select your name..." data-es="Selecciona tu nombre...">Select your name...</option></select>
     </div>
     <div class="form-group">
       <label class="form-label"><span data-en="Job Site" data-es="Sitio de Trabajo">Job Site</span> <span class="req">*</span></label>
@@ -160,6 +160,7 @@ textarea.form-input{resize:vertical;min-height:80px}
           <input type="time" class="form-input" id="f-time-in-eod" onchange="calcHours()">
           <div class="time-display" id="time-in-eod-display"></div>
           <div class="auto-time-badge hidden" id="auto-timein-badge">🔒 <span data-en="From your check-in" data-es="De tu entrada">From your check-in</span></div>
+          <div class="manual-note hidden" id="no-checkin-note" style="color:var(--red)" data-en="⚠️ No check-in found today — enter manually" data-es="⚠️ No se encontró entrada hoy — ingresa manualmente">⚠️ No check-in found today — enter manually</div>
         </div>
         <div class="form-group">
           <label class="form-label"><span data-en="Time Out" data-es="Hora de Salida">Time Out</span> <span class="req">*</span></label>
@@ -375,6 +376,11 @@ function setReportType(type){
 
   // Apply auto time capture
   applyAutoTimeCapture(type);
+
+  // If EOD and employee already selected, look up their check-in
+  if(type==='eod' && document.getElementById('f-employee').value){
+    lookupCheckin();
+  }
 }
 
 // ── AUTO TIME CAPTURE ──────────────────────────────────────────
@@ -555,6 +561,58 @@ async function loadData(){
 }
 
 // ── GPS LOCATION ───────────────────────────────────────────────
+// ── EMPLOYEE CHANGE — lookup check-in for EOD ─────────────────
+function onEmployeeChange(){
+  if(reportType==='eod') lookupCheckin();
+}
+
+async function lookupCheckin(){
+  const emp=document.getElementById('f-employee').value;
+  if(!emp) return;
+  const today=new Date().toISOString().split('T')[0];
+  const inInput=document.getElementById('f-time-in-eod');
+  const badge=document.getElementById('auto-timein-badge');
+  const note=document.getElementById('no-checkin-note');
+
+  // Reset state
+  inInput.disabled=false;
+  inInput.value='';
+  badge.classList.add('hidden');
+  note.classList.add('hidden');
+  document.getElementById('time-in-eod-display').textContent='';
+
+  try{
+    const filter=`AND({Employee}="${emp}",{Report Date}="${today}",{Report Type}="Check-In")`;
+    const records=await airtableGet(TABLES.reports,filter);
+    if(records.length>0){
+      const checkin=records[records.length-1]; // use most recent
+      const timeInRaw=checkin.fields['Time In']||'';
+      if(timeInRaw){
+        // Convert "7:30 AM" → "07:30" for time input
+        const match=timeInRaw.match(/(\d+):(\d+)\s*(AM|PM)/i);
+        if(match){
+          let h=parseInt(match[1]);const m=match[2];const ampm=match[3].toUpperCase();
+          if(ampm==='PM'&&h!==12)h+=12;
+          if(ampm==='AM'&&h===12)h=0;
+          const timeStr=String(h).padStart(2,'0')+':'+m;
+          inInput.value=timeStr;
+          inInput.disabled=true;
+          badge.classList.remove('hidden');
+          updateTimeDisplay('f-time-in-eod','time-in-eod-display');
+          calcHours();
+        }
+      }
+    } else {
+      // No check-in found
+      inInput.disabled=false;
+      note.classList.remove('hidden');
+    }
+  }catch(e){
+    console.error('Check-in lookup error:',e);
+    inInput.disabled=false;
+  }
+}
+
 function captureLocation(){
   return new Promise((resolve)=>{
     if(!navigator.geolocation){resolve(null);return;}
@@ -793,6 +851,8 @@ function resetForm(){
   document.getElementById('total-hours-display').innerHTML='';
   document.getElementById('auto-checkin-badge').classList.add('hidden');
   document.getElementById('auto-timeout-badge').classList.add('hidden');
+  document.getElementById('auto-timein-badge').classList.add('hidden');
+  document.getElementById('no-checkin-note').classList.add('hidden');
   selectedProgress='';
   lunchTaken=false;
   const lunchBox=document.getElementById('lunch-box');
@@ -821,4 +881,3 @@ function hideError(){document.getElementById('error-msg').classList.remove('show
 </script>
 </body>
 </html>
-
