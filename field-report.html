@@ -588,8 +588,8 @@ async function lookupCheckin(){
       const checkin=records[records.length-1]; // use most recent
       const timeInRaw=checkin.fields['Time In']||'';
       if(timeInRaw){
-        // Convert "7:30 AM" → "07:30" for time input
-        const match=timeInRaw.match(/(\d+):(\d+)\s*(AM|PM)/i);
+        // Convert "5:37 PM" or "07:30 AM" → "17:37" for time input
+        const match=timeInRaw.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
         if(match){
           let h=parseInt(match[1]);const m=match[2];const ampm=match[3].toUpperCase();
           if(ampm==='PM'&&h!==12)h+=12;
