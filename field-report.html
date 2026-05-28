@@ -643,6 +643,41 @@ function captureLocation(){
   });
 }
 
+// ── TWILIO DIRECT SMS ─────────────────────────────────────────
+const TWILIO_SID='ACc80008fda7eceb91291cf0bf6e4374b0';
+const TWILIO_TOKEN='d5e9aab1df8ff4085e6e037e5f7222e8';
+const TWILIO_FROM='+15108801519';
+const SMS_RECIPIENTS=['+15106888080','+15109070025']; // Tony, Elena
+
+async function sendSMS(body){
+  for(const to of SMS_RECIPIENTS){
+    try{
+      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`,{
+        method:'POST',
+        headers:{
+          'Authorization':'Basic '+btoa(TWILIO_SID+':'+TWILIO_TOKEN),
+          'Content-Type':'application/x-www-form-urlencoded'
+        },
+        body:new URLSearchParams({From:TWILIO_FROM,To:to,Body:body})
+      });
+    }catch(e){console.error('SMS error:',e);}
+  }
+}
+
+function buildSMSBody(type,emp,job,progress,eta,notes,timeIn,timeOut,billableHours,location){
+  const icon=type==='Check-In'?'🌅':'🌇';
+  const loc=location?'\n📍 '+location:'';
+  let msg=`${icon} ${type} Report!\nEmployee: ${emp}\nJob: ${job}`;
+  if(progress) msg+=`\nProgress: ${progress}`;
+  if(timeIn) msg+=`\nTime In: ${timeIn}`;
+  if(timeOut) msg+=`\nTime Out: ${timeOut}`;
+  if(billableHours) msg+=`\nBillable: ${billableHours}h`;
+  if(eta) msg+=`\nETA: ${eta}`;
+  if(notes) msg+=`\nNotes: ${notes}`;
+  msg+=loc;
+  return msg;
+}
+
 function selectProgress(value,btn){
   selectedProgress=value;
   document.querySelectorAll('.progress-btn').forEach(b=>b.classList.remove('selected'));
@@ -736,6 +771,9 @@ async function submitReport(){
       };
       const result=await airtablePost(TABLES.reports,fields);
       if(result.error) throw new Error(result.error.message);
+      // Send instant SMS
+      const smsBody=buildSMSBody('Check-In',emp,job,selectedProgress||'','','',formatTime12(timeIn),'','',submissionLocation?submissionLocation.address:'');
+      sendSMS(smsBody);
       showLoading(false);
       showSuccessCheckin(emp,job);
     }catch(e){
@@ -793,6 +831,9 @@ async function submitReport(){
       };
       const result=await airtablePost(TABLES.reports,fields);
       if(result.error) throw new Error(result.error.message);
+      // Send instant SMS
+      const smsBody=buildSMSBody('End of Day',emp,job,selectedProgress,eta,notes,formatTime12(timeIn),formatTime12(timeOut),billableHours,submissionLocation?submissionLocation.address:'');
+      sendSMS(smsBody);
       showLoading(false);
       showSuccessEOD(emp,job,billableHours,manHours,crewCount);
     }catch(e){
