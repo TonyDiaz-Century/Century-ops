@@ -1,1 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Install Century Ops</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#1e5527;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
 
+.card{background:#fff;border-radius:20px;padding:32px 28px;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center}
+
+.logo{width:80px;height:80px;background:#f0b429;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:0 4px 16px rgba(240,180,41,0.4)}
+.logo svg{width:44px;height:44px}
+
+.app-name{font-family:'Bebas Neue',sans-serif;font-size:36px;color:#1e5527;letter-spacing:1px;line-height:1}
+.app-sub{font-size:14px;color:#6b7066;margin-top:4px;margin-bottom:8px}
+
+.pin-badge{display:inline-flex;align-items:center;gap:6px;background:#f4f5f0;border:1px solid #e0e2d9;border-radius:20px;padding:6px 14px;font-size:13px;color:#1a1c18;margin-bottom:24px}
+.pin-badge strong{font-weight:700;letter-spacing:2px;color:#1e5527}
+
+.install-btn{display:block;width:100%;padding:16px;background:#1e5527;color:#fff;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;cursor:pointer;text-decoration:none;margin-bottom:20px;transition:background 0.15s}
+.install-btn:hover{background:#2d7a3a}
+
+.divider{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#e0e2d9}
+.divider span{font-size:12px;color:#9ca3af}
+
+.steps{text-align:left}
+.step-tabs{display:flex;gap:4px;margin-bottom:16px;background:#f4f5f0;border-radius:10px;padding:4px}
+.step-tab{flex:1;padding:8px 4px;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:#6b7066;font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.step-tab.active{background:#fff;color:#1e5527;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+
+.step-content{display:none}
+.step-content.active{display:block}
+
+.step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
+.step:last-child{margin-bottom:0}
+.step-num{width:28px;height:28px;border-radius:50%;background:#1e5527;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:14px;color:#1a1c18;line-height:1.5}
+.step-text strong{color:#1e5527}
+
+.note{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 14px;font-size:12px;color:#15803d;margin-top:16px;text-align:left;line-height:1.5}
+
+.footer{margin-top:28px;font-size:12px;color:rgba(255,255,255,0.5);text-align:center}
+.footer a{color:rgba(255,255,255,0.7);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#1e5527" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+      <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+  </div>
+  <div class="app-name">Century Ops</div>
+  <div class="app-sub">Century Roof &amp; Solar — Operations</div>
+  <div class="pin-badge">&#128274; PIN: <strong>6882</strong></div>
+
+  <a href="https://tonydiaz-century.github.io/Century-ops/" class="install-btn">&#128241; Open Century Ops</a>
+
+  <div class="divider"><span>then install as an app</span></div>
+
+  <div class="steps">
+    <div class="step-tabs">
+      <button class="step-tab active" onclick="showTab('ios',this)">&#63743; iPhone / iPad</button>
+      <button class="step-tab" onclick="showTab('android',this)">&#129468; Android</button>
+      <button class="step-tab" onclick="showTab('pc',this)">&#128187; PC / Mac</button>
+    </div>
+
+    <div class="step-content active" id="tab-ios">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Tap <strong>Open Century Ops</strong> above — it will open in <strong>Safari</strong></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Tap the <strong>Share button</strong> at the bottom of Safari (box with arrow pointing up &#11014;&#65039;)</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Scroll down and tap <strong>"Add to Home Screen"</strong></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Tap <strong>Add</strong> in the top right — the Century Ops icon will appear on your home screen</div></div>
+      <div class="note">&#9888;&#65039; Must use <strong>Safari</strong> — Chrome on iPhone does not support Add to Home Screen as a full app</div>
+    </div>
+
+    <div class="step-content" id="tab-android">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Tap <strong>Open Century Ops</strong> above — it will open in Chrome</div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Tap the <strong>3-dot menu</strong> in the top right corner</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Tap <strong>"Add to Home Screen"</strong> or <strong>"Install App"</strong></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Tap <strong>Install</strong> — the Century Ops icon appears on your home screen</div></div>
+    </div>
+
+    <div class="step-content" id="tab-pc">
+      <div class="step"><div class="step-num">1</div><div class="step-text">Click <strong>Open Century Ops</strong> above in <strong>Chrome or Edge</strong></div></div>
+      <div class="step"><div class="step-num">2</div><div class="step-text">Look for the <strong>install icon &#8853;</strong> in the address bar (far right)</div></div>
+      <div class="step"><div class="step-num">3</div><div class="step-text">Click it and select <strong>"Install"</strong></div></div>
+      <div class="step"><div class="step-num">4</div><div class="step-text">Century Ops opens as a standalone app and appears in your taskbar / dock</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Century Roof &amp; Solar &mdash; Internal Use Only<br>
+  <a href="https://tonydiaz-century.github.io/Century-ops/">tonydiaz-century.github.io/Century-ops</a>
+</div>
+
+<script>
+function showTab(tab, btn){
+  document.querySelectorAll('.step-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.step-content').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+
+// Auto-detect device and show correct tab
+const ua=navigator.userAgent;
+if(/android/i.test(ua)){
+  document.querySelectorAll('.step-tab')[1].click();
+} else if(!/iphone|ipad|ipod/i.test(ua)&&!/mobile/i.test(ua)){
+  document.querySelectorAll('.step-tab')[2].click();
+}
+</script>
+</body>
+</html>
