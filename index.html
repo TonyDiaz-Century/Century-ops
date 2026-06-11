@@ -2005,7 +2005,28 @@ document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('clic
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('/Century-ops/sw.js').then(()=>console.log('SW registered')).catch(e=>console.log('SW failed:',e));});
 }
-</script>
+// ── AUTO-REFRESH ──────────────────────────────────────────────────────────────
+let autoRefreshTimer=null;
+function startAutoRefresh(){
+  if(autoRefreshTimer)clearInterval(autoRefreshTimer);
+  // Pull fresh data every 90 seconds while the app is in view
+  autoRefreshTimer=setInterval(()=>{
+    if(document.visibilityState==='visible'&&state.currentUser){refreshData();}
+  },90000);
+}
+// Refresh the instant the tab regains focus (e.g. switching back from another app)
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&state.currentUser){refreshData();}
+});
+startAutoRefresh();
+
+// Tell the page to reload itself when a new service worker takes over
+if('serviceWorker' in navigator){
+  let reloading=false;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+    if(reloading)return;reloading=true;window.location.reload();
+  });
+}
 <script src="tasks-v2.js"></script>
 </body>
 </html>
