@@ -1,5 +1,5 @@
 // sw.js — Century Ops service worker (network-first)
-const CACHE_VERSION = 'century-ops-v3';   // ← bump this number on each deploy
+const CACHE_VERSION = 'century-ops-v4';   // ← bump this number on each deploy
 const CACHE_NAME = CACHE_VERSION;
 
 // Install: activate immediately, don't wait for old SW to release
