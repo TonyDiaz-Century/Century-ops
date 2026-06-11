@@ -402,7 +402,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         <span id="weather-desc">Hayward, CA</span>
         <button onclick="event.stopPropagation();loadWeather()" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--green);padding:0;margin-left:4px">&#8635;</button>
       </div>
-      <div style="display:flex;gap:8px">
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-outline btn-sm" id="sound-toggle" onclick="toggleReminderSound()" title="Reminder sound on/off">🔊</button>
+        <button class="btn btn-outline btn-sm" id="timefmt-toggle" onclick="toggleTimeFormat()" title="12 / 24 hour display">12h</button>
         <button class="btn btn-outline btn-sm" onclick="openNewReminder()">&#128204; Reminder</button>
         <button class="btn btn-primary btn-sm" onclick="openNewJob()">+ New Job</button>
       </div>
@@ -644,7 +646,38 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
   </div>
 </div>
 </div>
+<!-- REMINDER ALERT POPUP -->
+<div class="rem-popup-overlay" id="rem-popup-overlay">
+  <div class="rem-popup">
+    <div class="rem-popup-head"><span class="rem-popup-bell">🔔</span><span class="rem-popup-head-title">Reminder</span></div>
+    <div class="rem-popup-body">
+      <div class="rem-popup-title" id="rem-popup-title"></div>
+      <div class="rem-popup-meta" id="rem-popup-meta"></div>
+      <div class="rem-popup-notes" id="rem-popup-notes" style="display:none"></div>
+    </div>
+    <div class="rem-popup-actions">
+      <button class="btn btn-primary" onclick="remPopupDone()">✓ Done</button>
+      <button class="btn btn-outline" onclick="remPopupSnooze()">Snooze 10 min</button>
+      <button class="btn btn-outline" onclick="remPopupDismiss()">Dismiss</button>
+    </div>
+  </div>
+</div>
 
+<style>
+.rem-popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;align-items:flex-start;justify-content:center;padding:80px 1rem 1rem}
+.rem-popup-overlay.open{display:flex}
+.rem-popup{background:var(--surface);border-radius:16px;width:100%;max-width:420px;box-shadow:0 16px 48px rgba(0,0,0,0.3);animation:remPop 0.25s ease;overflow:hidden}
+@keyframes remPop{from{opacity:0;transform:translateY(-12px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.rem-popup-head{background:var(--gold);padding:16px 20px;display:flex;align-items:center;gap:10px}
+.rem-popup-bell{font-size:22px}
+.rem-popup-head-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#1a1c18;letter-spacing:0.5px}
+.rem-popup-body{padding:18px 20px}
+.rem-popup-title{font-size:18px;font-weight:600;color:var(--text);margin-bottom:6px}
+.rem-popup-meta{font-size:13px;color:var(--text-muted);margin-bottom:4px}
+.rem-popup-notes{font-size:13px;color:var(--text);background:var(--bg);border-radius:8px;padding:10px 12px;margin-top:10px;font-style:italic}
+.rem-popup-actions{display:flex;gap:8px;padding:0 20px 18px;flex-wrap:wrap}
+.rem-popup-actions .btn{flex:1;min-width:90px;text-align:center}
+</style>
 <!-- DAY DETAIL POPUP -->
 <div class="day-popup-overlay" id="day-popup-overlay" onclick="if(event.target===this)closeDayPopup()">
   <div class="day-popup">
@@ -852,6 +885,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
         </select>
       </div>
     </div>
+    <div class="form-group"><label class="form-label">Reminder Time <span style="font-size:10px;color:var(--text-muted);font-weight:400;text-transform:none">(optional — for pop-up alert)</span></label><input class="form-input" id="r-time" type="time"></div>
+
     <div class="form-group"><label class="form-label">Linked Job (optional)</label><input class="form-input" id="r-job" placeholder="Customer name or job"></div>
     <div class="form-group"><label class="form-label">Notes</label><textarea class="form-input" id="r-notes" rows="2"></textarea></div>
     <div class="form-group" style="display:flex;align-items:center;gap:10px">
@@ -1671,7 +1706,7 @@ function openNewReminder(){
   state.editingReminderId=null;
   document.getElementById('reminder-modal-title').textContent='Add Reminder';
   document.getElementById('r-delete-btn').style.display='none';
-  ['r-title','r-date','r-job','r-notes'].forEach(id=>document.getElementById(id).value='');
+ ['r-title','r-date','r-time','r-job','r-notes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('r-category').value='General';document.getElementById('r-done').checked=false;
   openModal('reminder');
 }
@@ -1683,6 +1718,7 @@ function editReminder(id){
   document.getElementById('r-title').value=r.fields['Title']||'';
   document.getElementById('r-date').value=r.fields['Date']||'';
   document.getElementById('r-category').value=r.fields['Category']||'General';
+  document.getElementById('r-time').value=r.fields['Reminder Time']||'';
   document.getElementById('r-job').value=r.fields['Job']||'';
   document.getElementById('r-notes').value=r.fields['Notes']||'';
   document.getElementById('r-done').checked=!!r.fields['Done'];
@@ -1690,7 +1726,7 @@ function editReminder(id){
 }
 async function saveReminder(){
   const title=document.getElementById('r-title').value.trim();if(!title){alert('Please enter a title.');return;}
-  const fields={'Title':title,'Date':document.getElementById('r-date').value||null,'Category':document.getElementById('r-category').value,'Job':document.getElementById('r-job').value,'Notes':document.getElementById('r-notes').value,'Done':document.getElementById('r-done').checked};
+  const fields={'Title':title,'Date':document.getElementById('r-date').value||null,'Reminder Time':document.getElementById('r-time').value||'','Category':document.getElementById('r-category').value,'Job':document.getElementById('r-job').value,'Notes':document.getElementById('r-notes').value,'Done':document.getElementById('r-done').checked};
   if(state.editingReminderId)await api.patch(TABLES.reminders,state.editingReminderId,fields);
   else await api.post(TABLES.reminders,fields);
   closeModal('reminder');await refreshData();
@@ -2005,6 +2041,101 @@ document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('clic
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{navigator.serviceWorker.register('/Century-ops/sw.js').then(()=>console.log('SW registered')).catch(e=>console.log('SW failed:',e));});
 }
+  // ── REMINDER ALERTS ───────────────────────────────────────────────────────────
+let reminderSoundOn=true;
+let timeFormat12=true;
+let firedReminders=new Set();
+let activeRemPopupId=null;
+
+function toggleReminderSound(){
+  reminderSoundOn=!reminderSoundOn;
+  const b=document.getElementById('sound-toggle');
+  if(b)b.textContent=reminderSoundOn?'🔊':'🔇';
+}
+function toggleTimeFormat(){
+  timeFormat12=!timeFormat12;
+  const b=document.getElementById('timefmt-toggle');
+  if(b)b.textContent=timeFormat12?'12h':'24h';
+  renderReminders();
+}
+function fmtTime(t){
+  if(!t)return'';
+  const [h,m]=t.split(':').map(Number);
+  if(isNaN(h))return t;
+  if(!timeFormat12)return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  const ampm=h>=12?'PM':'AM';let h12=h%12;if(h12===0)h12=12;
+  return h12+':'+String(m).padStart(2,'0')+' '+ampm;
+}
+function playReminderChime(){
+  if(!reminderSoundOn)return;
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    [880,1108,1320].forEach((freq,i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.frequency.value=freq;o.type='sine';
+      o.connect(g);g.connect(ctx.destination);
+      const t0=ctx.currentTime+i*0.18;
+      g.gain.setValueAtTime(0,t0);
+      g.gain.linearRampToValueAtTime(0.25,t0+0.03);
+      g.gain.exponentialRampToValueAtTime(0.001,t0+0.4);
+      o.start(t0);o.stop(t0+0.42);
+    });
+  }catch(e){}
+}
+function checkReminders(){
+  if(!state.currentUser)return;
+  const now=new Date();
+  const today=localISO(now);
+  const curMins=now.getHours()*60+now.getMinutes();
+  (state.reminders||[]).forEach(r=>{
+    if(r.fields['Done'])return;
+    if(firedReminders.has(r.id))return;
+    const date=r.fields['Date'];
+    const time=r.fields['Reminder Time'];
+    if(!date||!time)return;
+    if(date!==today)return;
+    const [h,m]=time.split(':').map(Number);
+    if(isNaN(h))return;
+    const remMins=h*60+m;
+    if(curMins>=remMins && curMins<=remMins+2){
+      firedReminders.add(r.id);
+      showReminderPopup(r);
+    }
+  });
+}
+function showReminderPopup(r){
+  activeRemPopupId=r.id;
+  document.getElementById('rem-popup-title').textContent=r.fields['Title']||'Reminder';
+  const cat=r.fields['Category']||'General';
+  const time=fmtTime(r.fields['Reminder Time']);
+  const job=r.fields['Job']?' · '+r.fields['Job']:'';
+  document.getElementById('rem-popup-meta').textContent=cat+(time?' · '+time:'')+job;
+  const notesEl=document.getElementById('rem-popup-notes');
+  if(r.fields['Notes']){notesEl.textContent=r.fields['Notes'];notesEl.style.display='block';}
+  else{notesEl.style.display='none';}
+  document.getElementById('rem-popup-overlay').classList.add('open');
+  playReminderChime();
+}
+async function remPopupDone(){
+  if(activeRemPopupId){
+    try{await api.patch(TABLES.reminders,activeRemPopupId,{'Done':true});}catch(e){}
+    await refreshData();
+  }
+  closeRemPopup();
+}
+function remPopupSnooze(){
+  if(activeRemPopupId)firedReminders.delete(activeRemPopupId);
+  const id=activeRemPopupId;
+  closeRemPopup();
+  setTimeout(()=>{
+    const r=(state.reminders||[]).find(x=>x.id===id);
+    if(r&&!r.fields['Done'])showReminderPopup(r);
+  },10*60*1000);
+}
+function remPopupDismiss(){closeRemPopup();}
+function closeRemPopup(){document.getElementById('rem-popup-overlay').classList.remove('open');activeRemPopupId=null;}
+
+setInterval(checkReminders,30000);
 // ── AUTO-REFRESH ──────────────────────────────────────────────────────────────
 let autoRefreshTimer=null;
 function startAutoRefresh(){
