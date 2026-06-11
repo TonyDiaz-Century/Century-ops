@@ -1439,8 +1439,7 @@ function populateSelects(){
   document.getElementById('e-crew').innerHTML='<option value="">Select crew...</option>'+crewOpts;
   document.getElementById('e-crew2').innerHTML='<option value="">None</option>'+crewOpts;
   document.getElementById('a-emp').innerHTML=state.employees.filter(e=>e.fields['Active']).map(e=>'<option>'+e.fields['Name']+'</option>').join('');
-  document.getElementById('a-job').innerHTML=state.jobs.map(j=>'<option>'+(j.fields['Customer Name']||j.fields['Job Name'])+'</option>').join('');
-  document.getElementById('to-emp').innerHTML=state.employees.filter(e=>e.fields['Active']).map(e=>'<option>'+e.fields['Name']+'</option>').join('');
+document.getElementById('a-job').innerHTML=state.jobs.filter(j=>['Sold','Scheduled','In Progress','Weather Delay'].includes(j.fields['Status'])).map(j=>'<option>'+(j.fields['Customer Name']||j.fields['Job Name'])+'</option>').join('');  document.getElementById('to-emp').innerHTML=state.employees.filter(e=>e.fields['Active']).map(e=>'<option>'+e.fields['Name']+'</option>').join('');
 }
 
 function openModal(type){document.getElementById('modal-'+type).classList.add('open');}
