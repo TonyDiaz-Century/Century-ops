@@ -87,8 +87,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green-dark);line-height:1}
 .board-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:8px}
 .week-label{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green-dark);letter-spacing:1px}
-.board-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow)}
-.board-table{width:100%;border-collapse:collapse;min-width:700px}
+.board-wrap{overflow:auto;max-height:calc(100vh - 120px);border-radius:10px;border:1px solid var(--border);box-shadow:var(--shadow)}.board-table{width:100%;border-collapse:collapse;min-width:700px}
 .board-table th{padding:8px 10px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.8);background:var(--green-dark);text-align:center;letter-spacing:0.3px;text-transform:uppercase;white-space:nowrap;position:sticky;top:0;z-index:20}.board-table th.name-th{text-align:left;min-width:130px}
 .board-table td{padding:5px 8px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);background:var(--surface);text-align:center;vertical-align:middle}
 .board-table td:last-child{border-right:none}
