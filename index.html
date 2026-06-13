@@ -1340,7 +1340,7 @@ function renderBoard(){
             const c2=job?(job.fields['Board Color']||TYPE_COLORS[job.fields['Job Type']]||'#888'):'#888';
             // Add AM/PM indicator if multiple jobs
             const timeLabel=asgns.length>1?(idx===0?' 🌅':' 🌇'):'';
-            chipsHTML+='<span class="chip" style="background:'+c2+';margin-bottom:'+(idx<asgns.length-1?'3px':'0')+';display:block" draggable="true" ondragstart="boardDragStart(event,\''+asgn.id+'\',\''+emp.fields['Name']+'\')" onclick="chipClick(event,\''+asgn.id+'\',\''+emp.fields['Name']+'\',\''+asgn.fields['Job']+'\',\''+ds+'\')" title="'+emp.fields['Name']+' → '+asgn.fields['Job']+timeLabel+' | Click to remove | Drag to move"><div class="chip-inner"><div class="chip-job">'+asgn.fields['Job']+'</div><div class="chip-emp">'+emp.fields['Name']+timeLabel+'</div></div></span>';
+            chipsHTML+='<span class="chip" style="background:'+c2+';margin-bottom:'+(idx<asgns.length-1?'3px':'0')+';display:block" draggable="true" ondragstart="boardDragStart(event,\''+asgn.id+'\',\''+emp.fields['Name']+'\')" onclick="chipClick(event,\''+asgn.id+'\',\''+emp.fields['Name']+'\',\''+asgn.fields['Job']+'\',\''+ds+'\')" ondragover="event.preventDefault();event.stopPropagation()" ondrop="chipReorderDrop(event,\''+asgn.id+'\')"itle="'+emp.fields['Name']+' → '+asgn.fields['Job']+timeLabel+' | Click to remove | Drag to move"><div class="chip-inner"><div class="chip-job">'+asgn.fields['Job']+'</div><div class="chip-emp">'+emp.fields['Name']+timeLabel+'</div></div></span>';
           });
           bodyHTML+='<td class="board-cell" ondragover="boardDragOver(event)" ondrop="boardDrop(event,\''+emp.fields['Name']+'\',\''+ds+'\')" ondragleave="boardDragLeave(event)" style="vertical-align:top;padding:3px">'+chipsHTML+'<div style="text-align:center;margin-top:2px"><span class="chip-off" onclick="quickAssign(\''+emp.fields['Name']+'\',\''+ds+'\')" style="cursor:pointer;font-size:9px">+</span></div></td>';
         } else {
@@ -1360,8 +1360,8 @@ function renderBoard(){
 }
 function changeWeek(dir){state.weekOffset+=dir;renderBoard();}
 
-let boardDragId=null,boardDragEmp=null,boardIsDragging=false;
-function boardDragStart(e,asgnId,empName){boardDragId=asgnId;boardDragEmp=empName;boardIsDragging=true;e.dataTransfer.effectAllowed='move';e.target.style.opacity='0.4';setTimeout(()=>e.target.style.opacity='1',0);}
+let boardDragId=null,boardDragEmp=null,boardIsDragging=false,boardDragOrder=null,boardDragDate=null;
+function boardDragStart(e,asgnId,empName){boardDragId=asgnId;boardDragEmp=empName;boardIsDragging=true;const a=state.assignments.find(x=>x.id===asgnId);boardDragOrder=a?(a.fields['SortOrder']||0):0;boardDragDate=a?a.fields['Date']:null;e.dataTransfer.effectAllowed='move';e.target.style.opacity='0.4';setTimeout(()=>e.target.style.opacity='1',0);}
 function boardDragOver(e){e.preventDefault();e.dataTransfer.dropEffect='move';e.currentTarget.classList.add('board-drop-target');}
 function boardDragLeave(e){e.currentTarget.classList.remove('board-drop-target');}
 async function boardDrop(e,empName,dateStr){
@@ -1373,7 +1373,22 @@ async function boardDrop(e,empName,dateStr){
   await api.patch(TABLES.assignments,boardDragId,{'Employee':empName,'Date':dateStr});
   boardDragId=null;boardDragEmp=null;setTimeout(()=>{boardIsDragging=false;},200);
   await refreshData();
-}
+}async function chipReorderDrop(e,targetAsgnId){
+  e.preventDefault();e.stopPropagation();
+  if(!boardDragId||boardDragId===targetAsgnId)return;
+  const target=state.assignments.find(a=>a.id===targetAsgnId);
+  const dragged=state.assignments.find(a=>a.id===boardDragId);
+  if(!target||!dragged)return;
+  // only reorder within the same employee + same day
+  if(target.fields['Employee']!==dragged.fields['Employee']||target.fields['Date']!==dragged.fields['Date']){boardDragId=null;setTimeout(()=>{boardIsDragging=false;},200);return;}
+  const targetOrder=target.fields['SortOrder']||0;
+  const draggedOrder=dragged.fields['SortOrder']||0;
+  // swap the two order numbers
+  await api.patch(TABLES.assignments,targetAsgnId,{'SortOrder':draggedOrder});
+  await api.patch(TABLES.assignments,boardDragId,{'SortOrder':targetOrder});
+  boardDragId=null;setTimeout(()=>{boardIsDragging=false;},200);
+  await refreshData();
+  }
 function chipClick(e,asgnId,empName,jobName,dateStr){e.stopPropagation();if(boardIsDragging)return;if(confirm('Remove '+empName+' from "'+jobName+'" on '+dateStr+'?')){deleteAssignment(asgnId);}}
 async function deleteAssignment(asgnId){await api.delete(TABLES.assignments,asgnId);await refreshData();}
 function quickAssign(empName,dateStr){
