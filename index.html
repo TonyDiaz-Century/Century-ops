@@ -1331,7 +1331,7 @@ function renderBoard(){
       bodyHTML+='<tr><td><div class="emp-name">'+emp.fields['Name']+'</div><div class="emp-role">'+(emp.fields['Role']||'')+'</div></td>';
       dates.forEach(date=>{
         const ds=localISO(date);
-        const asgns=state.assignments.filter(a=>a.fields['Employee']===emp.fields['Name']&&a.fields['Date']===ds);
+        const asgns=state.assignments.filter(a=>a.fields['Employee']===emp.fields['Name']&&a.fields['Date']===ds).sort((a,b)=>(a.fields['Sort Order']||9999)-(b.fields['Sort Order']||9999));
         if(asgns.length){
           assigned+=asgns.length;
           let chipsHTML='';
@@ -1595,7 +1595,9 @@ async function saveCrew(){
 async function saveAssignment(){
   const emp=document.getElementById('a-emp').value,job=document.getElementById('a-job').value,date=document.getElementById('a-date').value;
   if(!emp||!job||!date){alert('Please fill all fields.');return;}
-  await api.post(TABLES.assignments,{'Employee':emp,'Job':job,'Date':date,'Status':'Scheduled'});
+  const sameDay=state.assignments.filter(a=>a.fields['Employee']===emp&&a.fields['Date']===date);
+  const nextOrder=sameDay.length?Math.max(...sameDay.map(a=>a.fields['Sort Order']||0))+1:1;
+  await api.post(TABLES.assignments,{'Employee':emp,'Job':job,'Date':date,'Status':'Scheduled','Sort Order':nextOrder});
   closeModal('assign');await refreshData();
 }
 
