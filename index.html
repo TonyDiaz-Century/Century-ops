@@ -1393,7 +1393,10 @@ async function deleteAssignment(asgnId){await api.delete(TABLES.assignments,asgn
 function quickAssign(empName,dateStr){
   const holidays=getHolidays(new Date(dateStr+'T12:00:00').getFullYear());const holiday=holidays[dateStr];
   if(holiday){if(!confirm('⚠️ '+holiday.name+' is a holiday on '+dateStr+'.\n\nStill assign '+empName+'?'))return;}
-  document.getElementById('a-emp').value=empName;document.getElementById('a-date').value=dateStr;openModal('assign');
+  const sel=document.getElementById('a-emp');
+  sel.innerHTML=state.employees.filter(e=>e.fields['Active']).map(e=>'<option'+(e.fields['Name']===empName?' selected':'')+'>'+e.fields['Name']+'</option>').join('');
+  sel.value=empName;
+  document.getElementById('a-date').value=dateStr;openModal('assign');
 }
 
 // ── JOBS ──────────────────────────────────────────────────────────────────────
