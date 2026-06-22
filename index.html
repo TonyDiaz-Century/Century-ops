@@ -2156,10 +2156,10 @@ setInterval(checkReminders,30000);
 let autoRefreshTimer=null;
 function startAutoRefresh(){
   if(autoRefreshTimer)clearInterval(autoRefreshTimer);
-  // Pull fresh data every 90 seconds while the app is in view
+  // Pull fresh data every 3 minutes while the app is in view
   autoRefreshTimer=setInterval(()=>{
     if(document.visibilityState==='visible'&&state.currentUser){refreshData();}
-  },90000);
+  },180000);
 }
 // Refresh the instant the tab regains focus (e.g. switching back from another app)
 document.addEventListener('visibilitychange',()=>{
